@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "719710972079",
+    "firebase_url": "https://honbabstop.firebaseio.com",
+    "project_id": "honbabstop",
+    "storage_bucket": "honbabstop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719710972079:android:ae19fa908331cc15",
+        "android_client_info": {
+          "package_name": "com.landvibe.android.honbabstop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "719710972079-o28mt4834u0n4844089ujfbs8o48oah0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDI1T8xpG1RpiFRouvs-tY1ED8bkZx_73M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "719710972079-o28mt4834u0n4844089ujfbs8o48oah0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
