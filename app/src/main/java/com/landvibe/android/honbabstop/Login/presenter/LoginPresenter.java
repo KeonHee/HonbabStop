@@ -25,13 +25,9 @@ public interface LoginPresenter {
 
     interface Presenter {
 
-        void attachView(View view);
+        void attachView(View view, Activity activity);
 
         void detachView();
-
-        void setActivity(Activity activity);
-
-        void removeSessionCallback();
 
     }
 }

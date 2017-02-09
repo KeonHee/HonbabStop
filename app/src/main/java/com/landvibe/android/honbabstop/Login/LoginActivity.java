@@ -42,16 +42,18 @@ public class LoginActivity extends AppCompatActivity
 
     private void init(){
 
-        /* change status bar*/
+        changeStatusBarColor();
+
+        loginPresenter = new LoginPresenterImpl();
+        loginPresenter.attachView(this,this);
+
+    }
+
+    private void changeStatusBarColor(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.deep_orange));
         }
-
-        loginPresenter = new LoginPresenterImpl();
-        loginPresenter.attachView(this);
-        loginPresenter.setActivity(this);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -65,7 +67,6 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        loginPresenter.removeSessionCallback();
         loginPresenter.detachView();
         loginPresenter=null;
     }

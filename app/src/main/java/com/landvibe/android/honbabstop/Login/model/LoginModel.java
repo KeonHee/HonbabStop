@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.landvibe.android.honbabstop.base.domain.User;
 
 /**
@@ -27,6 +28,7 @@ public class LoginModel {
 
     private FirebaseLoginCallback firebaseLoginCallback;
     private FirebaseSignUpCallback firebaseSignUpCallback;
+    private FirebaseAuthCallback firebaseAuthCallback;
 
     public interface FirebaseLoginCallback{
         void onSuccess();
@@ -39,25 +41,52 @@ public class LoginModel {
         void onFailure();
     }
 
+    public interface FirebaseAuthCallback{
+        void onExist();
+        void onNotExist();
+    }
+
     public void setActivity(Activity activity) {
         mActivity=activity;
     }
 
-    public void setOnLoginLisnter(FirebaseLoginCallback callback){
+    /**
+     * 인증 정보 로드
+     */
+    public void loadAuth(){
+        mAuth=FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null) {
+            firebaseAuthCallback.onExist();
+        }else {
+            firebaseAuthCallback.onNotExist();
+        }
+    }
+
+    /**
+     * DB instance 로드
+     */
+    public void loadDB(){
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+    }
+
+    /**
+     * 콜백 등록
+     */
+    public void setOnLoginLisenter(FirebaseLoginCallback callback){
         firebaseLoginCallback=callback;
     }
-    public void setOnSignupLisnter(FirebaseSignUpCallback callback){
+    public void setOnSignupLisenter(FirebaseSignUpCallback callback){
         firebaseSignUpCallback=callback;
     }
-
-    public void setFirebaseAuth(FirebaseAuth auth){
-        mAuth=auth;
+    public void setOnAuthLisenter(FirebaseAuthCallback callback){
+        firebaseAuthCallback = callback;
     }
 
-    public void setFirebaseReference(DatabaseReference reference){
-        mDatabase=reference;
-    }
-
+    /**
+     * Firebase 로그인
+     * @param email
+     * @param password
+     */
     public void firebaseLogin(String email, String password){
         if(mAuth!=null){
             mAuth.signInWithEmailAndPassword(email, password)
@@ -77,6 +106,11 @@ public class LoginModel {
         }
     }
 
+    /**
+     * Firebase 회원 가입
+     * @param email
+     * @param password
+     */
     public void firebaseSignup(String email, String password){
         if(mAuth!=null){
             mAuth.createUserWithEmailAndPassword(email, password)
@@ -107,6 +141,10 @@ public class LoginModel {
         }
     }
 
+    /**
+     * Firebase DB에 유저 정보 등록
+     * @param user
+     */
     private void writeUser(User user){
         Log.d(TAG,"writeUser()");
         mDatabase.child("users").child(user.getUid()).setValue(user);

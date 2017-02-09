@@ -28,63 +28,54 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     public static final String KAKAODOMAIN = "@kakao.com";
     public static final String KAKAOPROVIDER = "kakao";
 
-    private Activity mActivity;
     private LoginPresenter.View view;
-
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
 
     private LoginModel loginModel;
 
-
     @Override
-    public void attachView(LoginPresenter.View view) {
+    public void attachView(LoginPresenter.View view, Activity activity) {
         this.view = view;
 
-        mAuth=FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null) {
-            view.moveToMainActivity();
-        }
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        /* kakao login */
-        Session.getCurrentSession().addCallback(iSessionCallback);
-        Session.getCurrentSession().checkAndImplicitOpen();
-
         loginModel=new LoginModel();
-        loginModel.setFirebaseAuth(mAuth);
-        loginModel.setFirebaseReference(mDatabase);
-        loginModel.setOnLoginLisnter(firebaseLoginCallback);
-        loginModel.setOnSignupLisnter(firebaseSignUpCallback);
+        loginModel.setOnLoginLisenter(firebaseLoginCallback);
+        loginModel.setOnSignupLisenter(firebaseSignUpCallback);
+        loginModel.setOnAuthLisenter(firebaseAuthCallback);
+        loginModel.setActivity(activity);
+        loginModel.loadAuth();
+        loginModel.loadDB();
 
     }
 
     @Override
     public void detachView() {
         view = null;
-        mAuth=null;
-        mDatabase=null;
-
-        loginModel.setFirebaseAuth(null);
-        loginModel.setFirebaseReference(null);
-        loginModel.setOnLoginLisnter(null);
-        loginModel.setOnSignupLisnter(null);
+        loginModel.setActivity(null);
+        loginModel.setOnLoginLisenter(null);
+        loginModel.setOnSignupLisenter(null);
+        loginModel.setOnAuthLisenter(null);
         loginModel=null;
-    }
 
-    @Override
-    public void setActivity(Activity activity) {
-        mActivity=activity;
-        loginModel.setActivity(activity);
-    }
-
-    @Override
-    public void removeSessionCallback() {
-        Session.getCurrentSession().removeCallback(iSessionCallback);
+        closeKakaoSession();
     }
 
     /**
-     * 카카오톡 프로필 요청
+     * 카카오톡 로그인 버튼 콜백 등록
+     */
+    private void connectKakaoSession(){
+        Session.getCurrentSession().addCallback(iSessionCallback);
+        Session.getCurrentSession().checkAndImplicitOpen();
+    }
+
+    /**
+     * 카카오톡 로그인 버튼 콜백 해제
+     */
+    private void closeKakaoSession(){
+        Session.getCurrentSession().removeCallback(iSessionCallback);
+    }
+
+
+    /**
+     * 카카오톡 프로필 정보 요청
      */
     private void requestMe() {
         UserManagement.requestMe(new MeResponseCallback() {
@@ -190,6 +181,24 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         public void onFailure() {
 
         }
+    };
+
+
+    /**
+     * 현재 Firebase 인증 여부 확인 콜백
+     */
+    private LoginModel.FirebaseAuthCallback firebaseAuthCallback = new LoginModel.FirebaseAuthCallback() {
+        @Override
+        public void onExist() {
+            view.moveToMainActivity();
+        }
+
+        @Override
+        public void onNotExist() {
+            /* kakao login*/
+            connectKakaoSession();
+        }
+
     };
 
 }
