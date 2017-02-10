@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kakao.usermgmt.UserManagement;
@@ -16,16 +17,16 @@ import com.landvibe.android.honbabstop.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private final static String TAG = "MainActivity";
     @BindView(R.id.btn_logout)
     Button mLogoutBtn;
 
-
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private LoginManager mFacebookLoginManager;
 
     private boolean mFirebaseLogout=false;
     private boolean mKakaoLogout=false;
@@ -55,9 +56,14 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        mFacebookLoginManager=LoginManager.getInstance();
+
         mLogoutBtn.setOnClickListener(v -> {
             if(mAuth!=null) mAuth.signOut();
             onClickLogout();
+            if(mFacebookLoginManager!=null) {
+                mFacebookLoginManager.logOut();
+            }
         });
 
     }

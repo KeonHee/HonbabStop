@@ -10,16 +10,5 @@ import com.landvibe.android.honbabstop.Login.presenter.LoginPresenter;
 
 public interface MainPresenter {
 
-    interface View {
 
-
-    }
-
-    interface Presenter {
-
-        void attachView(MainPresenter.View view, Activity activity);
-
-        void detachView();
-
-    }
 }

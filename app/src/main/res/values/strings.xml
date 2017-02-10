@@ -2,9 +2,15 @@
     <string name="app_name">HonBabStop</string>
     <string name="title_activity_settings">Settings</string>
 
-    <string name="kakao_app_key" translatable="false">24154cc7f0ca64eb98129e6589f7b1a6</string>
 
-    <!-- Login -->
+    <!-- kakao login key -->
+    <string name="kakao_app_key" translatable="false">24154cc7f0ca64eb98129e6589f7b1a6</string>
+    <!--facebook login key-->
+    <string name="facebook_app_id">1887958868128261</string>
+    <!--facebook login chrome tab key-->
+    <string name="fb_login_protocol_scheme">1887958868128261</string>
+
+    <!-- LoginActivity -->
     <string name="login_title1">혼밥 Stop에</string>
     <string name="login_title2">오신 것을 환영 합니다.</string>
 

@@ -52,6 +52,8 @@ dependencies {
 
     /* kakao login */
     compile group: 'com.kakao.sdk', name: 'usermgmt', version: '1.1.33'
+    /* facebook login */
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
 
     /* font */
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'

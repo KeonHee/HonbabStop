@@ -1,14 +1,25 @@
 package com.landvibe.android.honbabstop.Login.model;
 
 import android.app.Activity;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.facebook.AccessToken;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.landvibe.android.honbabstop.base.domain.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by user on 2017-02-09.
@@ -18,13 +29,19 @@ public class LoginModel {
 
     private final static String TAG = "LoginModel";
 
-    public static final String KAKAODOMAIN = "@kakao.com";
-    public static final String KAKAOPROVIDER = "kakao";
+    public static final String DOMAIN_KAKAO = "@kakao.com";
+    public static final String PROVIDER_KAKAO = "kakao";
+
+    public static final String PROVIDER_FACEBOOK = "facebook";
+    public static final String PROVIDER_GOOGLE = "google";
+
 
     private Activity mActivity;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
 
     private FirebaseLoginCallback firebaseLoginCallback;
     private FirebaseSignUpCallback firebaseSignUpCallback;
@@ -55,10 +72,24 @@ public class LoginModel {
      */
     public void loadAuth(){
         mAuth=FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser() != null) {
-            firebaseAuthCallback.onExist();
-        }else {
-            firebaseAuthCallback.onNotExist();
+        setAuthListener();
+    }
+    public void setAuthListener(){
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                firebaseAuthCallback.onExist();
+            } else {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                firebaseAuthCallback.onNotExist();
+            }
+        };
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+    public void removeAuthListener(){
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 
@@ -122,14 +153,9 @@ public class LoginModel {
                             User user = new User();
                             user.setUid(firebaseUser.getUid());
                             user.setEmail(firebaseUser.getEmail());
-                            user.setProfileUrl(firebaseUser.getPhotoUrl());
+                            user.setProfileUrl(firebaseUser.getPhotoUrl().toString());
                             user.setName(firebaseUser.getDisplayName());
-
-                            if(firebaseUser.getProviderId().equals("firebase")){
-                                user.setProviderId(KAKAOPROVIDER);
-                            }else {
-                                user.setProviderId(firebaseUser.getProviderId());
-                            }
+                            user.setProviderId(PROVIDER_KAKAO);
                             writeUser(user); // DB 저장
 
                             firebaseSignUpCallback.onSuccess(email,password);
@@ -142,6 +168,63 @@ public class LoginModel {
     }
 
     /**
+     * Facebook OAuth 로그인
+     * @param token
+     * @param jsonObject
+     */
+    public void onFacebookFirebaseLogin(AccessToken token, JSONObject jsonObject) {
+        if (mAuth!=null){
+            Log.d(TAG, "onFacebookFirebaseLogin:" + token);
+            AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(mActivity, task -> {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                            //{"id":"1202531989863702","name":"KeonHee  Kim","email":"kimgh6554@hanmail.net","gender":"male"}
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            User user = new User();
+                            user.setUid(firebaseUser.getUid());
+                            user.setProviderId(PROVIDER_FACEBOOK);
+                            try {
+                                user.setEmail(jsonObject.getString("email"));
+                                user.setName(jsonObject.getString("name"));
+                                user.setGender(jsonObject.getString("gender"));
+
+                                Uri profileUri = buildProfileUri(
+                                        jsonObject.getString("id"),
+                                        "large"
+                                );
+                                user.setProfileUrl(profileUri.toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            writeUser(user);
+                            firebaseLoginCallback.onSuccess();
+                        }else {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            firebaseLoginCallback.onFailure();
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Facebook 프로필 Uri 생성
+     */
+    private Uri buildProfileUri(String id, String type){
+        //"graph.facebook.com/facebookid/picture?type=type_value";
+        // type : large, normal, small, square
+        return new Uri.Builder()
+                .scheme("http")
+                .authority("graph.facebook.com")
+                .appendPath(id)
+                .appendPath("picture")
+                .appendQueryParameter("type",type)
+                .build();
+    }
+    /**
      * Firebase DB에 유저 정보 등록
      * @param user
      */
@@ -149,4 +232,5 @@ public class LoginModel {
         Log.d(TAG,"writeUser()");
         mDatabase.child("users").child(user.getUid()).setValue(user);
     }
+
 }

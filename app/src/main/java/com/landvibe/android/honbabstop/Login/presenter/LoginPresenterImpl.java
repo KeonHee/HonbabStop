@@ -1,11 +1,16 @@
 package com.landvibe.android.honbabstop.Login.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
@@ -15,6 +20,9 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 import com.landvibe.android.honbabstop.Login.model.LoginModel;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by user on 2017-02-09.
@@ -32,6 +40,9 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
 
     private LoginModel loginModel;
 
+    private CallbackManager mFacebookCallbackManager;
+    private LoginButton mFacebookLoginBtn;
+
     @Override
     public void attachView(LoginPresenter.View view, Activity activity) {
         this.view = view;
@@ -44,18 +55,78 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         loginModel.loadAuth();
         loginModel.loadDB();
 
+        mFacebookCallbackManager=CallbackManager.Factory.create();
     }
 
     @Override
     public void detachView() {
         view = null;
+
         loginModel.setActivity(null);
         loginModel.setOnLoginLisenter(null);
         loginModel.setOnSignupLisenter(null);
         loginModel.setOnAuthLisenter(null);
+        loginModel.removeAuthListener();
         loginModel=null;
 
         closeKakaoSession();
+
+        mFacebookCallbackManager=null;
+    }
+
+    @Override
+    public void setFacebookLoginCallback(LoginButton facebookLoginBtn) {
+        mFacebookLoginBtn=facebookLoginBtn;
+        mFacebookLoginBtn.setReadPermissions(Arrays.asList("public_profile","email"));
+        mFacebookLoginBtn.registerCallback(mFacebookCallbackManager,facebookCallback);
+    }
+
+    private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+
+            view.showLoading();
+
+            GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
+                    (jsonObject, response) -> {
+                        if(response.getError()!=null){
+                            Log.d(TAG, "GraphResponse Error" );
+                        }else {
+                            Log.d(TAG, "user: " + jsonObject.toString());
+                            Log.d(TAG, "AccessToken: " + loginResult.getAccessToken().getToken());
+
+                            loginModel.onFacebookFirebaseLogin(
+                                    loginResult.getAccessToken(),
+                                    jsonObject
+                            );
+
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,gender"); // 필요한 정보
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException error) {
+
+        }
+    };
+
+    @Override
+    public boolean onFacebookActivityResult(int requestCode, int resultCode, Intent data) {
+        return mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onKakaoActivityResult(int requestCode, int resultCode, Intent data) {
+        return Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -153,7 +224,7 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     private LoginModel.FirebaseLoginCallback firebaseLoginCallback = new LoginModel.FirebaseLoginCallback() {
         @Override
         public void onSuccess() {
-            view.moveToMainActivity();
+            //view.moveToMainActivity();
         }
 
         @Override

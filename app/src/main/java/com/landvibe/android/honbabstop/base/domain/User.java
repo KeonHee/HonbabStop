@@ -1,7 +1,5 @@
 package com.landvibe.android.honbabstop.base.domain;
 
-import android.net.Uri;
-
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
@@ -24,7 +22,7 @@ public class User {
     private String gender;
     private String address;
     private String email;
-    private Uri profileUrl;
+    private String profileUrl;
 
     /* 상태, 직업 */
     private String status;
@@ -110,11 +108,11 @@ public class User {
         this.email = email;
     }
 
-    public Uri getProfileUrl() {
+    public String getProfileUrl() {
         return profileUrl;
     }
 
-    public void setProfileUrl(Uri profileUrl) {
+    public void setProfileUrl(String profileUrl) {
         this.profileUrl = profileUrl;
     }
 

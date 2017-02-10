@@ -7,13 +7,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.kakao.auth.Session;
+import com.facebook.login.widget.LoginButton;
 import com.landvibe.android.honbabstop.Login.presenter.LoginPresenter;
 import com.landvibe.android.honbabstop.Login.presenter.LoginPresenterImpl;
 import com.landvibe.android.honbabstop.Main.MainActivity;
 import com.landvibe.android.honbabstop.R;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,10 +27,16 @@ public class LoginActivity extends AppCompatActivity
 
     private final static String TAG = "LoginActivity";
 
+    public static final int KAKAO_SIGN_IN_REQEUST_CODE = 1;
+    public static final int FACEBOOK_SIGN_IN_REQEUST_CODE = 64206;
+
     private LoginPresenterImpl loginPresenter;
 
     @BindView(R.id.pb_loading_indicator)
     ProgressBar mLoadingIndicator;
+
+    @BindView(R.id.facebook_login_button)
+    LoginButton mFacebookLoginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +55,7 @@ public class LoginActivity extends AppCompatActivity
 
         loginPresenter = new LoginPresenterImpl();
         loginPresenter.attachView(this,this);
-
+        loginPresenter.setFacebookLoginCallback(mFacebookLoginBtn);
     }
 
     private void changeStatusBarColor(){
@@ -57,9 +66,18 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            Log.d(TAG, "handleActivityResult()");
-            return;
+        if(requestCode==KAKAO_SIGN_IN_REQEUST_CODE) {
+            if (loginPresenter.onKakaoActivityResult(requestCode,resultCode,data)) {
+                Log.d(TAG, "kakao requestCode : " + requestCode);
+                Log.d(TAG, "kakao resultCode : " + resultCode);
+                return;
+            }
+        }else if(requestCode==FACEBOOK_SIGN_IN_REQEUST_CODE){
+            if(loginPresenter.onFacebookActivityResult(requestCode,resultCode,data)){
+                Log.d(TAG, "facebook requestCode : " + requestCode);
+                Log.d(TAG, "facebook resultCode : " + resultCode);
+                return;
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
