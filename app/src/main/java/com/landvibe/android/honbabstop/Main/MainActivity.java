@@ -7,12 +7,21 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.landvibe.android.honbabstop.Login.LoginActivity;
+import com.landvibe.android.honbabstop.Login.presenter.LoginPresenterImpl;
 import com.landvibe.android.honbabstop.R;
+import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,12 +33,8 @@ public class MainActivity extends AppCompatActivity{
     Button mLogoutBtn;
 
     private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private LoginManager mFacebookLoginManager;
-
-    private boolean mFirebaseLogout=false;
-    private boolean mKakaoLogout=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +43,9 @@ public class MainActivity extends AppCompatActivity{
         ButterKnife.bind(this);
 
 
+        Log.d(TAG,"onCreate()");
         /* Firebase */
         mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user != null) {
@@ -49,20 +54,31 @@ public class MainActivity extends AppCompatActivity{
             } else {
                 // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out");
-                mFirebaseLogout=true;
-                if (mFirebaseLogout && mKakaoLogout){
-                    redirectLoginActivity();
-                }
+                redirectLoginActivity();
             }
         };
 
         mFacebookLoginManager=LoginManager.getInstance();
 
         mLogoutBtn.setOnClickListener(v -> {
+
+            /* firebase sign out */
             if(mAuth!=null) mAuth.signOut();
+            /* kakao sign out */
             onClickLogout();
+            /* facebook sign out */
             if(mFacebookLoginManager!=null) {
                 mFacebookLoginManager.logOut();
+            }
+            /* google sign out */
+            GoogleApiClient mGoogleApiClient = GoogleApiClientStore.getGoogleApiClient();
+            if(mGoogleApiClient!=null){
+                mGoogleApiClient.connect();
+                if(mGoogleApiClient.isConnected()){
+                    Auth.GoogleSignInApi
+                            .signOut(mGoogleApiClient)
+                            .setResultCallback(status -> Log.d(TAG,"google sign out suecces"));
+                }
             }
         });
 
@@ -86,10 +102,7 @@ public class MainActivity extends AppCompatActivity{
         UserManagement.requestLogout(new LogoutResponseCallback() {
             @Override
             public void onCompleteLogout() {
-                mKakaoLogout=true;
-                if (mFirebaseLogout && mKakaoLogout){
-                    redirectLoginActivity();
-                }
+                Log.d(TAG, "kakao logout comlete");
             }
         });
     }

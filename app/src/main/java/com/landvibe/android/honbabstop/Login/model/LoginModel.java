@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.AccessToken;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.landvibe.android.honbabstop.base.domain.User;
@@ -85,7 +87,11 @@ public class LoginModel {
                 firebaseAuthCallback.onNotExist();
             }
         };
-        mAuth.addAuthStateListener(mAuthListener);
+    }
+    public void addAuthListener(){
+        if(mAuth!=null && mAuthListener!=null){
+            mAuth.addAuthStateListener(mAuthListener);
+        }
     }
     public void removeAuthListener(){
         if (mAuthListener != null) {
@@ -178,31 +184,31 @@ public class LoginModel {
             AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
             mAuth.signInWithCredential(credential)
                     .addOnCompleteListener(mActivity, task -> {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                            //{"id":"1202531989863702","name":"KeonHee  Kim","email":"kimgh6554@hanmail.net","gender":"male"}
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            User user = new User();
-                            user.setUid(firebaseUser.getUid());
-                            user.setProviderId(PROVIDER_FACEBOOK);
-                            try {
-                                user.setEmail(jsonObject.getString("email"));
-                                user.setName(jsonObject.getString("name"));
-                                user.setGender(jsonObject.getString("gender"));
+                        //{"id":"1202531989863702","name":"KeonHee  Kim","email":"kimgh6554@hanmail.net","gender":"male"}
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        User user = new User();
+                        user.setUid(firebaseUser.getUid());
+                        user.setProviderId(PROVIDER_FACEBOOK);
+                        try {
+                            user.setEmail(jsonObject.getString("email"));
+                            user.setName(jsonObject.getString("name"));
+                            user.setGender(jsonObject.getString("gender"));
 
-                                Uri profileUri = buildProfileUri(
-                                        jsonObject.getString("id"),
-                                        "large"
-                                );
-                                user.setProfileUrl(profileUri.toString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            Uri profileUri = buildProfileUri(
+                                    jsonObject.getString("id"),
+                                    "large"
+                            );
+                            user.setProfileUrl(profileUri.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                            writeUser(user);
-                            firebaseLoginCallback.onSuccess();
-                        }else {
+                        writeUser(user);
+                        firebaseLoginCallback.onSuccess();
+
+                        if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
                             firebaseLoginCallback.onFailure();
                         }
@@ -231,6 +237,35 @@ public class LoginModel {
     private void writeUser(User user){
         Log.d(TAG,"writeUser()");
         mDatabase.child("users").child(user.getUid()).setValue(user);
+    }
+
+
+    public void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        if(mAuth!=null){
+            Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
+            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+            mAuth.signInWithCredential(credential)
+                    .addOnCompleteListener(mActivity, task -> {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        User user = new User();
+                        user.setUid(firebaseUser.getUid());
+                        user.setProviderId(PROVIDER_GOOGLE);
+                        user.setEmail(acct.getEmail());
+                        user.setName(acct.getDisplayName());
+                        //user.setGender();
+                        user.setProfileUrl(acct.getPhotoUrl().toString());
+
+                        writeUser(user);
+                        firebaseLoginCallback.onSuccess();
+
+                        if (!task.isSuccessful()) {
+                            firebaseLoginCallback.onFailure();
+                        }
+                    });
+        }
     }
 
 }

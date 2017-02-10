@@ -1,8 +1,10 @@
 package com.landvibe.android.honbabstop.Login.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.facebook.CallbackManager;
@@ -11,6 +13,13 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
@@ -20,9 +29,9 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 import com.landvibe.android.honbabstop.Login.model.LoginModel;
+import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by user on 2017-02-09.
@@ -42,6 +51,8 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
 
     private CallbackManager mFacebookCallbackManager;
     private LoginButton mFacebookLoginBtn;
+
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     public void attachView(LoginPresenter.View view, Activity activity) {
@@ -75,12 +86,50 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     }
 
     @Override
+    public void addAuthListener() {
+        loginModel.addAuthListener();
+    }
+
+    @Override
+    public void setGoogleApiClient(Context context, AppCompatActivity activity, String token) {
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(token)
+                .requestEmail()
+                .build();
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .enableAutoManage(activity /* AppCompatActivity */, onConnectionFailedListener /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        GoogleApiClientStore.storeGoogleApiClient(mGoogleApiClient);
+    }
+
+    private GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener = connectionResult
+            -> Log.d(TAG, connectionResult.getErrorMessage());
+
+    @Override
+    public void onGoogleLogin(Activity activity, int requestCode) {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        activity.startActivityForResult(signInIntent, requestCode);
+    }
+
+
+    /**
+     * Faceboock 로그인 콜백 등록
+     */
+    @Override
     public void setFacebookLoginCallback(LoginButton facebookLoginBtn) {
         mFacebookLoginBtn=facebookLoginBtn;
         mFacebookLoginBtn.setReadPermissions(Arrays.asList("public_profile","email"));
         mFacebookLoginBtn.registerCallback(mFacebookCallbackManager,facebookCallback);
     }
 
+
+    /**
+     * Facebook 로그인 요청 콜백
+     */
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
@@ -127,6 +176,21 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     @Override
     public boolean onKakaoActivityResult(int requestCode, int resultCode, Intent data) {
         return Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onGoogleActivityResult(Intent data) {
+
+        view.showLoading();
+
+        GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+        if (result.isSuccess()) {
+            // Google Sign In was successful, authenticate with Firebase
+            GoogleSignInAccount account = result.getSignInAccount();
+            loginModel.firebaseAuthWithGoogle(account);
+        } else {
+
+        }
     }
 
     /**

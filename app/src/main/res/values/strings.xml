@@ -9,6 +9,8 @@
     <string name="facebook_app_id">1887958868128261</string>
     <!--facebook login chrome tab key-->
     <string name="fb_login_protocol_scheme">1887958868128261</string>
+    <!--google login key-->
+    <string name="google_web_client_id">719710972079-o28mt4834u0n4844089ujfbs8o48oah0.apps.googleusercontent.com</string>
 
     <!-- LoginActivity -->
     <string name="login_title1">혼밥 Stop에</string>

@@ -47,13 +47,16 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:9.2.1'
     compile 'com.google.firebase:firebase-auth:9.2.1'
 
-    /* naver maps */
-    compile 'com.naver.maps.open:naver-map-api:2.1.2@aar'
+    /* google login */
+    compile 'com.google.android.gms:play-services-auth:9.2.1'
 
     /* kakao login */
     compile group: 'com.kakao.sdk', name: 'usermgmt', version: '1.1.33'
     /* facebook login */
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+
+    /* naver maps */
+    compile 'com.naver.maps.open:naver-map-api:2.1.2@aar'
 
     /* font */
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
