@@ -82,6 +82,13 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         closeKakaoSession();
 
         mFacebookCallbackManager=null;
+        firebaseAuthCallback=null;
+        iSessionCallback=null;
+        firebaseLoginCallback=null;
+        firebaseSignUpCallback =null;
+        facebookCallback=null;
+        onConnectionFailedListener=null;
+        mFacebookLoginBtn=null;
     }
 
     /**
@@ -91,6 +98,7 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         @Override
         public void onExist() {
             view.moveToMainActivity();
+            iSessionCallback=null;
         }
 
         @Override
