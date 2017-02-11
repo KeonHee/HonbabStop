@@ -1,7 +1,4 @@
-package com.landvibe.android.honbabstop.base.auth.kakao;
-
-import android.app.Activity;
-import android.content.Context;
+package com.landvibe.android.honbabstop.auth.kakao;
 
 import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;

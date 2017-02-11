@@ -17,8 +17,6 @@ public interface LoginPresenter {
 
         void moveToMainActivity();
 
-        void moveToLoginActivity();
-
         void showLoading();
 
     }
@@ -29,13 +27,11 @@ public interface LoginPresenter {
 
         void detachView();
 
-        void addAuthListener();
+        void setFacebookLoginCallback(LoginButton facebookLoginBtn);
 
         void setGoogleApiClient(Context context, AppCompatActivity activity, String token);
 
         void onGoogleLogin(Activity activity, int requestCode);
-
-        void setFacebookLoginCallback(LoginButton facebookLoginBtn);
 
         boolean onFacebookActivityResult(int requestCode, int resultCode, Intent data);
 

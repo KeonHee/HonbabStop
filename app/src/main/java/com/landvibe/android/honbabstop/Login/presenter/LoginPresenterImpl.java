@@ -18,8 +18,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
@@ -29,7 +27,7 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 import com.landvibe.android.honbabstop.Login.model.LoginModel;
-import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
+import com.landvibe.android.honbabstop.auth.google.GoogleApiClientStore;
 
 import java.util.Arrays;
 
@@ -66,6 +64,8 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         loginModel.loadAuth();
         loginModel.loadDB();
 
+        connectKakaoSession();
+
         mFacebookCallbackManager=CallbackManager.Factory.create();
     }
 
@@ -77,7 +77,6 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         loginModel.setOnLoginLisenter(null);
         loginModel.setOnSignupLisenter(null);
         loginModel.setOnAuthLisenter(null);
-        loginModel.removeAuthListener();
         loginModel=null;
 
         closeKakaoSession();
@@ -85,37 +84,156 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         mFacebookCallbackManager=null;
     }
 
-    @Override
-    public void addAuthListener() {
-        loginModel.addAuthListener();
+    /**
+     * 현재 Firebase 인증 여부 확인 콜백
+     */
+    private LoginModel.FirebaseAuthCallback firebaseAuthCallback = new LoginModel.FirebaseAuthCallback() {
+        @Override
+        public void onExist() {
+            view.moveToMainActivity();
+        }
+
+        @Override
+        public void onNotExist() {
+
+        }
+    };
+
+    /************************************** Kakao **************************************/
+
+    /**
+     * 카카오톡 로그인 버튼 콜백 등록
+     */
+    private void connectKakaoSession(){
+        Session.getCurrentSession().addCallback(iSessionCallback);
+        Session.getCurrentSession().checkAndImplicitOpen();
     }
 
-    @Override
-    public void setGoogleApiClient(Context context, AppCompatActivity activity, String token) {
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(token)
-                .requestEmail()
-                .build();
-        // Build a GoogleApiClient with access to the Google Sign-In API and the
-        // options specified by gso.
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .enableAutoManage(activity /* AppCompatActivity */, onConnectionFailedListener /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-        GoogleApiClientStore.storeGoogleApiClient(mGoogleApiClient);
+    /**
+     * 카카오톡 로그인 버튼 콜백 해제
+     */
+    private void closeKakaoSession(){
+        Session.getCurrentSession().removeCallback(iSessionCallback);
     }
 
-    private GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener = connectionResult
-            -> Log.d(TAG, connectionResult.getErrorMessage());
-
+    /**
+     * 카카오톡 콜백 메소드 실행
+     * 네이티브 앱으로 가입시 수행
+     * Webview 로그인시 바로 콜백 메소드 호출
+     */
     @Override
-    public void onGoogleLogin(Activity activity, int requestCode) {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        activity.startActivityForResult(signInIntent, requestCode);
+    public boolean onKakaoActivityResult(int requestCode, int resultCode, Intent data) {
+        return Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data);
     }
+    /**
+     * 카카오톡 로그인 결과 수신 콜백
+     * Webview 로그인시 바로 콜백 메소드 호출
+     * */
+    private ISessionCallback iSessionCallback = new ISessionCallback() {
+        @Override
+        public void onSessionOpened() {
+            Log.d(TAG, "onSessionOpened()");
+            view.showLoading();
+            requestMe();
+        }
 
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            Log.d(TAG, "onSessionOpenFailed()");
+            if(exception != null) {
+                Logger.e(exception);
+            }
+        }
+    };
 
+    /**
+     * 카카오톡 프로필 정보 요청
+     */
+    private void requestMe() {
+        UserManagement.requestMe(new MeResponseCallback() {
+            @Override
+            public void onSuccess(UserProfile userProfile) {
+                Logger.d("UserProfile : " + userProfile);
+                long userId = userProfile.getId();
+                String nickName = userProfile.getNickname();
+                Log.d(TAG, "userId = " + userId);
+                Log.d(TAG, "nickName= " + nickName);
+
+                // firebase Auth
+                firebaseAuthWithEmailForKakao(userId);
+            }
+
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                String message = "failed to get user info. msg=" + errorResult;
+                Logger.d(message);
+
+                //view.moveToLoginActivity();
+            }
+
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                //view.moveToLoginActivity();
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                // 로그인 실패
+            }
+        });
+    }
+    /**
+     * Firebase 로그인 or 회원가입
+     *
+     * @param userId
+     */
+    public void firebaseAuthWithEmailForKakao(long userId){
+
+        StringBuffer emailBuffer = new StringBuffer();
+        emailBuffer.append(String.valueOf(userId));
+        emailBuffer.append(KAKAODOMAIN);
+        String email = emailBuffer.toString();
+
+        String password = String.valueOf(userId);
+
+        loginModel.firebaseLogin(email,password);
+    }
+    /**
+     * Firebase 로그인 콜백
+     */
+    private LoginModel.FirebaseLoginCallback firebaseLoginCallback = new LoginModel.FirebaseLoginCallback() {
+        @Override
+        public void onSuccess() {
+            view.moveToMainActivity();
+        }
+
+        @Override
+        public void onSignUp(String email, String password) {
+            loginModel.firebaseSignup(email, password);
+        }
+
+        @Override
+        public void onFailure() {
+
+        }
+    };
+    /**
+     * Firebase 회원 가입 콜백
+     */
+    private LoginModel.FirebaseSignUpCallback firebaseSignUpCallback = new LoginModel.FirebaseSignUpCallback(){
+
+        @Override
+        public void onSuccess(String email, String password) {
+            loginModel.firebaseLogin(email,password);
+        }
+
+        @Override
+        public void onFailure() {
+
+        }
+    };
+
+    /************************************** Faceboock **************************************/
     /**
      * Faceboock 로그인 콜백 등록
      */
@@ -126,6 +244,13 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         mFacebookLoginBtn.registerCallback(mFacebookCallbackManager,facebookCallback);
     }
 
+    /**
+     * Facebook 로그인 요청 콜백 실행
+     */
+    @Override
+    public boolean onFacebookActivityResult(int requestCode, int resultCode, Intent data) {
+        return mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
     /**
      * Facebook 로그인 요청 콜백
@@ -168,16 +293,45 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         }
     };
 
+    /************************************** Google **************************************/
+
+    /**
+     *  Google 로그인 클라이언트 생성
+     */
     @Override
-    public boolean onFacebookActivityResult(int requestCode, int resultCode, Intent data) {
-        return mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+    public void setGoogleApiClient(Context context, AppCompatActivity activity, String token) {
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(token)
+                .requestEmail()
+                .build();
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .enableAutoManage(activity /* AppCompatActivity */, onConnectionFailedListener /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        GoogleApiClientStore.storeGoogleApiClient(mGoogleApiClient);
     }
 
+    /**
+     * Google 로그인 클라이언트 생성 에러 리스너
+     */
+    private GoogleApiClient.OnConnectionFailedListener onConnectionFailedListener = connectionResult
+            -> Log.d(TAG, connectionResult.getErrorMessage());
+
+    /**
+     * Google 로그인 요청
+     */
     @Override
-    public boolean onKakaoActivityResult(int requestCode, int resultCode, Intent data) {
-        return Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data);
+    public void onGoogleLogin(Activity activity, int requestCode) {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        activity.startActivityForResult(signInIntent, requestCode);
     }
 
+    /**
+     *  Google 로그인 요청 콜백
+     */
     @Override
     public void onGoogleActivityResult(Intent data) {
 
@@ -192,148 +346,4 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
 
         }
     }
-
-    /**
-     * 카카오톡 로그인 버튼 콜백 등록
-     */
-    private void connectKakaoSession(){
-        Session.getCurrentSession().addCallback(iSessionCallback);
-        Session.getCurrentSession().checkAndImplicitOpen();
-    }
-
-    /**
-     * 카카오톡 로그인 버튼 콜백 해제
-     */
-    private void closeKakaoSession(){
-        Session.getCurrentSession().removeCallback(iSessionCallback);
-    }
-
-
-    /**
-     * 카카오톡 프로필 정보 요청
-     */
-    private void requestMe() {
-        UserManagement.requestMe(new MeResponseCallback() {
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-                String message = "failed to get user info. msg=" + errorResult;
-                Logger.d(message);
-
-                view.moveToLoginActivity();
-            }
-
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                view.moveToLoginActivity();
-            }
-
-            @Override
-            public void onSuccess(UserProfile userProfile) {
-                Logger.d("UserProfile : " + userProfile);
-                long userId = userProfile.getId();
-                String nickName = userProfile.getNickname();
-                Log.d(TAG, "userId = " + userId);
-                Log.d(TAG, "nickName= " + nickName);
-
-                // firebase 로그인 또는 회원가입
-                createIdAndLoginOnFirebase(userId);
-            }
-
-            @Override
-            public void onNotSignedUp() {
-                // 로그인 실패
-            }
-        });
-    }
-    /**
-     * Firebase 로그인 or 회원가입
-     *
-     * @param userId
-     */
-    public void createIdAndLoginOnFirebase(long userId){
-
-        StringBuffer emailBuffer = new StringBuffer();
-        emailBuffer.append(String.valueOf(userId));
-        emailBuffer.append(KAKAODOMAIN);
-        String email = emailBuffer.toString();
-
-        String password = String.valueOf(userId);
-
-        loginModel.firebaseLogin(email,password);
-    }
-
-    /**
-     * 카카오톡 로그인 결과 수신 콜백
-     * */
-    private ISessionCallback iSessionCallback = new ISessionCallback() {
-        @Override
-        public void onSessionOpened() {
-            Log.d(TAG, "onSessionOpened()");
-            view.showLoading();
-            requestMe();
-        }
-
-        @Override
-        public void onSessionOpenFailed(KakaoException exception) {
-            Log.d(TAG, "onSessionOpenFailed()");
-            if(exception != null) {
-                Logger.e(exception);
-            }
-        }
-    };
-
-    /**
-     * Firebase 로그인 콜백
-     */
-    private LoginModel.FirebaseLoginCallback firebaseLoginCallback = new LoginModel.FirebaseLoginCallback() {
-        @Override
-        public void onSuccess() {
-            //view.moveToMainActivity();
-        }
-
-        @Override
-        public void onSignUp(String email, String password) {
-            loginModel.firebaseSignup(email, password);
-        }
-
-        @Override
-        public void onFailure() {
-
-        }
-    };
-
-    /**
-     * Firebase 회원 가입 콜백
-     */
-    private LoginModel.FirebaseSignUpCallback firebaseSignUpCallback = new LoginModel.FirebaseSignUpCallback(){
-
-        @Override
-        public void onSuccess(String email, String password) {
-            loginModel.firebaseLogin(email,password);
-        }
-
-        @Override
-        public void onFailure() {
-
-        }
-    };
-
-
-    /**
-     * 현재 Firebase 인증 여부 확인 콜백
-     */
-    private LoginModel.FirebaseAuthCallback firebaseAuthCallback = new LoginModel.FirebaseAuthCallback() {
-        @Override
-        public void onExist() {
-            view.moveToMainActivity();
-        }
-
-        @Override
-        public void onNotExist() {
-            /* kakao login*/
-            connectKakaoSession();
-        }
-
-    };
-
 }

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.kakao.auth.KakaoSDK;
-import com.landvibe.android.honbabstop.base.auth.kakao.KakaoSDKAdapter;
+import com.landvibe.android.honbabstop.auth.kakao.KakaoSDKAdapter;
 
 /**
  * Created by user on 2017-02-07.

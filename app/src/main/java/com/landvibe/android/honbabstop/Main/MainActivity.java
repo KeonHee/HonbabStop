@@ -8,20 +8,14 @@ import android.widget.Button;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.landvibe.android.honbabstop.Login.LoginActivity;
-import com.landvibe.android.honbabstop.Login.presenter.LoginPresenterImpl;
 import com.landvibe.android.honbabstop.R;
-import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
-
-import java.util.concurrent.TimeUnit;
+import com.landvibe.android.honbabstop.auth.google.GoogleApiClientStore;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,6 +90,12 @@ public class MainActivity extends AppCompatActivity{
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy()");
     }
 
     private void onClickLogout() {

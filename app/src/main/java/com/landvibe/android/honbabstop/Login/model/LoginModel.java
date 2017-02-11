@@ -31,19 +31,14 @@ public class LoginModel {
 
     private final static String TAG = "LoginModel";
 
-    public static final String DOMAIN_KAKAO = "@kakao.com";
     public static final String PROVIDER_KAKAO = "kakao";
-
     public static final String PROVIDER_FACEBOOK = "facebook";
     public static final String PROVIDER_GOOGLE = "google";
-
 
     private Activity mActivity;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-
 
     private FirebaseLoginCallback firebaseLoginCallback;
     private FirebaseSignUpCallback firebaseSignUpCallback;
@@ -74,31 +69,15 @@ public class LoginModel {
      */
     public void loadAuth(){
         mAuth=FirebaseAuth.getInstance();
-        setAuthListener();
-    }
-    public void setAuthListener(){
-        mAuthListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                firebaseAuthCallback.onExist();
-            } else {
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-                firebaseAuthCallback.onNotExist();
-            }
-        };
-    }
-    public void addAuthListener(){
-        if(mAuth!=null && mAuthListener!=null){
-            mAuth.addAuthStateListener(mAuthListener);
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+            firebaseAuthCallback.onExist();
+        } else {
+            Log.d(TAG, "onAuthStateChanged:signed_out");
+            firebaseAuthCallback.onNotExist();
         }
     }
-    public void removeAuthListener(){
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
     /**
      * DB instance 로드
      */
@@ -120,7 +99,7 @@ public class LoginModel {
     }
 
     /**
-     * Firebase 로그인
+     * Firebase 로그인 (For Kakao)
      * @param email
      * @param password
      */
@@ -144,7 +123,7 @@ public class LoginModel {
     }
 
     /**
-     * Firebase 회원 가입
+     * Firebase 회원 가입 (For Kakao)
      * @param email
      * @param password
      */
@@ -230,16 +209,11 @@ public class LoginModel {
                 .appendQueryParameter("type",type)
                 .build();
     }
+
     /**
-     * Firebase DB에 유저 정보 등록
-     * @param user
+     * Google OAuth 로그인
+     * @param acct
      */
-    private void writeUser(User user){
-        Log.d(TAG,"writeUser()");
-        mDatabase.child("users").child(user.getUid()).setValue(user);
-    }
-
-
     public void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         if(mAuth!=null){
             Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
@@ -266,6 +240,15 @@ public class LoginModel {
                         }
                     });
         }
+    }
+
+    /**
+     * Firebase DB에 유저 정보 등록
+     * @param user
+     */
+    private void writeUser(User user){
+        Log.d(TAG,"writeUser()");
+        mDatabase.child("users").child(user.getUid()).setValue(user);
     }
 
 }

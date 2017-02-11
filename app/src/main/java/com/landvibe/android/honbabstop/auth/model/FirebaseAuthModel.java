@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.base.auth.model;
+package com.landvibe.android.honbabstop.auth.model;
 
 import android.util.Log;
 

@@ -43,7 +43,6 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate()");
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
@@ -69,13 +68,6 @@ public class LoginActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.deep_orange));
         }
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        loginPresenter.addAuthListener();
     }
 
     @Override
@@ -118,15 +110,8 @@ public class LoginActivity extends AppCompatActivity
     }
 
     @Override
-    public void moveToLoginActivity() {
-        final Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
     public void showLoading(){
+        //TODO 프로그레스바 좀더 세련되게 바꾸기
         mLoadingIndicator.setVisibility(View.VISIBLE);
     }
 

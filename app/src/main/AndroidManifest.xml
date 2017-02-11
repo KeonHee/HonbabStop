@@ -29,6 +29,7 @@
 
         <activity
             android:name=".Login.LoginActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -68,12 +69,18 @@
         </activity>
 
         <activity
+            android:name=".Main.MainActivity"
+            android:launchMode="singleTask"
+            >
+        </activity>
+
+        <activity
             android:name=".Settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
 
         <activity android:name=".ChatList.ChatListActivity" />
         <activity android:name=".ChatDetail.ChatDetailActivity" />
-        <activity android:name=".Main.MainActivity" />
+
     </application>
 
 </manifest>
