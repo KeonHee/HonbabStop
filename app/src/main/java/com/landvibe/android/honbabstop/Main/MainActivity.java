@@ -2,9 +2,14 @@ package com.landvibe.android.honbabstop.Main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
@@ -25,6 +30,9 @@ public class MainActivity extends AppCompatActivity{
     private final static String TAG = "MainActivity";
     @BindView(R.id.btn_logout)
     Button mLogoutBtn;
+
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -74,6 +82,18 @@ public class MainActivity extends AppCompatActivity{
                             .setResultCallback(status -> Log.d(TAG,"google sign out suecces"));
                 }
             }
+        });
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.action_one:
+                    return true;
+                case R.id.action_two:
+                    return true;
+                case R.id.action_three:
+                    return true;
+            }
+            return false;
         });
 
     }
