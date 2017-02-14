@@ -1,5 +1,8 @@
 package com.landvibe.android.honbabstop.Profile;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,10 +15,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.github.javiersantos.bottomdialogs.BottomDialog;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.landvibe.android.honbabstop.Profile.presenter.ProfilePresenter;
 import com.landvibe.android.honbabstop.Profile.presenter.ProfilePresenterImpl;
 import com.landvibe.android.honbabstop.R;
+import com.landvibe.android.honbabstop.UpdateProfile.UpdateProfileActivity;
 import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.domain.UserStore;
+import com.landvibe.android.honbabstop.base.utils.CheckUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,6 +38,8 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 public class ProfileFragment extends Fragment implements ProfilePresenter.View {
 
     private final static String TAG ="ProfileFragment";
+
+    private final int REQ_CODE_SELECT_IMAGE = 1001;
 
     private int mPage;
 
@@ -66,6 +78,7 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
         mPage=getArguments().getInt("page");
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,12 +100,73 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
     private void init(){
         profilePresenter = new ProfilePresenterImpl();
         profilePresenter.attachView(this,getActivity());
+
+        mSettingsBtn.setOnClickListener(v->{
+            if(UserStore.getUser()!=null) {
+                moveToUpdateProfileActivity();
+            }
+        });
+
+        mAvatarImageView.setOnClickListener(v -> showGalleryDialog());
+    }
+
+    private void showGalleryDialog(){
+        new BottomDialog.Builder(getActivity())
+                .setTitle(getActivity().getString(R.string.dialog_title))
+                .setContent(getActivity().getString(R.string.dialog_content))
+                .setPositiveText("OK")
+                .setPositiveBackgroundColorResource(R.color.fbutton_color_pomegranate)
+                .setPositiveTextColorResource(android.R.color.white)
+                .onPositive(dialog -> getPhotoFromGallery())
+                .show();
+    }
+
+    public void getPhotoFromGallery() {
+        startActivityForResult(
+                Intent.createChooser(
+                        new Intent(Intent.ACTION_GET_CONTENT)
+                                .setType("image/*"), "사진 가져오기"),
+                REQ_CODE_SELECT_IMAGE);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart()");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume()");
+        profilePresenter.loadUser();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop()");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.d(TAG, "onDestroyView()");
         profilePresenter.detachView();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "resultCode : " + resultCode);
+        if (resultCode == getActivity().RESULT_OK) {
+            if (requestCode == REQ_CODE_SELECT_IMAGE) {
+                Uri imageUrl = data.getData();
+                Log.d(TAG, "selectedImageUri : " + imageUrl);
+                profilePresenter.uploadImageToStorage(imageUrl);
+            }
+        }
     }
 
     @Override
@@ -101,10 +175,26 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
             if(mAvatarImageView==null){
                 return;
             }
-            Glide.with(this).load(url)
-                    .override(300,300)
-                    .bitmapTransform(new CropCircleTransformation(getActivity()))
-                    .into(mAvatarImageView);
+            if(CheckUtils.isFirebaseStorage(url)){
+                // gs://honbabstop.appspot.com/profile/image:131.jpeg
+                StorageReference mStorage = FirebaseStorage.getInstance().getReferenceFromUrl(url);
+                Glide.with(this)
+                        .using(new FirebaseImageLoader())
+                        .load(mStorage)
+                        .override(250,250)
+                        //.placeholder(R.drawable.default_profile)
+                        .bitmapTransform(new CropCircleTransformation(getActivity()))
+                        .into(mAvatarImageView);
+            }else {
+                Glide.with(this)
+                        .load(url)
+                        .override(250,250)
+                        //.placeholder(R.drawable.default_profile)
+                        .bitmapTransform(new CropCircleTransformation(getActivity()))
+                        .crossFade()
+                        .into(mAvatarImageView);
+            }
+
         });
     }
 
@@ -187,5 +277,13 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
             }
             mAddressTextView.setText(address);
         });
+    }
+
+    @Override
+    public void moveToUpdateProfileActivity() {
+        final Activity activity = getActivity();
+        final Intent intent = new Intent(activity, UpdateProfileActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
     }
 }

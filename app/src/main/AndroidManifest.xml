@@ -70,10 +70,23 @@
             </intent-filter>
         </activity>
 
+        <!-- glide option -->
+        <meta-data
+            android:name="com.landvibe.android.honbabstop.base.module.GlobalGlideModule"
+            android:value="GlideModule" />
+
         <activity
             android:name=".Main.MainActivity"
             android:launchMode="singleTask"
             >
+        </activity>
+        <activity
+            android:name=".UpdateProfile.UpdateProfileActivity"
+            android:parentActivityName=".Main.MainActivity"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Main.MainActivity" />
         </activity>
 
         <activity android:name=".ChatDetail.ChatDetailActivity" />

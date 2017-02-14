@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.auth.google;
+package com.landvibe.android.honbabstop.base.auth.google;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 

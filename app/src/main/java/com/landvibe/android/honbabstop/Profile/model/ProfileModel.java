@@ -69,7 +69,9 @@ public class ProfileModel {
                 Log.d(TAG, "onDataChange");
                 User user = dataSnapshot.getValue(User.class);
                 UserStore.saveUser(user);
-                mUserDataChange.update(user);
+                if(mUserDataChange!=null){
+                    mUserDataChange.update(user);
+                }
             }
 
             @Override
@@ -77,6 +79,23 @@ public class ProfileModel {
                 Log.d(TAG, "onCancelled: " + databaseError);
             }
         });
+    }
+
+    public void saveUser(User user){
+        if(mDatabase==null || mUser==null){
+            return;
+        }
+        UserStore.saveUser(user);
+        String uid = mUser.getUid();
+        mDatabase.child("users").child(uid).setValue(user);
+    }
+
+    public void notifyUserInfoChange(){
+        User user = UserStore.getUser();
+        if (user==null){
+            return;
+        }
+        mUserDataChange.update(user);
     }
 
 

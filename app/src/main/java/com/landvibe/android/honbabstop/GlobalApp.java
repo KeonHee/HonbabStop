@@ -1,18 +1,18 @@
 package com.landvibe.android.honbabstop;
 
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.kakao.auth.KakaoSDK;
-import com.landvibe.android.honbabstop.auth.kakao.KakaoSDKAdapter;
+import com.landvibe.android.honbabstop.base.auth.kakao.KakaoSDKAdapter;
 
 /**
  * Created by user on 2017-02-07.
  */
 
-public class GlobalApp extends Application {
+public class GlobalApp extends MultiDexApplication {
 
     private final static String TAG = "GlobalApp";
 

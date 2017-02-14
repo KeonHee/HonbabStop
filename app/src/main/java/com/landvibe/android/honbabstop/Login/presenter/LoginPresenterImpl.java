@@ -27,7 +27,7 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 import com.landvibe.android.honbabstop.Login.model.LoginModel;
-import com.landvibe.android.honbabstop.auth.google.GoogleApiClientStore;
+import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
 
 import java.util.Arrays;
 
@@ -46,6 +46,7 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     private LoginPresenter.View view;
 
     private LoginModel loginModel;
+    private Activity mActivity;
 
     private CallbackManager mFacebookCallbackManager;
     private LoginButton mFacebookLoginBtn;
@@ -55,6 +56,8 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     @Override
     public void attachView(LoginPresenter.View view, Activity activity) {
         this.view = view;
+
+        mActivity=activity;
 
         loginModel=new LoginModel();
         loginModel.setOnLoginLisenter(firebaseLoginCallback);
@@ -72,6 +75,8 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     @Override
     public void detachView() {
         view = null;
+
+        mActivity=null;
 
         loginModel.setActivity(null);
         loginModel.setOnLoginLisenter(null);

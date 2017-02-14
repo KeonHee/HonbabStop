@@ -2,23 +2,24 @@ package com.landvibe.android.honbabstop.Login.model;
 
 import android.app.Activity;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.domain.UserStore;
+import com.landvibe.android.honbabstop.base.utils.SharedPreferenceUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,9 +32,9 @@ public class LoginModel {
 
     private final static String TAG = "LoginModel";
 
-    public static final String PROVIDER_KAKAO = "kakao";
-    public static final String PROVIDER_FACEBOOK = "facebook";
-    public static final String PROVIDER_GOOGLE = "google";
+    public static final String PROVIDER_KAKAO = User.KAKAO;
+    public static final String PROVIDER_FACEBOOK = User.FACEBOOK;
+    public static final String PROVIDER_GOOGLE = User.GOOGLE;
 
     private Activity mActivity;
 
@@ -72,6 +73,10 @@ public class LoginModel {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+            SharedPreferenceUtils.setBooleanPreference(
+                    mActivity,SharedPreferenceUtils.SESSION_BOOLEAN_KEY, true);
+
             firebaseAuthCallback.onExist();
         } else {
             Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -109,6 +114,12 @@ public class LoginModel {
                     .addOnCompleteListener(mActivity, task -> {
                         if(task.isSuccessful()){
                             Log.d(TAG,"Firebase login success");
+
+                            SharedPreferenceUtils.setStringPreference(
+                                    mActivity,SharedPreferenceUtils.PROVIDER_STRING_KEY, User.KAKAO);
+                            SharedPreferenceUtils.setBooleanPreference(
+                                    mActivity,SharedPreferenceUtils.SESSION_BOOLEAN_KEY, true);
+
                             firebaseLoginCallback.onSuccess();
                         }else {
                             if (task.getException() instanceof FirebaseAuthInvalidUserException){
@@ -131,23 +142,23 @@ public class LoginModel {
         if(mAuth!=null){
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(mActivity, task -> {
-                        if (task.isSuccessful()){
-                            Log.d(TAG, "Firebase sign up success");
-
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            User user = new User();
-                            user.setUid(firebaseUser.getUid());
-                            user.setEmail(firebaseUser.getEmail());
-                            user.setProfileUrl(profileUrl);
-                            user.setName(name);
-                            user.setProviderId(PROVIDER_KAKAO);
-                            writeUser(user); // DB 저장
-
-                            firebaseSignUpCallback.onSuccess(email,password,name,profileUrl);
-                        }else {
-                            Log.d(TAG,"Firebase sign up fail : " + task.getException());
+                        if (!task.isSuccessful()) {
+                            Log.d(TAG, "Firebase sign up fail : " + task.getException());
                             firebaseSignUpCallback.onFailure();
                         }
+
+                        Log.d(TAG, "Firebase sign up success");
+
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        User user = new User();
+                        user.setUid(firebaseUser.getUid());
+                        user.setEmail(firebaseUser.getEmail());
+                        user.setProfileUrl(profileUrl);
+                        user.setName(name);
+                        user.setProviderId(PROVIDER_KAKAO);
+                        writeUser(user); // DB 저장
+
+                        firebaseSignUpCallback.onSuccess(email,password,name,profileUrl);
                     });
         }
     }
@@ -159,38 +170,56 @@ public class LoginModel {
      */
     public void onFacebookFirebaseLogin(AccessToken token, JSONObject jsonObject) {
         if (mAuth!=null){
-            Log.d(TAG, "onFacebookFirebaseLogin:" + token);
+            Log.d(TAG, "c:" + token);
             AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
             mAuth.signInWithCredential(credential)
                     .addOnCompleteListener(mActivity, task -> {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            firebaseLoginCallback.onFailure();
+                            return;
+                        }
+
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
                         //{"id":"1202531989863702","name":"KeonHee  Kim","email":"kimgh6554@hanmail.net","gender":"male"}
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        User user = new User();
-                        user.setUid(firebaseUser.getUid());
-                        user.setProviderId(PROVIDER_FACEBOOK);
-                        try {
-                            user.setEmail(jsonObject.getString("email"));
-                            user.setName(jsonObject.getString("name"));
-                            user.setGender(jsonObject.getString("gender"));
 
-                            Uri profileUri = buildProfileUri(
-                                    jsonObject.getString("id"),
-                                    "large"
-                            );
-                            user.setProfileUrl(profileUri.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Log.d(TAG, "check user exist");
+                                User preUser = dataSnapshot.getValue(User.class);
+                                if(preUser==null) {
+                                    User user = new User();
+                                    user.setUid(firebaseUser.getUid());
+                                    user.setProviderId(PROVIDER_FACEBOOK);
+                                    try {
+                                        user.setEmail(jsonObject.getString("email"));
+                                        user.setName(jsonObject.getString("name"));
+                                        user.setGender(jsonObject.getString("gender"));
+                                        user.setProfileUrl(
+                                                buildProfileUri(jsonObject.getString("id")).toString());
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    writeUser(user);
+                                }
+                            }
 
-                        writeUser(user);
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d(TAG, "onCancelled: " + databaseError);
+                            }
+                        });
+
+
+                        SharedPreferenceUtils.setStringPreference(
+                                mActivity,SharedPreferenceUtils.PROVIDER_STRING_KEY, User.FACEBOOK);
+                        SharedPreferenceUtils.setBooleanPreference(
+                                mActivity,SharedPreferenceUtils.SESSION_BOOLEAN_KEY, true);
+
                         firebaseLoginCallback.onSuccess();
-
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            firebaseLoginCallback.onFailure();
-                        }
                     });
         }
     }
@@ -198,7 +227,7 @@ public class LoginModel {
     /**
      * Facebook 프로필 Uri 생성
      */
-    private Uri buildProfileUri(String id, String type){
+    private Uri buildProfileUri(String id){
         //"graph.facebook.com/facebookid/picture?width=500&height=500";
         // type : large, normal, small, square
         return new Uri.Builder()
@@ -222,23 +251,43 @@ public class LoginModel {
             AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
             mAuth.signInWithCredential(credential)
                     .addOnCompleteListener(mActivity, task -> {
+                        if (!task.isSuccessful()) {
+                            firebaseLoginCallback.onFailure();
+                            return;
+                        }
+
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        User user = new User();
-                        user.setUid(firebaseUser.getUid());
-                        user.setProviderId(PROVIDER_GOOGLE);
-                        user.setEmail(acct.getEmail());
-                        user.setName(acct.getDisplayName());
-                        //user.setGender();
-                        user.setProfileUrl(acct.getPhotoUrl().toString());
 
-                        writeUser(user);
+                        mDatabase.child("users").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Log.d(TAG, "check user exist");
+                                User preUser = dataSnapshot.getValue(User.class);
+                                if(preUser==null) {
+                                    Log.d(TAG, "User Data Save DB");
+                                    User user = new User();
+                                    user.setUid(firebaseUser.getUid());
+                                    user.setProviderId(PROVIDER_GOOGLE);
+                                    user.setEmail(acct.getEmail());
+                                    user.setName(acct.getDisplayName());
+                                    //user.setGender();
+                                    user.setProfileUrl(acct.getPhotoUrl().toString());
+                                    writeUser(user);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.d(TAG, "onCancelled: " + databaseError);
+                            }
+                        });
+
+                        SharedPreferenceUtils.setStringPreference(
+                                mActivity,SharedPreferenceUtils.PROVIDER_STRING_KEY, User.GOOGLE);
+
                         firebaseLoginCallback.onSuccess();
-
-                        if (!task.isSuccessful()) {
-                            firebaseLoginCallback.onFailure();
-                        }
                     });
         }
     }
@@ -248,8 +297,12 @@ public class LoginModel {
      * @param user
      */
     private void writeUser(User user){
+        if(mDatabase==null) {
+            return;
+        }
         Log.d(TAG,"writeUser()");
         mDatabase.child("users").child(user.getUid()).setValue(user);
+        UserStore.saveUser(user);
     }
 
 }

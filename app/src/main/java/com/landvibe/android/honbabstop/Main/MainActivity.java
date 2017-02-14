@@ -23,7 +23,10 @@ import com.landvibe.android.honbabstop.Main.page.SwipeViewPager;
 import com.landvibe.android.honbabstop.Main.presenter.MainPresenter;
 import com.landvibe.android.honbabstop.Main.presenter.MainPresenterImpl;
 import com.landvibe.android.honbabstop.R;
-import com.landvibe.android.honbabstop.auth.google.GoogleApiClientStore;
+import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
+import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.domain.UserStore;
+import com.landvibe.android.honbabstop.base.utils.SharedPreferenceUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -138,28 +141,48 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             case R.id.action_sign_out:
                 signOut();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void signOut(){
-        //TODO 현재 회원가입 되어있는 provider만 로그아웃 시키기 (SharedPreference사용)
+
         /* firebase sign out */
         if(mAuth!=null) mAuth.signOut();
 
-        /* kakao sign out */
+        UserStore.saveUser(null);
+
+        SharedPreferenceUtils.setBooleanPreference(
+                this,SharedPreferenceUtils.SESSION_BOOLEAN_KEY, false);
+
+        switch (SharedPreferenceUtils.getStringPreference(this, SharedPreferenceUtils.PROVIDER_STRING_KEY)){
+            case User.KAKAO:
+                kakaoSignOut();
+                return;
+            case User.FACEBOOK:
+                facebookSignOut();
+                return;
+            case User.GOOGLE:
+                googleSignOut();
+
+        }
+
+    }
+
+    private void kakaoSignOut(){
         UserManagement.requestLogout(new LogoutResponseCallback() {
             @Override
             public void onCompleteLogout() {
                 Log.d(TAG, "kakao logout comlete");
             }
         });
-
-        /* facebook sign out */
+    }
+    private void facebookSignOut(){
         LoginManager.getInstance().logOut();
 
-        /* google sign out */
+    }
+    private void googleSignOut(){
         GoogleApiClient mGoogleApiClient = GoogleApiClientStore.getGoogleApiClient();
         if(mGoogleApiClient!=null){
             mGoogleApiClient.connect();

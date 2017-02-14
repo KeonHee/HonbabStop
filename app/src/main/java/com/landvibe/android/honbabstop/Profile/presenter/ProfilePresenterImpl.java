@@ -1,20 +1,28 @@
 package com.landvibe.android.honbabstop.Profile.presenter;
 
 import android.app.Activity;
+import android.net.Uri;
 
+import com.landvibe.android.honbabstop.Profile.model.ProfileImageModel;
 import com.landvibe.android.honbabstop.Profile.model.ProfileModel;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.User;
 
 
-public class ProfilePresenterImpl implements ProfilePresenter.Presenter, ProfileModel.UserDataChange {
+public class ProfilePresenterImpl implements ProfilePresenter.Presenter, ProfileModel.UserDataChange,
+        ProfileImageModel.ImageUploadCallback, ProfileImageModel.ChangeProfileImage{
 
-    ProfilePresenter.View view;
+    private ProfilePresenter.View view;
 
-    ProfileModel mProfileModel;
+    private ProfileModel mProfileModel;
+    private ProfileImageModel mProfileImageModel;
 
-    Activity mActivity;
+    private Activity mActivity;
 
+
+    /**
+     * Presenter
+     */
     @Override
     public void attachView(ProfilePresenter.View view, Activity activity) {
         this.view=view;
@@ -23,7 +31,9 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
         mProfileModel = new ProfileModel();
         mProfileModel.setOnChangeListener(this);
 
-        mProfileModel.loadUser();
+        mProfileImageModel = new ProfileImageModel();
+        mProfileImageModel.setOnImageUploadCallback(this);
+        mProfileImageModel.setOnImageChangeCallback(this);
 
     }
 
@@ -31,21 +41,45 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
     public void detachView() {
         this.view=null;
         mActivity=null;
+
         mProfileModel.setOnChangeListener(null);
         mProfileModel=null;
+
+        mProfileImageModel.setOnImageUploadCallback(null);
+        mProfileImageModel.setOnImageChangeCallback(null);
+        mProfileImageModel=null;
     }
 
+    @Override
+    public void loadUser() {
+        mProfileModel.loadUser();
+    }
+
+    @Override
+    public void renewUserInfo() {
+        mProfileModel.notifyUserInfoChange();
+    }
+
+    @Override
+    public void uploadImageToStorage(Uri url) {
+        mProfileImageModel.saveImageToStorage(url);
+    }
+
+
+    /**
+     * UserDataChange
+     */
     @Override
     public void update(User user) {
         if (user==null){
             return;
         }
 
-        if (user.getProfileUrl()!=null){
+        if (user.getProfileUrl()!=null && user.getProfileUrl().length()>0){
             view.updateUserProfile(user.getProfileUrl());
         }
 
-        if (user.getName()!=null){
+        if (user.getName()!=null && user.getName().length()>0){
             view.updateUserName(user.getName());
         }else {
             view.updateUserName(mActivity.getString(R.string.empty_name));
@@ -55,7 +89,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
             view.updateUserProvider(user.getProviderId());
         }
 
-        if(user.getEmail()!=null){
+        if(user.getEmail()!=null && user.getEmail().length()>0){
             if(user.getEmail().contains("@"+User.KAKAO)){
                 view.updateUserEmail(mActivity.getString(R.string.empty_email));
             }else {
@@ -65,7 +99,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
             view.updateUserEmail(mActivity.getString(R.string.empty_email));
         }
 
-        if (user.getStatus()!=null){
+        if (user.getStatus()!=null && user.getStatus().length()>0){
             view.updateUserStatus(user.getStatus());
         }else {
             view.updateUserStatus(mActivity.getString(R.string.empty_status));
@@ -84,10 +118,41 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
             view.updateUserGender(mActivity.getString(R.string.empty_gender));
         }
 
-        if(user.getAddress()!=null){
+        if(user.getAddress()!=null && user.getAddress().length()>0){
             view.updateAddress(user.getAddress());
         }else {
             view.updateAddress(mActivity.getString(R.string.empty_address));
         }
+    }
+
+    /**
+     * ChangeProfileImage
+     */
+    @Override
+    public void update(String url) {
+        view.updateUserProfile(url);
+    }
+
+    /**
+     * ImageUploadCallback
+     */
+    @Override
+    public void onComplete(Uri saveUri) {
+        mProfileImageModel.changeProfileUrl(saveUri);
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
+
+    @Override
+    public void onProgress(double progress) {
+
+    }
+
+    @Override
+    public void onPause() {
+
     }
 }

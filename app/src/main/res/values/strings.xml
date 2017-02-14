@@ -20,7 +20,6 @@
     <string name="login_desc2">외로움에 떨고 있는</string>
     <string name="login_desc3">혼밥러들을 찾아 떠나세요!</string>
 
-
     <!--  ProfileFragment -->
     <string name="empty_name">이름을 입력해주세요!</string>
     <string name="empty_email">이메일을 입력해주세요!</string>
@@ -29,10 +28,28 @@
     <string name="empty_gender">성별을 입력해주세요!</string>
     <string name="empty_address">주소를 입력해주세요!</string>
 
+    <string name="dialog_title">사진 선택</string>
+    <string name="dialog_content">갤러리에서 가져올까요?</string>
+
+    <!--  UpdateProfileActivitiy -->
+    <string name="profile_update_name_hint">이름</string>
+    <string name="profile_update_email_hint">이메일</string>
+    <string name="profile_update_status_hint">상태메세지</string>
+    <string name="profile_update_gender_hint">성별</string>
+    <string name="profile_update_age_hint">나이</string>
+    <string name="profile_update_address_hint">주소</string>
+
+    <string-array name="gender_array">
+        <item>남자</item>
+        <item>여자</item>
+    </string-array>
+
 
 
     <!-- Action Bar MainActivity -->
     <string name="action_sign_out">SignOut</string>
+    <!-- Action Bar UpdateProfileActivity -->
+    <string name="action_save">저장</string>
 
     <!--  Bottom Navigation -->
     <string name="btm_nav_chat_list">리스트</string>

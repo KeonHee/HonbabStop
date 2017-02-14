@@ -7,8 +7,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 import com.landvibe.android.honbabstop.Login.presenter.LoginPresenter;
@@ -40,6 +42,9 @@ public class LoginActivity extends AppCompatActivity
     @BindView(R.id.btn_google_login)
     SignInButton mGoogleLoginBtn;
 
+    @BindView(R.id.iv_main)
+    ImageView mMainImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +59,8 @@ public class LoginActivity extends AppCompatActivity
 
         changeStatusBarColor();
 
+        setMainImage();
+
         loginPresenter = new LoginPresenterImpl();
         loginPresenter.attachView(this,this);
 
@@ -62,6 +69,13 @@ public class LoginActivity extends AppCompatActivity
         loginPresenter.setGoogleApiClient(this,this,getString(R.string.google_web_client_id));
         mGoogleLoginBtn.setSize(SignInButton.SIZE_WIDE);
         mGoogleLoginBtn.setOnClickListener(v->loginPresenter.onGoogleLogin(this, GOOGLE_SIGN_IN_REQEUST_CODE));
+    }
+
+    private void setMainImage(){
+        Glide.with(this)
+                .load(R.drawable.honbab_station)
+                .override(600,500)
+                .into(mMainImageView);
     }
 
     private void changeStatusBarColor(){

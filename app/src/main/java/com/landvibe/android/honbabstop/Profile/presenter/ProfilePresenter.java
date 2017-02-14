@@ -1,6 +1,7 @@
 package com.landvibe.android.honbabstop.Profile.presenter;
 
 import android.app.Activity;
+import android.net.Uri;
 
 /**
  * Created by user on 2017-02-13.
@@ -26,6 +27,8 @@ public interface ProfilePresenter {
 
         void updateAddress(String address);
 
+        void moveToUpdateProfileActivity();
+
     }
 
     interface Presenter{
@@ -33,6 +36,12 @@ public interface ProfilePresenter {
         void attachView(ProfilePresenter.View view, Activity activity);
 
         void detachView();
+
+        void loadUser();
+
+        void renewUserInfo();
+
+        void uploadImageToStorage(Uri url);
 
     }
 

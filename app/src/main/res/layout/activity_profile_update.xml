@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:mstb="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:hint="@string/profile_update_name_hint"
+        app:met_baseColor="@color/dark_gray"
+        app:met_primaryColor="@color/dark_orange"
+        app:met_errorColor="@color/colorAccent"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/profile_update_name_hint"
+        />
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/et_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:hint="@string/profile_update_email_hint"
+        app:met_baseColor="@color/dark_gray"
+        app:met_primaryColor="@color/dark_orange"
+        app:met_errorColor="@color/colorAccent"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/profile_update_email_hint"
+        />
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/et_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:hint="@string/profile_update_status_hint"
+        app:met_baseColor="@color/dark_gray"
+        app:met_primaryColor="@color/dark_orange"
+        app:met_errorColor="@color/colorAccent"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/profile_update_status_hint"
+        />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/et_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:hint="@string/profile_update_address_hint"
+        app:met_baseColor="@color/dark_gray"
+        app:met_primaryColor="@color/dark_orange"
+        app:met_errorColor="@color/colorAccent"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelText="@string/profile_update_address_hint"
+        />
+
+</LinearLayout>
