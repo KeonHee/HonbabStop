@@ -1,0 +1,191 @@
+package com.landvibe.android.honbabstop.Profile;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.landvibe.android.honbabstop.Profile.presenter.ProfilePresenter;
+import com.landvibe.android.honbabstop.Profile.presenter.ProfilePresenterImpl;
+import com.landvibe.android.honbabstop.R;
+import com.landvibe.android.honbabstop.base.domain.User;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+/**
+ * Created by user on 2017-02-13.
+ */
+
+public class ProfileFragment extends Fragment implements ProfilePresenter.View {
+
+    private final static String TAG ="ProfileFragment";
+
+    private int mPage;
+
+    @BindView(R.id.iv_avatar) ImageView mAvatarImageView;
+
+    @BindView(R.id.tv_name) TextView mNameTextView;
+
+    @BindView(R.id.iv_provider) ImageView mProviderImageView;
+
+    @BindView(R.id.tv_email) TextView mEmailTextView;
+
+    @BindView(R.id.tv_status) TextView mStatusTextView;
+
+    @BindView(R.id.tv_age) TextView mAgeTextView;
+
+    @BindView(R.id.tv_gender) TextView mGenderTextView;
+
+    @BindView(R.id.tv_address) TextView mAddressTextView;
+
+    @BindView(R.id.btn_settings) Button mSettingsBtn;
+
+    ProfilePresenter.Presenter profilePresenter;
+
+    public static Fragment getInstance(int page){
+        ProfileFragment profileFragment = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putInt("page", page);
+        profileFragment.setArguments(args);
+        return profileFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate()");
+        mPage=getArguments().getInt("page");
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile, container,false);
+        ButterKnife.bind(this,view);
+        Log.d(TAG, "onCreateView()");
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated()");
+
+        init();
+    }
+
+    private void init(){
+        profilePresenter = new ProfilePresenterImpl();
+        profilePresenter.attachView(this,getActivity());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        profilePresenter.detachView();
+    }
+
+    @Override
+    public void updateUserProfile(String url) {
+        getActivity().runOnUiThread(() -> {
+            if(mAvatarImageView==null){
+                return;
+            }
+            Glide.with(this).load(url)
+                    .override(300,300)
+                    .bitmapTransform(new CropCircleTransformation(getActivity()))
+                    .into(mAvatarImageView);
+        });
+    }
+
+    @Override
+    public void updateUserName(String name) {
+        getActivity().runOnUiThread(() -> {
+            if(mNameTextView==null){
+                return;
+            }
+            mNameTextView.setText(name);
+        });
+    }
+
+    @Override
+    public void updateUserProvider(String provider) {
+        getActivity().runOnUiThread(()->{
+            if(mProviderImageView==null){
+                return;
+            }
+            int drawableId;
+            if(provider.equals(User.KAKAO)){
+                drawableId=R.drawable.kakaolink_btn_medium;
+            }else if(provider.equals(User.FACEBOOK)){
+                drawableId=R.drawable.facebook_logo_100;
+            }else {
+                drawableId=R.drawable.google_logo;
+            }
+            Glide.with(this).load(drawableId)
+                    .override(75,75)
+                    .into(mProviderImageView);
+        });
+    }
+
+    @Override
+    public void updateUserEmail(String email) {
+        getActivity().runOnUiThread(()->{
+            if(mEmailTextView==null){
+                return;
+            }
+            mEmailTextView.setText(email);
+        });
+
+    }
+
+    @Override
+    public void updateUserStatus(String status) {
+        getActivity().runOnUiThread(()->{
+            if(status==null){
+                return;
+            }
+            mStatusTextView.setText(status);
+        });
+    }
+
+    @Override
+    public void updateUserAge(String ageStr) {
+        getActivity().runOnUiThread(()->{
+            if(mAgeTextView==null){
+                return;
+            }
+            mAgeTextView.setText(ageStr);
+        });
+    }
+
+    @Override
+    public void updateUserGender(String gender) {
+        getActivity().runOnUiThread(()->{
+            if(mGenderTextView==null){
+                return;
+            }
+            mGenderTextView.setText(gender);
+        });
+    }
+
+    @Override
+    public void updateAddress(String address) {
+        getActivity().runOnUiThread(()->{
+            if(mAddressTextView==null){
+                return;
+            }
+            mAddressTextView.setText(address);
+        });
+    }
+}

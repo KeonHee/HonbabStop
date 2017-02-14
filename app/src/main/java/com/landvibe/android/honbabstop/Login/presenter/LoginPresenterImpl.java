@@ -164,11 +164,13 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
                 Logger.d("UserProfile : " + userProfile);
                 long userId = userProfile.getId();
                 String nickName = userProfile.getNickname();
+                String profileUrl = userProfile.getProfileImagePath();
                 Log.d(TAG, "userId = " + userId);
                 Log.d(TAG, "nickName= " + nickName);
 
+
                 // firebase Auth
-                firebaseAuthWithEmailForKakao(userId);
+                firebaseAuthWithEmailForKakao(userId,nickName,profileUrl);
             }
 
             @Override
@@ -195,7 +197,7 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
      *
      * @param userId
      */
-    public void firebaseAuthWithEmailForKakao(long userId){
+    public void firebaseAuthWithEmailForKakao(long userId, String name, String profileUrl){
 
         StringBuffer emailBuffer = new StringBuffer();
         emailBuffer.append(String.valueOf(userId));
@@ -204,7 +206,7 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
 
         String password = String.valueOf(userId);
 
-        loginModel.firebaseLogin(email,password);
+        loginModel.firebaseLogin(email,password, name, profileUrl);
     }
     /**
      * Firebase 로그인 콜백
@@ -216,8 +218,8 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         }
 
         @Override
-        public void onSignUp(String email, String password) {
-            loginModel.firebaseSignup(email, password);
+        public void onSignUp(String email, String password, String name, String profileUrl) {
+            loginModel.firebaseSignup(email, password, name, profileUrl);
         }
 
         @Override
@@ -231,8 +233,8 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     private LoginModel.FirebaseSignUpCallback firebaseSignUpCallback = new LoginModel.FirebaseSignUpCallback(){
 
         @Override
-        public void onSuccess(String email, String password) {
-            loginModel.firebaseLogin(email,password);
+        public void onSuccess(String email, String password, String name, String profileUrl) {
+            loginModel.firebaseLogin(email,password,name,profileUrl);
         }
 
         @Override

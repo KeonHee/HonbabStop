@@ -21,6 +21,27 @@
     <string name="login_desc3">혼밥러들을 찾아 떠나세요!</string>
 
 
+    <!--  ProfileFragment -->
+    <string name="empty_name">이름을 입력해주세요!</string>
+    <string name="empty_email">이메일을 입력해주세요!</string>
+    <string name="empty_status">상태를 입력해주세요!</string>
+    <string name="empty_age">나이를 입력해주세요!</string>
+    <string name="empty_gender">성별을 입력해주세요!</string>
+    <string name="empty_address">주소를 입력해주세요!</string>
+
+
+
+    <!-- Action Bar MainActivity -->
+    <string name="action_sign_out">SignOut</string>
+
+    <!--  Bottom Navigation -->
+    <string name="btm_nav_chat_list">리스트</string>
+    <string name="btm_nav_my_chat">나의 채팅</string>
+    <string name="btm_nav_friends">내친구</string>
+    <string name="btm_nav_profile">프로필</string>
+
+
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

@@ -67,6 +67,8 @@ dependencies {
 
     /* Image */
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'jp.wasabeef:glide-transformations:2.0.1'
+
 
     /* Network*/
     compile 'com.squareup.retrofit2:retrofit:2.1.0'

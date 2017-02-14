@@ -2,21 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_one"
+        android:id="@+id/action_chat_list"
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@android:drawable/ic_dialog_info"
-        android:title="Test1" />
+        android:icon="@drawable/ic_people_white_24dp"
+        android:title="@string/btm_nav_chat_list" />
     <item
-        android:id="@+id/action_two"
+        android:id="@+id/action_my_chat"
         app:showAsAction="ifRoom"
-        android:icon="@android:drawable/ic_dialog_info"
-        android:title="Test2"
+        android:enabled="true"
+        android:icon="@drawable/ic_chat_white_24dp"
+        android:title="@string/btm_nav_my_chat"
         />
     <item
-        android:id="@+id/action_three"
+        android:id="@+id/action_friends"
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@android:drawable/ic_dialog_info"
-        android:title="Test3" />
+        android:icon="@drawable/ic_star_white_24dp"
+        android:title="@string/btm_nav_friends" />
+    <item
+        android:id="@+id/action_profile"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/ic_person_white_24dp"
+        android:title="@string/btm_nav_profile" />
 </menu>

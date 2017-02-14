@@ -7,14 +7,8 @@
     android:layout_height="match_parent"
     tools:context="com.landvibe.android.honbabstop.Main.MainActivity">
 
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="로그아웃"/>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/container"
+    <com.landvibe.android.honbabstop.Main.page.SwipeViewPager
+        android:id="@+id/viewpager_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -28,7 +22,7 @@
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:menu="@menu/bottom_nav"
-        app:layout_anchor="@id/container"
+        app:layout_anchor="@id/viewpager_container"
         app:layout_anchorGravity="bottom"
         app:layout_behavior="com.landvibe.android.honbabstop.behavior.BottomNavigationBehavior"
         />

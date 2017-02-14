@@ -3,7 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    
+
+    <color name="light_orange">@android:color/holo_orange_light</color>
     <color name="orange">#ff9800</color>
     <color name="deep_orange">#fb8c00</color>
     <color name="dark_orange">#E65100</color>

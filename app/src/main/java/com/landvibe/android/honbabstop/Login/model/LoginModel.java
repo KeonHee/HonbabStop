@@ -46,12 +46,12 @@ public class LoginModel {
 
     public interface FirebaseLoginCallback{
         void onSuccess();
-        void onSignUp(String email, String password);
+        void onSignUp(String email, String password, String name, String profileUrl);
         void onFailure();
     }
 
     public interface FirebaseSignUpCallback{
-        void onSuccess(String email, String password);
+        void onSuccess(String email, String password, String name, String profileUrl);
         void onFailure();
     }
 
@@ -103,7 +103,7 @@ public class LoginModel {
      * @param email
      * @param password
      */
-    public void firebaseLogin(String email, String password){
+    public void firebaseLogin(String email, String password, String name, String profileUrl){
         if(mAuth!=null){
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(mActivity, task -> {
@@ -112,7 +112,7 @@ public class LoginModel {
                             firebaseLoginCallback.onSuccess();
                         }else {
                             if (task.getException() instanceof FirebaseAuthInvalidUserException){
-                                firebaseLoginCallback.onSignUp(email,password);
+                                firebaseLoginCallback.onSignUp(email,password, name, profileUrl);
                             }
                             Log.d(TAG,"Firebase login fail: " + task.getException());
                             firebaseLoginCallback.onFailure();
@@ -127,7 +127,7 @@ public class LoginModel {
      * @param email
      * @param password
      */
-    public void firebaseSignup(String email, String password){
+    public void firebaseSignup(String email, String password, String name, String profileUrl){
         if(mAuth!=null){
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(mActivity, task -> {
@@ -138,12 +138,12 @@ public class LoginModel {
                             User user = new User();
                             user.setUid(firebaseUser.getUid());
                             user.setEmail(firebaseUser.getEmail());
-                            user.setProfileUrl(firebaseUser.getPhotoUrl().toString());
-                            user.setName(firebaseUser.getDisplayName());
+                            user.setProfileUrl(profileUrl);
+                            user.setName(name);
                             user.setProviderId(PROVIDER_KAKAO);
                             writeUser(user); // DB 저장
 
-                            firebaseSignUpCallback.onSuccess(email,password);
+                            firebaseSignUpCallback.onSuccess(email,password,name,profileUrl);
                         }else {
                             Log.d(TAG,"Firebase sign up fail : " + task.getException());
                             firebaseSignUpCallback.onFailure();
@@ -199,14 +199,15 @@ public class LoginModel {
      * Facebook 프로필 Uri 생성
      */
     private Uri buildProfileUri(String id, String type){
-        //"graph.facebook.com/facebookid/picture?type=type_value";
+        //"graph.facebook.com/facebookid/picture?width=500&height=500";
         // type : large, normal, small, square
         return new Uri.Builder()
                 .scheme("http")
                 .authority("graph.facebook.com")
                 .appendPath(id)
                 .appendPath("picture")
-                .appendQueryParameter("type",type)
+                .appendQueryParameter("width","500")
+                .appendQueryParameter("height","500")
                 .build();
     }
 

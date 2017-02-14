@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.bumptech.glide.Glide;
 import com.kakao.auth.KakaoSDK;
 import com.landvibe.android.honbabstop.auth.kakao.KakaoSDKAdapter;
 
@@ -45,4 +46,17 @@ public class GlobalApp extends Application {
     }
 
 
+    /**
+     * Glide 이미지 캐시로인한 메모리 부족현상 컨트롤
+     */
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Glide.get(this).clearMemory();
+    }
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Glide.get(this).trimMemory(level);
+    }
 }

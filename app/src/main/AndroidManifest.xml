@@ -25,7 +25,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/CustomAppTheme"
+        android:largeHeap="true"
+        >
 
         <activity
             android:name=".Login.LoginActivity"
@@ -74,11 +76,6 @@
             >
         </activity>
 
-        <activity
-            android:name=".Settings.SettingsActivity"
-            android:label="@string/title_activity_settings" />
-
-        <activity android:name=".ChatList.ChatListActivity" />
         <activity android:name=".ChatDetail.ChatDetailActivity" />
 
     </application>

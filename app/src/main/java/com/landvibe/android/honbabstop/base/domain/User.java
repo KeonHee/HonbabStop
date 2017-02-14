@@ -12,6 +12,10 @@ import java.util.Map;
 
 public class User {
 
+    public final static String KAKAO="kakao";
+    public final static String FACEBOOK="facebook";
+    public final static String GOOGLE="google";
+
     /* firebase 정보*/
     private String uid;
     private String providerId;
