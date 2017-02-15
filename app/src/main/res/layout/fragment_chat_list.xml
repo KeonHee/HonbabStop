@@ -1,12 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_chat_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"
+        >
+
+        <!-- 리사이클러뷰 옵션들
+        android:cacheColorHint="#00000000"
+            android:fadingEdge="none"
+            android:scrollbars="none"
+            android:fastScrollEnabled="false"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"
+            android:isScrollContainer="false"
+            android:listSelector="#00000000"
+        -->
+    </android.support.v7.widget.RecyclerView>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add_chat_room"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="채팅리스트 프레그먼트"/>
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="64dp"
+        app:srcCompat="@drawable/ic_mode_edit_white_24dp"
+        android:tint="@android:color/white"
+        android:background="@color/fbutton_color_sun_flower"
+        />
 
-</LinearLayout>
+</FrameLayout>

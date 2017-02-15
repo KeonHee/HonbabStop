@@ -3,8 +3,6 @@ package com.landvibe.android.honbabstop.Main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.TabLayout.ViewPagerOnTabSelectedListener;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,7 +20,6 @@ import com.kakao.usermgmt.callback.LogoutResponseCallback;
 import com.landvibe.android.honbabstop.Login.LoginActivity;
 import com.landvibe.android.honbabstop.Main.page.BottomNavigationViewHelper;
 import com.landvibe.android.honbabstop.Main.page.MainPageAdapter;
-import com.landvibe.android.honbabstop.Main.page.SwipeViewPager;
 import com.landvibe.android.honbabstop.Main.presenter.MainPresenter;
 import com.landvibe.android.honbabstop.Main.presenter.MainPresenterImpl;
 import com.landvibe.android.honbabstop.R;
@@ -52,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     private MainPresenter.Presenter mainPresenter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     private void init(){
-
 
         /* Firebase */
         mAuth = FirebaseAuth.getInstance();

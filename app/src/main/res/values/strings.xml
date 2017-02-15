@@ -20,6 +20,9 @@
     <string name="login_desc2">외로움에 떨고 있는</string>
     <string name="login_desc3">혼밥러들을 찾아 떠나세요!</string>
 
+    <!-- ChatListFragment -->
+    <string name="member_count_label">모집인원</string>
+
     <!--  ProfileFragment -->
     <string name="empty_name">이름을 입력해주세요!</string>
     <string name="empty_email">이메일을 입력해주세요!</string>
@@ -45,18 +48,19 @@
     </string-array>
 
 
-
     <!-- Action Bar MainActivity -->
     <string name="action_sign_out">SignOut</string>
     <!-- Action Bar UpdateProfileActivity -->
     <string name="action_save">저장</string>
+    <!-- Action Bar AddChatActivity -->
+    <string name="action_add_chat">추가</string>
+
 
     <!--  Bottom Navigation -->
     <string name="btm_nav_chat_list">리스트</string>
     <string name="btm_nav_my_chat">나의 채팅</string>
     <string name="btm_nav_friends">내친구</string>
     <string name="btm_nav_profile">프로필</string>
-
 
 
     <!-- Strings related to Settings -->

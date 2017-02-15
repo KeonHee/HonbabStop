@@ -49,6 +49,9 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:10.0.1'
     compile 'com.google.firebase:firebase-auth:10.0.1'
 
+    // FirebaseUI Database
+    compile 'com.firebaseui:firebase-ui-database:1.1.1'
+    // FirebaseUI Storage
     compile 'com.firebaseui:firebase-ui-storage:1.1.1'
 
     /* google login */
@@ -74,7 +77,7 @@ dependencies {
     compile 'org.honorato.multistatetogglebutton:multistatetogglebutton:0.2.2'
     compile 'com.github.javiersantos:BottomDialogs:1.2.1'
 
-
+    /* Injection View */
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 

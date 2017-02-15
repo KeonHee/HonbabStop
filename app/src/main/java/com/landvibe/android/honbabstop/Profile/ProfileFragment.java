@@ -57,7 +57,7 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
 
     @BindView(R.id.btn_settings) Button mSettingsBtn;
 
-    ProfilePresenter.Presenter profilePresenter;
+    private ProfilePresenter.Presenter profilePresenter;
 
     public static Fragment getInstance(int page){
         ProfileFragment profileFragment = new ProfileFragment();

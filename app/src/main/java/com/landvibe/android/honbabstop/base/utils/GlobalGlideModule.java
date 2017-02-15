@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.base.module;
+package com.landvibe.android.honbabstop.base.utils;
 
 import android.content.Context;
 
