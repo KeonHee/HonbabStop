@@ -83,7 +83,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
                 return true;
             case R.id.action_save:
                 updateProfilePresenter.saveUserInfo(getCurrentUser());
-                moveToMainActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -33,7 +33,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder> im
 
     @Override
     public void onBindViewHolder(ChatListViewHolder holder, int position) {
-        holder.onBind(list.get(position));
+        holder.onBind(list.get(list.size()-position-1)); //reverse
     }
 
     @Override

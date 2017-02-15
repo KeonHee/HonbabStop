@@ -1,5 +1,11 @@
 package com.landvibe.android.honbabstop.base.domain;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by user on 2017-02-15.
  */
@@ -15,8 +21,12 @@ public class ChatRoom {
 
     private String title;
 
+    /* 개설 시간 */
     private long startTimeStamp;
     private long endTimeStamp;
+
+    /* 만남 시간 */
+    private long contactTime;
 
     /* 참가 인원 */
     private int currentPeople;
@@ -27,9 +37,6 @@ public class ChatRoom {
     private double locationLon;
     private double locationLat;
 
-    /* 만남 시간 */
-    private long contactTime;
-
     /* 음식 정보 */
     private String foodName;
     private String foodImageUrl; /* Title Image */
@@ -37,6 +44,33 @@ public class ChatRoom {
 
     /* 방장 정보 */
     private User header;
+
+    /* 참여자 Uid (방장포함) */
+    private List<String> members;
+
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("title", title);
+        result.put("startTimeStamp", startTimeStamp);
+        result.put("endTimeStamp", endTimeStamp);
+        result.put("currentPeople", currentPeople);
+        result.put("maxPeople", maxPeople);
+        result.put("locationStr", locationStr);
+        result.put("locationLon", locationLon);
+        result.put("locationLat", locationLat);
+        result.put("contactTime", contactTime);
+        result.put("foodName", foodName);
+        result.put("foodImageUrl", foodImageUrl);
+        result.put("foodRestaurant", foodRestaurant);
+        result.put("header", header);
+        result.put("members", members);
+
+        return result;
+    }
+
 
     public ChatRoom(){}
 
@@ -150,5 +184,13 @@ public class ChatRoom {
 
     public void setContactTime(long contactTime) {
         this.contactTime = contactTime;
+    }
+
+    public List<String> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<String> members) {
+        this.members = members;
     }
 }

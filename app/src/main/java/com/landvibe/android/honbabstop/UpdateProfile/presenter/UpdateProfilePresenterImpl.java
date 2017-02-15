@@ -51,6 +51,7 @@ public class UpdateProfilePresenterImpl implements UpdateProfilePresenter.Presen
             return;
         }
         mProfileModel.saveUser(user);
+        view.moveToMainActivity();
     }
 
 }

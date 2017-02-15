@@ -51,8 +51,11 @@ public class ChatListModel {
         }
 
         List<ChatRoom> chatList = new ArrayList<>();
-        mDatabase.child("ChatList").orderByChild("startTimeStamp").limitToFirst(queryNum) /* 쿼리 */
-        .addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("ChatList")
+                //.orderByChild("startTimeStamp") /*key값이 timestamp 기반으로 생성됨*/
+                .limitToLast(queryNum) /* 쿼리 */
+                .orderByKey()
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()){
