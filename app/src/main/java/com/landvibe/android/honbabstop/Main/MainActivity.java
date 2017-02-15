@@ -3,6 +3,9 @@ package com.landvibe.android.honbabstop.Main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.design.widget.TabLayout.ViewPagerOnTabSelectedListener;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -31,7 +34,7 @@ import com.landvibe.android.honbabstop.base.utils.SharedPreferenceUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainPresenter.View{
+public class MainActivity extends AppCompatActivity implements MainPresenter.View, ViewPager.OnPageChangeListener{
 
     private final static String TAG = "MainActivity";
 
@@ -39,7 +42,10 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     BottomNavigationView bottomNavigationView;
 
     @BindView(R.id.viewpager_container)
-    SwipeViewPager viewPager;
+    ViewPager viewPager;
+    // SwipeViewPager viewPager;
+
+    private MenuItem prevBottomNavigation;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -81,7 +87,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         viewPager.setAdapter(new MainPageAdapter(getSupportFragmentManager()));
         viewPager.setCurrentItem(0,false);
-        viewPager.setPagingEnabled(false);
+        viewPager.addOnPageChangeListener(this);
+        prevBottomNavigation=bottomNavigationView.getMenu().getItem(0);
+        //viewPager.setPagingEnabled(false);
         viewPager.setOffscreenPageLimit(3);
 
 
@@ -124,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy()");
+        viewPager.removeOnPageChangeListener(this);
         mainPresenter.detachView();
         mainPresenter=null;
     }
@@ -201,4 +210,22 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         finish();
     }
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (prevBottomNavigation != null) {
+            prevBottomNavigation.setChecked(false);
+        }
+        prevBottomNavigation = bottomNavigationView.getMenu().getItem(position);
+        prevBottomNavigation.setChecked(true);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
 }

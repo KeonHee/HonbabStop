@@ -15,17 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.landvibe.android.honbabstop.Profile.presenter.ProfilePresenter;
 import com.landvibe.android.honbabstop.Profile.presenter.ProfilePresenterImpl;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.UpdateProfile.UpdateProfileActivity;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
-import com.landvibe.android.honbabstop.base.utils.CheckUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -175,25 +171,20 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
             if(mAvatarImageView==null){
                 return;
             }
-            if(CheckUtils.isFirebaseStorage(url)){
-                // gs://honbabstop.appspot.com/profile/image:131.jpeg
-                StorageReference mStorage = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-                Glide.with(this)
-                        .using(new FirebaseImageLoader())
-                        .load(mStorage)
-                        .override(250,250)
-                        //.placeholder(R.drawable.default_profile)
-                        .bitmapTransform(new CropCircleTransformation(getActivity()))
-                        .into(mAvatarImageView);
-            }else {
-                Glide.with(this)
-                        .load(url)
-                        .override(250,250)
-                        //.placeholder(R.drawable.default_profile)
-                        .bitmapTransform(new CropCircleTransformation(getActivity()))
-                        .crossFade()
-                        .into(mAvatarImageView);
-            }
+            //TODO 프로그레스바
+            Glide.with(this)
+                    .load(url)
+                    .override(200,200)
+                    //.placeholder(R.drawable.default_profile)
+                    .bitmapTransform(new CropCircleTransformation(getActivity()))
+                    .thumbnail(
+                            Glide.with(this)
+                            .load(R.drawable.default_profile)
+                            .override(200,200)
+                            .bitmapTransform(new CropCircleTransformation(getActivity()))
+                    )
+                    .crossFade()
+                    .into(mAvatarImageView);
 
         });
     }
