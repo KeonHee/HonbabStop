@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity
 
         changeStatusBarColor();
 
-        setMainImage();
+        //setMainImage();
 
         loginPresenter = new LoginPresenterImpl();
         loginPresenter.attachView(this,this);

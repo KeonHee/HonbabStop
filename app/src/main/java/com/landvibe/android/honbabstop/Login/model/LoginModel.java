@@ -17,8 +17,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
+import com.landvibe.android.honbabstop.base.utils.GenderConvertUtils;
 import com.landvibe.android.honbabstop.base.utils.SharedPreferenceUtils;
 
 import org.json.JSONException;
@@ -197,7 +199,7 @@ public class LoginModel {
                                     try {
                                         user.setEmail(jsonObject.getString("email"));
                                         user.setName(jsonObject.getString("name"));
-                                        user.setGender(jsonObject.getString("gender"));
+                                        user.setGender(GenderConvertUtils.convertGender(jsonObject.getString("gender")));
                                         user.setProfileUrl(
                                                 buildProfileUri(jsonObject.getString("id")).toString());
                                     } catch (JSONException e) {
@@ -303,6 +305,10 @@ public class LoginModel {
         Log.d(TAG,"writeUser()");
         mDatabase.child("users").child(user.getUid()).setValue(user);
         UserStore.saveUser(user);
+
+        Log.d(TAG,"UserStore.getInstance().getUser()"+UserStore.getInstance().getUser());
+
+        GlobalApp.getGlobalApplicationContext().changeModel(user);
     }
 
 }

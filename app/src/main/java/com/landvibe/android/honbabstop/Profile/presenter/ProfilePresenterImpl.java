@@ -3,14 +3,16 @@ package com.landvibe.android.honbabstop.Profile.presenter;
 import android.app.Activity;
 import android.net.Uri;
 
+import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.Profile.model.ProfileImageModel;
 import com.landvibe.android.honbabstop.Profile.model.ProfileModel;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.observer.CustomObserver;
 
 
 public class ProfilePresenterImpl implements ProfilePresenter.Presenter, ProfileModel.UserDataChange,
-        ProfileImageModel.ImageUploadCallback, ProfileImageModel.ChangeProfileImage{
+        ProfileImageModel.ImageUploadCallback, ProfileImageModel.ChangeProfileImage, CustomObserver{
 
     private ProfilePresenter.View view;
 
@@ -35,6 +37,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
         mProfileImageModel.setOnImageUploadCallback(this);
         mProfileImageModel.setOnImageChangeCallback(this);
 
+        GlobalApp.getGlobalApplicationContext().addObserver(this);
     }
 
     @Override
@@ -48,6 +51,8 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
         mProfileImageModel.setOnImageUploadCallback(null);
         mProfileImageModel.setOnImageChangeCallback(null);
         mProfileImageModel=null;
+
+        GlobalApp.getGlobalApplicationContext().removeObserver(this);
     }
 
     @Override
@@ -65,12 +70,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
         mProfileImageModel.saveImageToStorage(url);
     }
 
-
-    /**
-     * UserDataChange
-     */
-    @Override
-    public void update(User user) {
+    private void updateUserView(User user){
         if (user==null){
             return;
         }
@@ -126,6 +126,15 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
     }
 
     /**
+     * UserDataChange
+     */
+    @Override
+    public void update(User user) {
+        updateUserView(user);
+    }
+
+
+    /**
      * ChangeProfileImage
      */
     @Override
@@ -154,5 +163,16 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
     @Override
     public void onPause() {
 
+    }
+
+
+    /**
+     *
+     */
+    @Override
+    public void update(Object object) {
+        if(object instanceof User){
+            updateUserView((User)object);
+        }
     }
 }

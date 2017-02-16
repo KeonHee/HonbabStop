@@ -60,13 +60,13 @@
 
     <ImageView
         android:id="@+id/iv_room_detail"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
-        app:srcCompat="@drawable/ic_info_outline_black_100dp"
+        app:srcCompat="@drawable/ic_info_outline_gray_100dp"
         />
 
     <TextView

@@ -36,6 +36,7 @@
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
             android:layout_marginTop="36dp"
+            app:srcCompat="@drawable/ic_person_pin_circle_white_24dp"
             />
 
         <TextView

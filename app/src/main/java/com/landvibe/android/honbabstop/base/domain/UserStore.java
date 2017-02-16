@@ -15,12 +15,16 @@ public class UserStore {
     public static UserStore saveUser(User user){
         if(instance==null){
             instance=new UserStore();
-            userInstance=user;
         }
+        userInstance=user;
         return instance;
     }
 
-    public static User getUser(){
+    public static UserStore getInstance(){
+        return instance;
+    }
+
+    public User getUser(){
         return userInstance!=null? userInstance:null;
     }
 

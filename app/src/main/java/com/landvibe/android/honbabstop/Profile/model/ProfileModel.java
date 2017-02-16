@@ -91,7 +91,7 @@ public class ProfileModel {
     }
 
     public void notifyUserInfoChange(){
-        User user = UserStore.getUser();
+        User user = UserStore.getInstance().getUser();
         if (user==null){
             return;
         }

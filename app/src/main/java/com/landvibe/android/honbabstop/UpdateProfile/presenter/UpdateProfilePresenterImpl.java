@@ -2,6 +2,7 @@ package com.landvibe.android.honbabstop.UpdateProfile.presenter;
 
 import android.app.Activity;
 
+import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.Profile.model.ProfileModel;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
@@ -37,7 +38,7 @@ public class UpdateProfilePresenterImpl implements UpdateProfilePresenter.Presen
 
     @Override
     public void loadUserInfo() {
-        User user = UserStore.getUser();
+        User user = UserStore.getInstance().getUser();
         if(user==null){
             view.moveToMainActivity();
             return;
@@ -52,6 +53,8 @@ public class UpdateProfilePresenterImpl implements UpdateProfilePresenter.Presen
         }
         mProfileModel.saveUser(user);
         view.moveToMainActivity();
+
+        GlobalApp.getGlobalApplicationContext().changeModel(user);
     }
 
 }

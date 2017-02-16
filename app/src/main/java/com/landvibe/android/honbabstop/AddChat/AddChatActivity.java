@@ -146,7 +146,7 @@ public class AddChatActivity extends AppCompatActivity implements AddChatPresent
         chatRoom.setFoodRestaurant("");
 
         /* 방장 정보 */
-        User user = UserStore.getUser();
+        User user = UserStore.getInstance().getUser();
         chatRoom.setHeader(user);
 
         /* 참여자 정보 (UID)*/

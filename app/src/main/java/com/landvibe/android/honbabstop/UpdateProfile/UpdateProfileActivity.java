@@ -4,6 +4,7 @@ package com.landvibe.android.honbabstop.UpdateProfile;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -16,9 +17,11 @@ import com.landvibe.android.honbabstop.UpdateProfile.presenter.UpdateProfilePres
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.shawnlin.numberpicker.NumberPicker;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import info.hoang8f.widget.FButton;
 
 /**
  * Created by user on 2017-02-14.
@@ -33,6 +36,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
     @BindView(R.id.et_email) MaterialEditText mEmailEditText;
     @BindView(R.id.et_status) MaterialEditText mStatusEditText;
     @BindView(R.id.et_address) MaterialEditText mAddressEditText;
+    @BindView(R.id.btn_gender) FButton mGenderBtn;
+    @BindView(R.id.np_age) NumberPicker mAgePicker;
 
     private UpdateProfilePresenterImpl updateProfilePresenter;
 
@@ -49,6 +54,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
     private void init(){
         setActionBar();
 
+        setGenderBtn();
+
         updateProfilePresenter = new UpdateProfilePresenterImpl();
         updateProfilePresenter.attachView(this,this);
         updateProfilePresenter.loadUserInfo();
@@ -58,6 +65,22 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         ActionBar actionBar=getSupportActionBar();
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void setGenderBtn(){
+        mGenderBtn.setOnClickListener(v->setClickGenderBtnView(mGenderBtn.getText().toString()));
+    }
+
+    private void setClickGenderBtnView(String gender){
+        if(gender.equals(getString(R.string.gender_male))){
+            mGenderBtn.setText(getString(R.string.gender_female));
+            mGenderBtn.setButtonColor(ContextCompat.getColor(this,R.color.fbutton_color_sun_flower));
+            mGenderBtn.setShadowColor(ContextCompat.getColor(this,R.color.fbutton_color_orange));
+        }else {
+            mGenderBtn.setText(getString(R.string.gender_male));
+            mGenderBtn.setButtonColor(ContextCompat.getColor(this,R.color.fbutton_color_orange));
+            mGenderBtn.setShadowColor(ContextCompat.getColor(this,R.color.fbutton_color_sun_flower));
         }
     }
 
@@ -90,13 +113,15 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
     }
 
     private User getCurrentUser(){
-        User user = UserStore.getUser();
+        User user = UserStore.getInstance().getUser();
         if(user==null){
             return null;
         }
         user.setName(mNameEditText.getText().toString());
         user.setEmail(mEmailEditText.getText().toString());
         user.setStatus(mStatusEditText.getText().toString());
+        user.setAge(mAgePicker.getValue());
+        user.setGender(mGenderBtn.getText().toString());
         user.setAddress(mAddressEditText.getText().toString());
         return user;
     }
@@ -111,7 +136,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         runOnUiThread(()->{
             if(user==null ||
                     mNameEditText==null || mEmailEditText==null ||
-                    mStatusEditText==null || mAddressEditText==null){
+                    mStatusEditText==null || mAgePicker==null ||
+                    mAddressEditText==null){
                 return;
             }
 
@@ -124,10 +150,27 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
             if(user.getStatus()!=null&&user.getStatus().length()>0){
                 mStatusEditText.setText(user.getStatus());
             }
+            if(user.getAge()!=0){
+                mAgePicker.setValue(user.getAge());
+            }
+
+            setGenderBtnView(user.getGender());
+
             if(user.getAddress()!=null&&user.getAddress().length()>0){
                 mAddressEditText.setText(user.getAddress());
             }
 
         });
+    }
+    private void setGenderBtnView(String gender){
+        if(gender==null || gender.equals(getString(R.string.gender_female))){
+            mGenderBtn.setText(getString(R.string.gender_female));
+            mGenderBtn.setButtonColor(ContextCompat.getColor(this,R.color.fbutton_color_sun_flower));
+            mGenderBtn.setShadowColor(ContextCompat.getColor(this,R.color.fbutton_color_orange));
+        }else {
+            mGenderBtn.setText(getString(R.string.gender_male));
+            mGenderBtn.setButtonColor(ContextCompat.getColor(this,R.color.fbutton_color_orange));
+            mGenderBtn.setShadowColor(ContextCompat.getColor(this,R.color.fbutton_color_sun_flower));
+        }
     }
 }

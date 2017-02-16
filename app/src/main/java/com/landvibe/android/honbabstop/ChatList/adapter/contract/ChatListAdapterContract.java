@@ -1,6 +1,7 @@
 package com.landvibe.android.honbabstop.ChatList.adapter.contract;
 
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public interface ChatListAdapterContract {
 
     interface View {
         void notifytAdapter();
+        void setOnItemClickListener(OnItemClickListener listener);
 
     }
 

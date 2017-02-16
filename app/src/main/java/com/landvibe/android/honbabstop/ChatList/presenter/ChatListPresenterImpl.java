@@ -4,7 +4,10 @@ import android.app.Activity;
 
 import com.landvibe.android.honbabstop.ChatList.adapter.contract.ChatListAdapterContract;
 import com.landvibe.android.honbabstop.ChatList.model.ChatListModel;
+import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
+import com.landvibe.android.honbabstop.base.observer.CustomObserver;
 
 import java.util.List;
 
@@ -12,7 +15,8 @@ import java.util.List;
  * Created by user on 2017-02-15.
  */
 
-public class ChatListPresenterImpl implements ChatListPresenter.Presenter, ChatListModel.ChangeChatListData{
+public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
+        ChatListModel.ChangeChatListData, OnItemClickListener, CustomObserver{
 
     private ChatListPresenter.View view;
 
@@ -31,6 +35,8 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter, ChatL
         mChatListModel = new ChatListModel();
         mChatListModel.setChangeListener(this);
 
+        GlobalApp.getGlobalApplicationContext().addObserver(this);
+
     }
 
     @Override
@@ -42,6 +48,8 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter, ChatL
         mChatListModel.setChangeListener(null);
         mChatListModel=null;
 
+        GlobalApp.getGlobalApplicationContext().removeObserver(this);
+
     }
 
     @Override
@@ -52,6 +60,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter, ChatL
     @Override
     public void setChatListAdapterView(ChatListAdapterContract.View view) {
         mAdapterView=view;
+        mAdapterView.setOnItemClickListener(this);
     }
 
     @Override
@@ -67,5 +76,21 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter, ChatL
 
         mAdapterModel.setListData(list);
         mAdapterView.notifytAdapter();
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        view.moveToChatDetailActivity(position);
+    }
+
+    /**
+     * 옵저버 등록
+     */
+    @Override
+    public void update(Object object) {
+        if(object instanceof ChatRoom){
+            mAdapterModel.addListData((ChatRoom)object);
+            mAdapterView.notifytAdapter();
+        }
     }
 }

@@ -96,9 +96,10 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
     private void init(){
         profilePresenter = new ProfilePresenterImpl();
         profilePresenter.attachView(this,getActivity());
+        profilePresenter.loadUser();
 
         mSettingsBtn.setOnClickListener(v->{
-            if(UserStore.getUser()!=null) {
+            if(UserStore.getInstance().getUser()!=null) {
                 moveToUpdateProfileActivity();
             }
         });
@@ -135,8 +136,6 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume()");
-        profilePresenter.loadUser();
-
     }
 
     @Override

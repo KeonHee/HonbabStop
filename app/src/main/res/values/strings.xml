@@ -33,6 +33,9 @@
     <!-- ChatListFragment -->
     <string name="member_count_label">모집인원</string>
 
+    <string name="chat_room_dialog_enter">입장</string>
+    <string name="chat_room_dialog_return">취소</string>
+
     <!--  ProfileFragment -->
     <string name="empty_name">이름을 입력해주세요!</string>
     <string name="empty_email">이메일을 입력해주세요!</string>
@@ -52,10 +55,8 @@
     <string name="profile_update_age_hint">나이</string>
     <string name="profile_update_address_hint">주소</string>
 
-    <string-array name="gender_array">
-        <item>남자</item>
-        <item>여자</item>
-    </string-array>
+    <string name="gender_male">남자</string>
+    <string name="gender_female">여자</string>
 
 
     <!-- Action Bar MainActivity -->

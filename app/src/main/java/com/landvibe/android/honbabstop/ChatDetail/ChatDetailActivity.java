@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.landvibe.android.honbabstop.ChatDetail.presenter.ChatDetailPresenter;
 import com.landvibe.android.honbabstop.R;
 
-public class ChatDetailActivity extends AppCompatActivity {
+public class ChatDetailActivity extends AppCompatActivity implements ChatDetailPresenter.View{
 
 
     private final static String TAG = "ChatDetailActivity";
@@ -50,8 +51,7 @@ public class ChatDetailActivity extends AppCompatActivity {
         }
     }
 
-    //TODO presenter에 명시
-    //@Override
+    @Override
     public void moveToMainActivity() {
         NavUtils.navigateUpFromSameTask(this);
     }

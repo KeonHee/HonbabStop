@@ -1,6 +1,7 @@
 package com.landvibe.android.honbabstop.ChatList.adapter.holder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,13 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
+import com.landvibe.android.honbabstop.ChatDetail.ChatDetailActivity;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 import com.landvibe.android.honbabstop.base.utils.TimeFormatUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,15 +48,22 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder { //TODO 뷰홀�
     @BindView(R.id.iv_room_detail)
     ImageView mChatInfoImageView;
 
-    public ChatListViewHolder(Context context, ViewGroup parent) {
+    private MaterialStyledDialog mChatRoomInfoDialog;
+
+    private OnItemClickListener mOnItemClickListener;
+
+    public ChatListViewHolder(Context context, ViewGroup parent, OnItemClickListener listener) {
         super(LayoutInflater.from(context).inflate(R.layout.viewholder_chat_lst,parent,false));
 
         mContext=context;
 
+        mOnItemClickListener=listener;
+
         ButterKnife.bind(this, itemView);
     }
 
-    public void onBind(ChatRoom chatRoom){
+    public void onBind(ChatRoom chatRoom, int position){
+
         try{
             Glide.with(mContext)
                     .load(chatRoom.getFoodImageUrl())
@@ -72,8 +82,8 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder { //TODO 뷰홀�
             mMaxCountTextView.setText(chatRoom.getCurrentPeople()+"/"+chatRoom.getMaxPeople());
 
 
-            //TODO info 다이얼로그 - https://github.com/javiersantos/MaterialStyledDialogs
-            mChatInfoImageView.setOnClickListener(v -> Log.d("ViewHolder","이벤트발생"));
+            prepareChatRoomInfo(chatRoom);
+            mChatInfoImageView.setOnClickListener(v -> showChatRoomInfo());
 
             mCreateTimeTextView.setText(TimeFormatUtils.getPassByTimeStr(chatRoom.getStartTimeStamp()));
 
@@ -81,5 +91,63 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder { //TODO 뷰홀�
         }catch (Exception e){
             e.printStackTrace();
         }
+
+        itemView.setOnClickListener(v->{
+            showChatRoomInfo();
+//            if(mOnItemClickListener!=null){
+//                showChatRoomInfo();
+//                mOnItemClickListener.onItemClick(position);
+//            }
+        });
+    }
+
+    private void prepareChatRoomInfo(ChatRoom chatRoom){
+
+        String title = chatRoom.getTitle();
+
+        /* 만남 시간, 만남 장소, 음식 정보, 현재 인원 */
+        long rawContactTime = chatRoom.getContactTime();
+        Calendar contactTimeInstance = Calendar.getInstance();
+        contactTimeInstance.setTimeInMillis(rawContactTime);
+        String contactTimeStr = "만남 시간 : " + contactTimeInstance.get(Calendar.HOUR_OF_DAY) +
+                " 시" + contactTimeInstance.get(Calendar.MINUTE) +" 분\n";
+        String location = "만남 장소 : "+chatRoom.getLocationStr()+"\n";
+        String foodName = "먹는 음식 : "+chatRoom.getFoodName()+"\n";
+        String currentPeople = "현재인원 : "+chatRoom.getCurrentPeople()+" / "+chatRoom.getMaxPeople()+"\n";
+
+        //TODO 방장 정보, 연령대 추가
+
+        StringBuffer dsec = new StringBuffer();
+        dsec.append(contactTimeStr);
+        dsec.append(location);
+        dsec.append(foodName);
+        dsec.append(currentPeople);
+
+        mChatRoomInfoDialog = new MaterialStyledDialog.Builder(mContext)
+                .setTitle(title)
+                .setHeaderColor(R.color.fbutton_color_orange)
+                .setStyle(Style.HEADER_WITH_TITLE)
+                .setDescription(dsec.toString())
+                .setScrollable(true)
+                .setPositiveText(R.string.chat_room_dialog_enter)
+                .onPositive(((dialog, which) -> moveToChatDetailActivity(chatRoom.getId())))
+                .setNegativeText(R.string.chat_room_dialog_return)
+                .onNegative(((dialog, which) -> Log.d("MaterialStyledDialogs", "return main activity")))
+                .build();
+    }
+
+    private void showChatRoomInfo(){
+        if(mChatRoomInfoDialog==null){
+            return;
+        }
+        mChatRoomInfoDialog.show();
+    }
+
+    private void moveToChatDetailActivity(String chatRoomId){
+        Intent intent = new Intent(mContext, ChatDetailActivity.class);
+        intent.putExtra("roomId",chatRoomId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        mContext.startActivity(intent);
+
     }
 }
