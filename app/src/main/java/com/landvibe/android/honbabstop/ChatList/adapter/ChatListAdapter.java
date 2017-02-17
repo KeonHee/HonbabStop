@@ -55,7 +55,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder> im
 
 
     @Override
-    public void notifytAdapter() {
+    public void notifyAdapter() {
         notifyDataSetChanged();
     }
 

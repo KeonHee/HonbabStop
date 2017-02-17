@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.landvibe.android.honbabstop.ChatDetail.adapter.ChatMessageAdapter;
@@ -25,7 +26,8 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ChatDetailActivity extends AppCompatActivity implements ChatDetailPresenter.View{
+public class ChatDetailActivity extends AppCompatActivity implements ChatDetailPresenter.View,
+        View.OnLayoutChangeListener {
 
 
     private final static String TAG = "ChatDetailActivity";
@@ -68,6 +70,7 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
         mChatMessageView.setAdapter(mChatMessageAdapter);
 
         mChatMessageView.setHasFixedSize(false);
+        mChatMessageView.addOnLayoutChangeListener(this);
 
         mChatDetailPresenter = new ChatDetailPresenterImpl();
         mChatDetailPresenter.attachView(this,this);
@@ -138,5 +141,14 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
             return;
         }
         mChatMessageView.smoothScrollToPosition(mChatMessageAdapter.getItemCount()-1);
+    }
+
+    @Override
+    public void onLayoutChange(View v,
+                               int left, int top, int right, int bottom,
+                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        if(bottom < oldBottom){
+            mChatMessageView.postDelayed(() -> scrollToBottom(),100);
+        }
     }
 }

@@ -75,7 +75,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
         }
 
         mAdapterModel.setListData(list);
-        mAdapterView.notifytAdapter();
+        mAdapterView.notifyAdapter();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
     public void update(Object object) {
         if(object instanceof ChatRoom){
             mAdapterModel.addListData((ChatRoom)object);
-            mAdapterView.notifytAdapter();
+            mAdapterView.notifyAdapter();
         }
     }
 }

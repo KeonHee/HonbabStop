@@ -12,7 +12,7 @@ import java.util.List;
 public interface ChatListAdapterContract {
 
     interface View {
-        void notifytAdapter();
+        void notifyAdapter();
         void setOnItemClickListener(OnItemClickListener listener);
 
     }
