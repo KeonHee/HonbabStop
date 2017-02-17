@@ -46,7 +46,7 @@ public class ChatListModel {
      * 채팅 리스트 DB 쿼리
      */
     public void loadChatList(int queryNum){
-        if(mDatabase==null){
+        if(mDatabase==null || mChangeChatListData==null){
             return;
         }
 

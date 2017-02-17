@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
  * Created by user on 2017-02-13.
  */
 
-public class ChatListFragment extends Fragment implements ChatListPresenter.View{
+public class ChatListFragment extends Fragment implements ChatListPresenter.View {
 
     private final static String TAG ="ChatListFragment";
 
@@ -87,6 +88,25 @@ public class ChatListFragment extends Fragment implements ChatListPresenter.View
         mChatListAdapter=new ChatListAdapter(getActivity());
         mChatListView.setAdapter(mChatListAdapter);
 
+        mChatListView.setHasFixedSize(true);
+        mChatListView.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState==RecyclerView.SCROLL_STATE_DRAGGING){
+                    mAddChatRoom.setVisibility(View.GONE);
+                }
+                if(newState==RecyclerView.SCROLL_STATE_IDLE){
+                    mAddChatRoom.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
         mChatListPresenter = new ChatListPresenterImpl();
         mChatListPresenter.attachView(this,getActivity());
 
@@ -122,4 +142,5 @@ public class ChatListFragment extends Fragment implements ChatListPresenter.View
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
+
 }

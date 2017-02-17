@@ -48,6 +48,11 @@ public class ChatRoom {
     /* 참여자 Uid (방장포함) */
     private List<String> members;
 
+    /* 채팅방 상태 */
+    private int status;
+
+    public final static int STATUS_REMAIN=0;
+    public final static int STATUS_FULL=1;
 
     @Exclude
     public Map<String, Object> toMap() {
@@ -67,6 +72,7 @@ public class ChatRoom {
         result.put("foodRestaurant", foodRestaurant);
         result.put("header", header);
         result.put("members", members);
+        result.put("status", status);
 
         return result;
     }
@@ -192,5 +198,13 @@ public class ChatRoom {
 
     public void setMembers(List<String> members) {
         this.members = members;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

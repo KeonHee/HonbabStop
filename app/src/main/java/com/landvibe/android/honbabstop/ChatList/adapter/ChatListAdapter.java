@@ -3,7 +3,6 @@ package com.landvibe.android.honbabstop.ChatList.adapter;
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.landvibe.android.honbabstop.ChatList.adapter.contract.ChatListAdapterContract;
 import com.landvibe.android.honbabstop.ChatList.adapter.holder.ChatListViewHolder;
@@ -29,6 +28,12 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder> im
         mActivity=activity;
     }
 
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
     @Override
     public ChatListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ChatListViewHolder(mActivity,parent,mOnItemClickListener);
@@ -36,7 +41,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder> im
 
     @Override
     public void onBindViewHolder(ChatListViewHolder holder, int position) {
-        holder.onBind(list.get(list.size()-position-1), list.size()-position-1); //reverse
+        int realPosition = list.size()-holder.getAdapterPosition()-1; //reverse
+        holder.onBind(list.get(realPosition), realPosition);
     }
 
     @Override

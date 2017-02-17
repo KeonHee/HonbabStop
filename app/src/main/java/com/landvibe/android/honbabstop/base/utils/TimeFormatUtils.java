@@ -2,7 +2,9 @@ package com.landvibe.android.honbabstop.base.utils;
 
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by user on 2017-02-15.
@@ -38,8 +40,10 @@ public class TimeFormatUtils {
         }else {
             return String.valueOf(currentDay-preDay)+" 일전";
         }
+    }
 
-
-
+    public static String converTimeStamp(long timestamp){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("a hh:mm", Locale.KOREAN);
+        return dateFormat.format(timestamp);
     }
 }

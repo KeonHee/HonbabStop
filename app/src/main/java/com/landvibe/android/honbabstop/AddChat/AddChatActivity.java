@@ -153,6 +153,8 @@ public class AddChatActivity extends AppCompatActivity implements AddChatPresent
         List<String> members = Arrays.asList(user.getUid());
         chatRoom.setMembers(members);
 
+        chatRoom.setStatus(ChatRoom.STATUS_REMAIN);
+
         mAddChatPresenter.addChat(chatRoom);
     }
 

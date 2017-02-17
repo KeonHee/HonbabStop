@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_other_message_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_other_message_avatar"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_margin="8dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        />
+
+    <TextView
+        android:id="@+id/tv_other_message_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/iv_other_message_avatar"
+        android:layout_toRightOf="@+id/iv_other_message_avatar"
+        android:textSize="12sp"
+        tools:text="김건희"
+        />
+
+    <TextView
+        android:id="@+id/tv_other_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_other_message_user_name"
+        android:layout_toRightOf="@+id/iv_other_message_avatar"
+        android:layout_below="@+id/tv_other_message_user_name"
+        android:background="@drawable/baloon_other"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        tools:text="테스트메세지테스트메세지테스트메세지테스트메세지테스트메세지"
+        />
+
+    <TextView
+        android:id="@+id/tv_other_message_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_other_message_text"
+        android:layout_alignBottom="@+id/tv_other_message_text"
+        android:layout_marginLeft="8dp"
+        android:textSize="10sp"
+        android:textColor="@color/gray"
+        tools:text="오후 03:30"
+        />
+
+</RelativeLayout>

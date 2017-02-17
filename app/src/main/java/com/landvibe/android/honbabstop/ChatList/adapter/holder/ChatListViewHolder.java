@@ -19,6 +19,7 @@ import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 import com.landvibe.android.honbabstop.base.utils.TimeFormatUtils;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,19 +110,21 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder { //TODO 뷰홀�
         long rawContactTime = chatRoom.getContactTime();
         Calendar contactTimeInstance = Calendar.getInstance();
         contactTimeInstance.setTimeInMillis(rawContactTime);
-        String contactTimeStr = "만남 시간 : " + contactTimeInstance.get(Calendar.HOUR_OF_DAY) +
-                " 시" + contactTimeInstance.get(Calendar.MINUTE) +" 분\n";
-        String location = "만남 장소 : "+chatRoom.getLocationStr()+"\n";
-        String foodName = "먹는 음식 : "+chatRoom.getFoodName()+"\n";
-        String currentPeople = "현재인원 : "+chatRoom.getCurrentPeople()+" / "+chatRoom.getMaxPeople()+"\n";
 
         //TODO 방장 정보, 연령대 추가
 
         StringBuffer dsec = new StringBuffer();
-        dsec.append(contactTimeStr);
-        dsec.append(location);
-        dsec.append(foodName);
-        dsec.append(currentPeople);
+        dsec.append(String.format(Locale.KOREAN,
+                "만난 시간 : %d시 %d분\n",
+                contactTimeInstance.get(Calendar.HOUR_OF_DAY),
+                contactTimeInstance.get(Calendar.MINUTE)));
+        dsec.append(String.format(Locale.KOREAN,
+                "만남 장소 : %s\n",chatRoom.getLocationStr()));
+        dsec.append(String.format(Locale.KOREAN,
+                "먹는 음식 : %s\n",chatRoom.getFoodName()));
+        dsec.append(String.format(Locale.KOREAN,
+                "현재 인원 : %d/%d\n",
+                chatRoom.getCurrentPeople(),chatRoom.getMaxPeople()));
 
         mChatRoomInfoDialog = new MaterialStyledDialog.Builder(mContext)
                 .setTitle(title)
