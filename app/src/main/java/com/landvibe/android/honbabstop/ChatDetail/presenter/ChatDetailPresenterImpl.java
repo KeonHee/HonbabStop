@@ -2,9 +2,12 @@ package com.landvibe.android.honbabstop.ChatDetail.presenter;
 
 import android.app.Activity;
 
+import com.google.firebase.database.DatabaseError;
 import com.landvibe.android.honbabstop.ChatDetail.adapter.contract.ChatAdapterContract;
 import com.landvibe.android.honbabstop.ChatDetail.model.ChatDetailModel;
+import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
+import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.User;
 
 /**
@@ -12,7 +15,7 @@ import com.landvibe.android.honbabstop.base.domain.User;
  */
 
 public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
-        ChatDetailModel.ObserverChatMessageCallback {
+        ChatDetailModel.ObserverChatMessageCallback, ChatDetailModel.CompleteChangeUserData {
 
 
     private ChatDetailPresenter.View view;
@@ -32,6 +35,7 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
 
         mChatDetailModel = new ChatDetailModel();
         mChatDetailModel.setObserverChatMessageListener(this);
+        mChatDetailModel.setCompleteListener(this);
     }
 
     @Override
@@ -39,6 +43,7 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
         this.view=null;
         mActivity=null;
 
+        mChatDetailModel.setCompleteListener(null);
         mChatDetailModel.setObserverChatMessageListener(null);
         mChatDetailModel.removeChildEventListener();
         mChatDetailModel=null;
@@ -62,11 +67,8 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
     }
 
     @Override
-    public void outOfChatRoom(User user) {
-
-        /* Somethings */
-
-        view.moveToMainActivity();
+    public void outOfChatRoom(User user, String roomId) {
+        mChatDetailModel.removeUserInfoInChatRoom(user,roomId);
     }
 
     @Override
@@ -84,5 +86,21 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
         mAdapterModel.addListData(message);
         mAdapterView.notifyLastOne();
         view.scrollToBottom();
+    }
+
+
+    /**
+     *  User 정보 삭제 완료 콜백
+     */
+    @Override
+    public void onRemove(ChatRoom chatRoom) {
+        view.moveToMainActivity();
+
+        GlobalApp.getGlobalApplicationContext().changeModel(chatRoom);
+    }
+
+    @Override
+    public void onFailure(DatabaseError databaseError) {
+
     }
 }

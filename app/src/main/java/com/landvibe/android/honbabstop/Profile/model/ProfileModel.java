@@ -63,12 +63,12 @@ public class ProfileModel {
         }
 
         String uid = mUser.getUid();
-        mDatabase.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("users").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange");
                 User user = dataSnapshot.getValue(User.class);
-                UserStore.saveUser(user);
+                UserStore.getInstance().saveUser(user);
                 if(mUserDataChange!=null){
                     mUserDataChange.update(user);
                 }
@@ -85,7 +85,7 @@ public class ProfileModel {
         if(mDatabase==null || mUser==null){
             return;
         }
-        UserStore.saveUser(user);
+        UserStore.getInstance().saveUser(user);
         String uid = mUser.getUid();
         mDatabase.child("users").child(uid).setValue(user);
     }

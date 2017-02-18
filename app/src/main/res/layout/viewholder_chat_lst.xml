@@ -59,21 +59,21 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/iv_room_detail"
+        android:id="@+id/iv_my_room"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="8dp"
         android:layout_marginRight="8dp"
-        app:srcCompat="@drawable/ic_info_outline_gray_100dp"
+        app:srcCompat="@drawable/ic_star_not_selected_100dp"
         />
 
     <TextView
         android:id="@+id/tv_create_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_room_detail"
+        android:layout_below="@+id/iv_my_room"
         android:layout_alignParentRight="true"
         android:layout_marginRight="8dp"
         tools:text="1/4"

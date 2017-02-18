@@ -31,7 +31,7 @@
         android:layout_alignLeft="@+id/tv_other_message_user_name"
         android:layout_toRightOf="@+id/iv_other_message_avatar"
         android:layout_below="@+id/tv_other_message_user_name"
-        android:background="@drawable/baloon_other"
+        android:background="@drawable/bubble_receive"
         android:textSize="18sp"
         android:textColor="@color/black"
         tools:text="테스트메세지테스트메세지테스트메세지테스트메세지테스트메세지"

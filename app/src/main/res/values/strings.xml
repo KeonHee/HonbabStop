@@ -65,6 +65,8 @@
     <string name="action_save">저장</string>
     <!-- Action Bar AddChatActivity -->
     <string name="action_add_chat">추가</string>
+    <!-- Action Bar DetailChatActivity -->
+    <string name="action_room_out">채팅방 나가기</string>
 
 
     <!--  Bottom Navigation -->

@@ -62,7 +62,7 @@ public class MainModel {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange");
                 User user = dataSnapshot.getValue(User.class);
-                UserStore.saveUser(user);
+                UserStore.getInstance().saveUser(user);
             }
 
             @Override

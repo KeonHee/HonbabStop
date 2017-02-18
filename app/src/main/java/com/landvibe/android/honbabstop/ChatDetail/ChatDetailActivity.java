@@ -7,7 +7,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -49,6 +51,8 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
 
     private User mUser;
 
+    private String roomId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,10 +83,14 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
 
 
         Intent intent = getIntent();
-        String roomId = intent.getStringExtra("roomId");
+        roomId = intent.getStringExtra("roomId");
         mChatDetailPresenter.loadChatMessageList(roomId);
 
         mSendMessageBtn.setOnClickListener(v->{
+            if(mMessageEditText.getText().toString().length()==0){
+                return;
+            }
+
             ChatMessage chatMessage = new ChatMessage();
             chatMessage.setUid(mUser.getUid());
             chatMessage.setName(mUser.getName());
@@ -111,7 +119,9 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.chat_detail,menu);
+        return true;
     }
 
     @Override
@@ -119,6 +129,9 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
         switch (item.getItemId()) {
             case android.R.id.home:
                 mChatDetailPresenter.backToTheMain();
+                return true;
+            case R.id.action_room_out:
+                mChatDetailPresenter.outOfChatRoom(mUser, roomId);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,7 +150,7 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
 
     @Override
     public void scrollToBottom() {
-        if(mChatMessageView==null || mChatMessageAdapter==null){
+        if(mChatMessageView==null || mChatMessageAdapter==null || mChatMessageAdapter.getItemCount()==0){
             return;
         }
         mChatMessageView.smoothScrollToPosition(mChatMessageAdapter.getItemCount()-1);
@@ -147,7 +160,7 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
     public void onLayoutChange(View v,
                                int left, int top, int right, int bottom,
                                int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        if(bottom < oldBottom){
+        if(bottom<oldBottom){
             mChatMessageView.postDelayed(() -> scrollToBottom(),100);
         }
     }

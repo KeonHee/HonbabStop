@@ -1,22 +1,31 @@
 package com.landvibe.android.honbabstop.ChatList.presenter;
 
 import android.app.Activity;
+import android.util.Log;
 
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
+import com.google.firebase.database.DatabaseError;
 import com.landvibe.android.honbabstop.ChatList.adapter.contract.ChatListAdapterContract;
 import com.landvibe.android.honbabstop.ChatList.model.ChatListModel;
 import com.landvibe.android.honbabstop.GlobalApp;
+import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 import com.landvibe.android.honbabstop.base.observer.CustomObserver;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by user on 2017-02-15.
  */
 
 public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
-        ChatListModel.ChangeChatListData, OnItemClickListener, CustomObserver{
+        ChatListModel.ChangeChatListData, ChatListModel.CompleteChangeUserData, OnItemClickListener, CustomObserver{
 
     private ChatListPresenter.View view;
 
@@ -27,6 +36,8 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
 
     private ChatListModel mChatListModel;
 
+    private MaterialStyledDialog mChatRoomInfoDialog;
+
     @Override
     public void attachView(ChatListPresenter.View view, Activity activity) {
         this.view=view;
@@ -34,6 +45,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
 
         mChatListModel = new ChatListModel();
         mChatListModel.setChangeListener(this);
+        mChatListModel.setCompleteListener(this);
 
         GlobalApp.getGlobalApplicationContext().addObserver(this);
 
@@ -45,6 +57,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
         mActivity=null;
 
 
+        mChatListModel.setCompleteListener(null);
         mChatListModel.setChangeListener(null);
         mChatListModel=null;
 
@@ -79,9 +92,50 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
     }
 
     @Override
-    public void onItemClick(int position) {
-        view.moveToChatDetailActivity(position);
+    public void onItemClick(ChatRoom chatRoom) {
+        showChatRoomInfo(chatRoom);
     }
+
+    private void showChatRoomInfo(ChatRoom chatRoom){
+        User user = UserStore.getInstance().getUser();
+
+        String title = chatRoom.getTitle();
+
+        /* 만남 시간, 만남 장소, 음식 정보, 현재 인원 */
+        long rawContactTime = chatRoom.getContactTime();
+        Calendar contactTimeInstance = Calendar.getInstance();
+        contactTimeInstance.setTimeInMillis(rawContactTime);
+
+        //TODO 방장 정보, 연령대 추가
+
+        StringBuffer dsec = new StringBuffer();
+        dsec.append(String.format(Locale.KOREAN,
+                "만난 시간 : %d시 %d분\n",
+                contactTimeInstance.get(Calendar.HOUR_OF_DAY),
+                contactTimeInstance.get(Calendar.MINUTE)));
+        dsec.append(String.format(Locale.KOREAN,
+                "만남 장소 : %s\n",chatRoom.getLocationStr()));
+        dsec.append(String.format(Locale.KOREAN,
+                "먹는 음식 : %s\n",chatRoom.getFoodName()));
+        dsec.append(String.format(Locale.KOREAN,
+                "현재 인원 : %d/%d\n",
+                chatRoom.getCurrentPeople(),chatRoom.getMaxPeople()));
+
+        mChatRoomInfoDialog = new MaterialStyledDialog.Builder(mActivity)
+                .setTitle(title)
+                .setHeaderColor(R.color.fbutton_color_orange)
+                .setStyle(Style.HEADER_WITH_TITLE)
+                .setDescription(dsec.toString())
+                .setScrollable(true)
+                .setPositiveText(R.string.chat_room_dialog_enter)
+                .onPositive(((dialog, which) ->
+                    mChatListModel.addUserInfoInChatRoom(
+                            user.getUid(), chatRoom.getId(), chatRoom.getMembers())))
+                .setNegativeText(R.string.chat_room_dialog_return)
+                .onNegative(((dialog, which) -> Log.d("MaterialStyledDialogs", "return main activity")))
+                .show();
+    }
+
 
     /**
      * 옵저버 등록
@@ -89,8 +143,33 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
     @Override
     public void update(Object object) {
         if(object instanceof ChatRoom){
-            mAdapterModel.addListData((ChatRoom)object);
-            mAdapterView.notifyAdapter();
+            ChatRoom chatRoom = (ChatRoom) object;
+
+            int index = mAdapterModel.indexOf(chatRoom);
+            if(index<0){
+                /* Not Found */
+                mAdapterModel.addListData(chatRoom);
+                mAdapterView.notifyAdapter();
+            }else {
+                mAdapterModel.updateData(chatRoom,index);
+                mAdapterView.notifyAdapterPosition(index);
+            }
         }
+    }
+
+
+    /**
+     *  채팅방의 User 정보 수정 완료 콜백
+     */
+    @Override
+    public void onComplete(ChatRoom chatRoom) {
+        view.moveToChatDetailActivity(chatRoom.getId());
+
+        GlobalApp.getGlobalApplicationContext().changeModel(chatRoom);
+    }
+
+    @Override
+    public void onFailure(DatabaseError databaseError) {
+
     }
 }

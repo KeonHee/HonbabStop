@@ -8,19 +8,18 @@ public class UserStore {
 
     private static UserStore instance=null;
 
-    private static User userInstance=null;
+    private static User userInstance;
 
     private UserStore() {}
 
-    public static UserStore saveUser(User user){
-        if(instance==null){
-            instance=new UserStore();
-        }
+    public void saveUser(User user){
         userInstance=user;
-        return instance;
     }
 
     public static UserStore getInstance(){
+        if(instance==null){
+            instance=new UserStore();
+        }
         return instance;
     }
 

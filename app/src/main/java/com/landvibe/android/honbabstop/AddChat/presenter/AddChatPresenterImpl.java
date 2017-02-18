@@ -35,7 +35,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter {
     @Override
     public void addChat(ChatRoom chatRoom) {
         mAddChatModel.createChat(chatRoom);
-        view.moveToMainActivity();
+        view.moveToChatDetailActivity(chatRoom.getId());
 
         GlobalApp.getGlobalApplicationContext().changeModel(chatRoom);
     }

@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             case R.id.action_sign_out:
                 signOut();
                 return true;
+            //TODO 리스트 새로고침 기능
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -157,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         /* firebase sign out */
         if(mAuth!=null) mAuth.signOut();
 
-        UserStore.saveUser(null);
+        UserStore.getInstance().saveUser(null);
 
         SharedPreferenceUtils.setBooleanPreference(
                 this,SharedPreferenceUtils.SESSION_BOOLEAN_KEY, false);

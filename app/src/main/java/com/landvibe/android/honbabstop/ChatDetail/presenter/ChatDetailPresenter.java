@@ -34,7 +34,7 @@ public interface ChatDetailPresenter {
 
         void sendMessage(ChatMessage message, String chatRoomId);
 
-        void outOfChatRoom(User user);
+        void outOfChatRoom(User user, String roomId);
 
         void backToTheMain();
 

@@ -1,5 +1,8 @@
 package com.landvibe.android.honbabstop.AddChat;
 
+
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -11,6 +14,7 @@ import android.widget.Button;
 
 import com.landvibe.android.honbabstop.AddChat.presenter.AddChatPresenter;
 import com.landvibe.android.honbabstop.AddChat.presenter.AddChatPresenterImpl;
+import com.landvibe.android.honbabstop.ChatDetail.ChatDetailActivity;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.User;
@@ -27,7 +31,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddChatActivity extends AppCompatActivity implements AddChatPresenter.View, TimePickerDialog.OnTimeSetListener {
+public class AddChatActivity extends AppCompatActivity
+        implements AddChatPresenter.View, TimePickerDialog.OnTimeSetListener {
 
     @BindView(R.id.et_title)
     MaterialEditText mTitleEditText;
@@ -161,6 +166,14 @@ public class AddChatActivity extends AppCompatActivity implements AddChatPresent
     @Override
     public void moveToMainActivity() {
         NavUtils.navigateUpFromSameTask(this);
+    }
+
+    @Override
+    public void moveToChatDetailActivity(String roomId) {
+        final Intent intent = new Intent(this, ChatDetailActivity.class);
+        intent.putExtra("roomId",roomId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
     }
 
     @Override

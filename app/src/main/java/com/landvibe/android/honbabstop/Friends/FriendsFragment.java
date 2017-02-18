@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.landvibe.android.honbabstop.MyChat.MyChatFragment;
 import com.landvibe.android.honbabstop.R;
 
 /**

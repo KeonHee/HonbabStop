@@ -7,8 +7,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.Transaction;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
+import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.domain.User;
+
+import java.util.List;
 
 /**
  * Created by user on 2017-02-17.
@@ -107,5 +113,64 @@ public class ChatDetailModel implements ChildEventListener{
             return;
         }
         mDatabase.child("ChatMessage").child(chatRoomId).push().setValue(message);
+    }
+
+
+
+    /**
+     *  채팅방의 User 정보 삭제 완료 콜백
+     */
+    private CompleteChangeUserData mCompleteChangeUserData;
+
+    public interface CompleteChangeUserData{
+        void onRemove(ChatRoom chatRoom);
+        void onFailure(DatabaseError databaseError);
+    }
+
+    public void setCompleteListener(CompleteChangeUserData listener){
+        mCompleteChangeUserData=listener;
+    }
+
+
+    /**
+     *  채팅방의 User 정보 삭제
+     */
+    public void removeUserInfoInChatRoom(User user, String roomId){
+        if(mDatabase==null){
+            return;
+        }
+
+        //@TODO MyChat 데이터에서 삭제
+
+        mDatabase.child("ChatList").child(roomId).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                ChatRoom chatRoom = mutableData.getValue(ChatRoom.class);
+
+                if(chatRoom==null){
+                    return Transaction.success(mutableData);
+                }
+
+                List<String> members = chatRoom.getMembers();
+                members.remove(user.getUid());
+
+                chatRoom.setCurrentPeople(chatRoom.getCurrentPeople()-1);
+
+                mutableData.setValue(chatRoom);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+                ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
+                if(chatRoom!=null){
+                    mCompleteChangeUserData.onRemove(chatRoom);
+                }else {
+                    mCompleteChangeUserData.onFailure(databaseError);
+                }
+            }
+        });
+
     }
 }

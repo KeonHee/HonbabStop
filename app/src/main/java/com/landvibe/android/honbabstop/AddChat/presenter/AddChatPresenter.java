@@ -13,6 +13,9 @@ public interface AddChatPresenter {
     interface View{
 
         void moveToMainActivity();
+
+        void moveToChatDetailActivity(String roomId);
+
     }
 
     interface Presenter{

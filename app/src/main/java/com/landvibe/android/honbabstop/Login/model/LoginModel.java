@@ -304,7 +304,7 @@ public class LoginModel {
         }
         Log.d(TAG,"writeUser()");
         mDatabase.child("users").child(user.getUid()).setValue(user);
-        UserStore.saveUser(user);
+        UserStore.getInstance().saveUser(user);
 
         Log.d(TAG,"UserStore.getInstance().getUser()"+UserStore.getInstance().getUser());
 

@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_my_message_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    >
 
     <TextView
         android:id="@+id/tv_my_message_text"
@@ -11,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="8dp"
-        android:background="@drawable/baloon_my"
+        android:background="@drawable/bubble_send_sun_flower"
         android:textSize="18sp"
         android:textColor="@color/white"
         tools:text="테스트메세지테스트메세지테스트메세지테스트메세지테스트메세지"

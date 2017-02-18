@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.MyChat;
+package com.landvibe.android.honbabstop.MyChatList;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,18 +14,18 @@ import com.landvibe.android.honbabstop.R;
  * Created by user on 2017-02-13.
  */
 
-public class MyChatFragment extends Fragment {
+public class MyChatListFragment extends Fragment {
 
-    private final static String TAG ="MyChatFragment";
+    private final static String TAG ="MyChatListFragment";
 
     private int mPage;
 
     public static Fragment getInstance(int page){
-        MyChatFragment myChatFragment = new MyChatFragment();
+        MyChatListFragment myChatListFragment = new MyChatListFragment();
         Bundle args = new Bundle();
         args.putInt("page", page);
-        myChatFragment.setArguments(args);
-        return myChatFragment;
+        myChatListFragment.setArguments(args);
+        return myChatListFragment;
     }
 
     @Override

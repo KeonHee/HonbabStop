@@ -16,7 +16,8 @@ import java.util.List;
  * Created by user on 2017-02-15.
  */
 
-public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder> implements ChatListAdapterContract.View, ChatListAdapterContract.Model {
+public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder>
+        implements ChatListAdapterContract.View, ChatListAdapterContract.Model {
 
     private Activity mActivity;
 
@@ -59,6 +60,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder> im
         notifyDataSetChanged();
     }
 
+    @Override
+    public void notifyAdapterLastIndex() {
+        notifyItemChanged(0);
+    }
+
+    @Override
+    public void notifyAdapterPosition(int index) {
+        notifyItemChanged(list.size()-index-1);
+    }
 
     @Override
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -73,6 +83,29 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder> im
     @Override
     public void addListData(ChatRoom item) {
         list.add(item);
+    }
+
+    @Override
+    public void updateData(ChatRoom item, int index) {
+        if (list == null || list.size() == 0) {
+            return;
+        }
+        list.set(index,item);
+    }
+
+    @Override
+    public int indexOf(ChatRoom chatRoom) {
+        if (list == null || list.size() == 0) {
+            return -1;
+        }
+
+        for(int i=0;i<list.size();i++){
+            if(list.get(i).getId().equals(chatRoom.getId())){
+                return i;
+            }
+        }
+
+        return -1;
     }
 
 }

@@ -12,14 +12,25 @@ import java.util.List;
 public interface ChatListAdapterContract {
 
     interface View {
+
         void notifyAdapter();
+
+        void notifyAdapterLastIndex();
+
+        void notifyAdapterPosition(int index);
+
         void setOnItemClickListener(OnItemClickListener listener);
 
     }
 
     interface Model {
         void setListData(List<ChatRoom> listItem);
+
         void addListData(ChatRoom item);
+
+        void updateData(ChatRoom item, int index);
+
+        int indexOf(ChatRoom chatRoom);
     }
 
 }
