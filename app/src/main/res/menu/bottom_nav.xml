@@ -15,12 +15,6 @@
         android:title="@string/btm_nav_my_chat"
         />
     <item
-        android:id="@+id/action_friends"
-        app:showAsAction="ifRoom"
-        android:enabled="true"
-        android:icon="@drawable/ic_star_white_24dp"
-        android:title="@string/btm_nav_friends" />
-    <item
         android:id="@+id/action_profile"
         app:showAsAction="ifRoom"
         android:enabled="true"

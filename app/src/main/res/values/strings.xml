@@ -3,6 +3,8 @@
     <string name="title_activity_settings">Settings</string>
 
 
+    <!-- naver maps client id-->
+    <string name="naver_maps_client_id">o8uc6MRnWiJu0aHOOYmf</string>
     <!-- kakao login key -->
     <string name="kakao_app_key" translatable="false">24154cc7f0ca64eb98129e6589f7b1a6</string>
     <!--facebook login key-->
@@ -25,9 +27,9 @@
     <string name="add_chat_max_people_label">최대인원</string>
     <string name="add_chat_location_label">만남장소</string>
     <string name="add_chat_contact_time_label">만남시간</string>
-    <string name="add_chat_food_name_label">음식이름</string>
+    <string name="add_chat_food_name_label">메뉴이름</string>
 
-    <string name="number_picker_formatter">%02d</string>
+    <string name="number_picker_formatter">%d명</string>
 
 
     <!-- ChatListFragment -->
@@ -67,13 +69,17 @@
     <string name="action_add_chat">추가</string>
     <!-- Action Bar DetailChatActivity -->
     <string name="action_room_out">채팅방 나가기</string>
+    <string name="action_maps">지도</string>
 
 
     <!--  Bottom Navigation -->
     <string name="btm_nav_chat_list">리스트</string>
     <string name="btm_nav_my_chat">나의 채팅</string>
-    <string name="btm_nav_friends">내친구</string>
     <string name="btm_nav_profile">프로필</string>
+
+
+    <!-- Naver Maps-->
+    <string name="str_done">완료</string>
 
     <!-- Font -->
     <string name="roboto_regular">sans-serif</string>
@@ -81,4 +87,14 @@
     <string name="roboto_condensed">sans-serif-condensed</string>
     <string name="roboto_thin">sans-serif-thin</string>
     <string name="roboto_medium">sans-serif-medium</string>
+
+
+
+    <string-array name="query_suggestions">
+        <item>Android</item>
+        <item>iOS</item>
+        <item>SCALA</item>
+        <item>Ruby</item>
+        <item>JavaScript</item>
+    </string-array>
 </resources>

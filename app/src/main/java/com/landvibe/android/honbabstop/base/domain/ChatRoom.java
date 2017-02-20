@@ -32,16 +32,30 @@ public class ChatRoom {
     private int currentPeople;
     private int maxPeople;
 
-    /* 만남 장소 */
-    private String locationStr;
-    private double locationLon;
-    private double locationLat;
 
-    /* 음식 정보 */
-    private String foodName;
+    /* 음식 정보 & 만남 장소*/
     private String foodImageUrl; /* Title Image */
-    private String foodRestaurant;
+    private String foodName;
 
+    private String foodTitle;
+    private String foodCategory;
+    private String foodDescription;
+    private String foodTelephone;
+    private String address;
+    private String roadAddress;
+    private long locationX;
+    private long locationY;
+    /**
+     * <title>조선옥</title>
+     <link />
+     <category>한식&gt;육류,고기요리</category>
+     <description>연탄불 한우갈비 전문점.</description>
+     <telephone>02-2266-0333</telephone>
+     <address>서울특별시 중구 을지로3가 229-1 </address>
+     <roadAddress>서울특별시 중구 을지로15길 6-5 </roadAddress>
+     <mapx>311277</mapx>
+     <mapy>552097</mapy>
+     */
     /* 방장 정보 */
     private User header;
 
@@ -53,30 +67,6 @@ public class ChatRoom {
 
     public final static int STATUS_REMAIN=0;
     public final static int STATUS_FULL=1;
-
-    @Exclude
-    public Map<String, Object> toMap() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("id", id);
-        result.put("title", title);
-        result.put("startTimeStamp", startTimeStamp);
-        result.put("endTimeStamp", endTimeStamp);
-        result.put("currentPeople", currentPeople);
-        result.put("maxPeople", maxPeople);
-        result.put("locationStr", locationStr);
-        result.put("locationLon", locationLon);
-        result.put("locationLat", locationLat);
-        result.put("contactTime", contactTime);
-        result.put("foodName", foodName);
-        result.put("foodImageUrl", foodImageUrl);
-        result.put("foodRestaurant", foodRestaurant);
-        result.put("header", header);
-        result.put("members", members);
-        result.put("status", status);
-
-        return result;
-    }
-
 
     public ChatRoom(){}
 
@@ -128,38 +118,6 @@ public class ChatRoom {
         this.maxPeople = maxPeople;
     }
 
-    public String getLocationStr() {
-        return locationStr;
-    }
-
-    public void setLocationStr(String locationStr) {
-        this.locationStr = locationStr;
-    }
-
-    public double getLocationLon() {
-        return locationLon;
-    }
-
-    public void setLocationLon(double locationLon) {
-        this.locationLon = locationLon;
-    }
-
-    public double getLocationLat() {
-        return locationLat;
-    }
-
-    public void setLocationLat(double locationLat) {
-        this.locationLat = locationLat;
-    }
-
-    public String getFoodName() {
-        return foodName;
-    }
-
-    public void setFoodName(String foodName) {
-        this.foodName = foodName;
-    }
-
     public String getFoodImageUrl() {
         return foodImageUrl;
     }
@@ -168,12 +126,12 @@ public class ChatRoom {
         this.foodImageUrl = foodImageUrl;
     }
 
-    public String getFoodRestaurant() {
-        return foodRestaurant;
+    public String getFoodDescription() {
+        return foodDescription;
     }
 
-    public void setFoodRestaurant(String foodRestaurant) {
-        this.foodRestaurant = foodRestaurant;
+    public void setFoodDescription(String foodDescription) {
+        this.foodDescription = foodDescription;
     }
 
     public User getHeader() {
@@ -206,5 +164,69 @@ public class ChatRoom {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getFoodTitle() {
+        return foodTitle;
+    }
+
+    public void setFoodTitle(String foodTitle) {
+        this.foodTitle = foodTitle;
+    }
+
+    public String getFoodCategory() {
+        return foodCategory;
+    }
+
+    public void setFoodCategory(String foodCategory) {
+        this.foodCategory = foodCategory;
+    }
+
+    public String getFoodTelephone() {
+        return foodTelephone;
+    }
+
+    public void setFoodTelephone(String foodTelephone) {
+        this.foodTelephone = foodTelephone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getRoadAddress() {
+        return roadAddress;
+    }
+
+    public void setRoadAddress(String roadAddress) {
+        this.roadAddress = roadAddress;
+    }
+
+    public long getLocationX() {
+        return locationX;
+    }
+
+    public void setLocationX(long locationX) {
+        this.locationX = locationX;
+    }
+
+    public long getLocationY() {
+        return locationY;
+    }
+
+    public void setLocationY(long locationY) {
+        this.locationY = locationY;
+    }
+
+    public String getFoodName() {
+        return foodName;
+    }
+
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
     }
 }

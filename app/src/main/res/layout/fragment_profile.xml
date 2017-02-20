@@ -194,7 +194,6 @@
         android:background="@color/light_gray"
         />
 
-
     <info.hoang8f.widget.FButton
         android:id="@+id/btn_settings"
         android:layout_width="wrap_content"
@@ -208,7 +207,6 @@
         fbutton:shadowEnabled="true"
         fbutton:shadowHeight="2dp"
         fbutton:cornerRadius="5dp"
-
     />
 
 </LinearLayout>

@@ -79,6 +79,7 @@ dependencies {
     compile 'com.wdullaer:materialdatetimepicker:3.1.1'
     compile 'com.github.javiersantos:MaterialStyledDialogs:2.1'
     compile 'com.github.florent37:materialtextfield:1.0.7'
+    compile 'com.miguelcatalan:materialsearchview:1.4.0'
 
     /* Injection View */
     compile 'com.jakewharton:butterknife:8.5.1'

@@ -21,6 +21,10 @@ public interface ChatDetailPresenter {
 
         void scrollToBottom();
 
+        void showMaps();
+
+        void hideMaps();
+
     }
 
     interface Presenter{
@@ -40,6 +44,6 @@ public interface ChatDetailPresenter {
 
         void loadChatMessageList(String chatRoomId);
 
-
+        void actionMapView();
     }
 }

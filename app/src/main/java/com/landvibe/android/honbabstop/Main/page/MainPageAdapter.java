@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.landvibe.android.honbabstop.ChatList.ChatListFragment;
-import com.landvibe.android.honbabstop.Friends.FriendsFragment;
 import com.landvibe.android.honbabstop.MyChatList.MyChatListFragment;
 import com.landvibe.android.honbabstop.Profile.ProfileFragment;
 
@@ -15,7 +14,7 @@ import com.landvibe.android.honbabstop.Profile.ProfileFragment;
 
 public class MainPageAdapter extends FragmentPagerAdapter {
 
-    private static int NUM_ITEMS = 4;
+    private static int NUM_ITEMS = 3;
 
     public MainPageAdapter(FragmentManager fm) {
         super(fm);
@@ -29,8 +28,6 @@ public class MainPageAdapter extends FragmentPagerAdapter {
             case 1:
                 return MyChatListFragment.getInstance(1);
             case 2:
-                return FriendsFragment.getInstance(1);
-            case 3:
                 return ProfileFragment.getInstance(1);
             default:
                 return null;

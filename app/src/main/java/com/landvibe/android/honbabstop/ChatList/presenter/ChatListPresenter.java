@@ -12,7 +12,7 @@ public interface ChatListPresenter {
 
     interface View{
 
-        void moveToChatDetailActivity(String roomId);
+        void moveToChatDetailActivity(String roomId, String title);
 
         void moveToAddChatActivity();
 

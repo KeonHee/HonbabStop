@@ -11,8 +11,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
-import com.landvibe.android.honbabstop.base.domain.User;
-import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 import com.landvibe.android.honbabstop.base.utils.TimeFormatUtils;
 
@@ -42,7 +40,7 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
     TextView mCreateTimeTextView;
 
     @BindView(R.id.iv_my_room)
-    ImageView mMyRoomImageView;
+    ImageView mIsOpenedImageView;
 
     private OnItemClickListener mOnItemClickListener;
 
@@ -75,8 +73,13 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
             mTitleTextView.setText(chatRoom.getTitle());
             mMaxCountTextView.setText(chatRoom.getCurrentPeople()+"/"+chatRoom.getMaxPeople());
 
-            //TODO 무슨 정보 넣을지?
-            //mMyRoomImageView.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.ic_star_not_selected_100dp));
+            if(chatRoom.getCurrentPeople()>=chatRoom.getMaxPeople()){
+                mIsOpenedImageView.setImageDrawable(
+                        ContextCompat.getDrawable(mContext,R.drawable.closed));
+            }else {
+                mIsOpenedImageView.setImageDrawable(
+                        ContextCompat.getDrawable(mContext,R.drawable.open));
+            }
 
             mCreateTimeTextView.setText(TimeFormatUtils.getPassByTimeStr(chatRoom.getStartTimeStamp()));
 
@@ -86,9 +89,15 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
         }
 
         itemView.setOnClickListener(v->{
+            if(chatRoom.getCurrentPeople()>=chatRoom.getMaxPeople()){{
+                // TODO 입장 불가 다이얼로그
+                return;
+            }}
+
             if(mOnItemClickListener!=null){
                 mOnItemClickListener.onItemClick(chatRoom);
             }
+
         });
     }
 

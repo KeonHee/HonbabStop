@@ -7,4 +7,12 @@
         android:orderInCategory="100"
         app:showAsAction="never"
         />
+
+    <item
+        android:id="@+id/action_maps"
+        android:title="@string/action_maps"
+        android:icon="@drawable/ic_map_white_24dp"
+        android:orderInCategory="99"
+        app:showAsAction="ifRoom"
+        />
 </menu>

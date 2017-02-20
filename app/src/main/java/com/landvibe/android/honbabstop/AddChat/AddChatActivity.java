@@ -1,55 +1,88 @@
 package com.landvibe.android.honbabstop.AddChat;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 
+import com.landvibe.android.honbabstop.AddChat.adapter.SearchAdapter;
 import com.landvibe.android.honbabstop.AddChat.presenter.AddChatPresenter;
 import com.landvibe.android.honbabstop.AddChat.presenter.AddChatPresenterImpl;
 import com.landvibe.android.honbabstop.ChatDetail.ChatDetailActivity;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.domain.FoodRestaurant;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
+import com.landvibe.android.honbabstop.base.listener.OnShowMarkerListener;
+import com.landvibe.android.honbabstop.base.utils.TimeFormatUtils;
+import com.landvibe.android.honbabstop.nmaps.NMapFragment;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import info.hoang8f.widget.FButton;
 
 public class AddChatActivity extends AppCompatActivity
-        implements AddChatPresenter.View, TimePickerDialog.OnTimeSetListener {
+        implements AddChatPresenter.View, TimePickerDialog.OnTimeSetListener,
+        MaterialSearchView.OnQueryTextListener, AdapterView.OnItemClickListener,
+        View.OnTouchListener{
+
+    private final static String TAG = "AddChatActivity";
 
     @BindView(R.id.et_title)
     MaterialEditText mTitleEditText;
 
-    @BindView(R.id.et_location)
-    MaterialEditText mLocationEditText;
+    @BindView(R.id.et_food_name)
+    MaterialEditText mFoodNameEditText;
 
     @BindView(R.id.np_max_people)
     NumberPicker mMaxPeoplePicker;
 
     @BindView(R.id.btn_contact_time_label)
-    Button mSelectTimeBtn;
+    FButton mSelectTimeBtn;
+
+    @BindView(R.id.search_view)
+    MaterialSearchView mSearchView;
+
+    @BindView(R.id.activity_add_chat)
+    LinearLayout mActivityContainer;
+
+    @BindView(R.id.maps_fragment_space)
+    LinearLayout mMapContainer;
 
     private AddChatPresenter.Presenter mAddChatPresenter;
 
+    private NMapFragment mMapFragment;
+
+    private SearchAdapter mSearchAdapter;
+
     private int selectedHour=1;
     private int selectedMinute=0;
+
+    private FoodRestaurant mSelectedRestaurant;
+
+    private OnShowMarkerListener mMarkerListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +96,19 @@ public class AddChatActivity extends AppCompatActivity
 
     private void init(){
         setActionBar();
+        initMapFragment();
 
         mAddChatPresenter = new AddChatPresenterImpl();
         mAddChatPresenter.attachView(this,this);
 
         mSelectTimeBtn.setOnClickListener(v-> showTimePicker());
+
+        mSearchView.post(()->mSearchView.showSearch());
+
+        mSearchView.setVoiceSearch(false);
+        mSearchView.setOnQueryTextListener(this);
+        mSearchView.setOnItemClickListener(this);
+        mSearchView.getRootView().setOnTouchListener(this);
     }
 
     private void setActionBar(){
@@ -75,6 +116,17 @@ public class AddChatActivity extends AppCompatActivity
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void initMapFragment(){
+        mMapFragment = new NMapFragment();
+        mMapFragment.setArguments(new Bundle());
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.maps_fragment_space, mMapFragment);
+        fragmentTransaction.commit();
+
+        mMarkerListener=mMapFragment;
     }
 
     private void showTimePicker(){
@@ -116,6 +168,9 @@ public class AddChatActivity extends AppCompatActivity
     }
 
     private void createChatRoom(){
+        if(mSelectedRestaurant==null){
+            return;
+        }
 
         ChatRoom chatRoom = new ChatRoom();
 
@@ -138,17 +193,19 @@ public class AddChatActivity extends AppCompatActivity
         chatRoom.setCurrentPeople(1);
         chatRoom.setMaxPeople(mMaxPeoplePicker.getValue());
 
-        /* 만남 장소 */
-        chatRoom.setLocationStr(mLocationEditText.getText().toString());
-        //TODO 위치정보 추가, 네이버 maps 연동
-        chatRoom.setLocationLat(0.0);
-        chatRoom.setLocationLon(0.0);
-
         /* 음식 정보 */
-        chatRoom.setFoodName("");
         //TODO 사진 업로드
         chatRoom.setFoodImageUrl("");
-        chatRoom.setFoodRestaurant("");
+        chatRoom.setFoodName(mFoodNameEditText.getText().toString());
+
+        chatRoom.setFoodTitle(mSelectedRestaurant.getTitle().replace("<b>","").replace("</b>",""));
+        chatRoom.setFoodCategory(mSelectedRestaurant.getCategory());
+        chatRoom.setFoodDescription(mSelectedRestaurant.getDescription());
+        chatRoom.setFoodTelephone(mSelectedRestaurant.getTelephone());
+        chatRoom.setAddress(mSelectedRestaurant.getAddress());
+        chatRoom.setRoadAddress(mSelectedRestaurant.getRoadAddress());
+        chatRoom.setLocationX(mSelectedRestaurant.getMapx());
+        chatRoom.setLocationY(mSelectedRestaurant.getMapy());
 
         /* 방장 정보 */
         User user = UserStore.getInstance().getUser();
@@ -177,8 +234,100 @@ public class AddChatActivity extends AppCompatActivity
     }
 
     @Override
+    public void showSuggestions(String[] suggestions) {
+        for(String s : suggestions){
+            Log.d(TAG, "suggestions : " + s);
+        }
+        mSearchView.post(()->{
+            mSearchAdapter = new SearchAdapter(this, suggestions);
+            mSearchView.setAdapter(mSearchAdapter);
+        });
+    }
+
+    @Override
+    public void showMapMarker(FoodRestaurant foodRestaurant) {
+        if(foodRestaurant!=null){
+            mSelectedRestaurant=foodRestaurant;
+            Log.d(TAG, foodRestaurant.getTitle());
+            Log.d(TAG, foodRestaurant.getMapx() + " : " + foodRestaurant.getMapy());
+
+            if(mMarkerListener!=null){
+                mMarkerListener.onMarkPin(foodRestaurant);
+            }
+        }
+    }
+
+    @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+
+        Calendar contactTime = Calendar.getInstance();
+        contactTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        contactTime.set(Calendar.MINUTE, minute);
+        String timeStringFormat = TimeFormatUtils.converTimeStamp(contactTime.getTimeInMillis());
+
+        mSelectTimeBtn.post(() -> mSelectTimeBtn.setText(timeStringFormat));
+
         selectedHour = hourOfDay;
         selectedMinute = minute;
       }
+
+
+    /* MaterialSearchView.OnQueryTextListener */
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.d(TAG, "query : "+query);
+        mAddChatPresenter.searchLocation(query);
+        //TODO 키보드 숨기기
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        //Log.d(TAG, "newText : " + newText);
+        return false;
+    }
+
+    /* AdapterView.OnItemClickListener */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mSearchView.dismissSuggestions();
+
+        runOnUiThread(() -> {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.weight = 0;
+            mSearchView.setLayoutParams(params);
+
+            if(mMapContainer.getVisibility()==View.GONE){
+                mMapContainer.setVisibility(View.VISIBLE);
+            }
+        });
+
+        String selectedName = (String) mSearchAdapter.getItem(position);
+        Log.d(TAG,"position : "+position);
+        Log.d(TAG,"selectedName : "+selectedName);
+        mAddChatPresenter.loadPOImark(position);
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if(event.getAction()==MotionEvent.ACTION_DOWN){
+            Log.d(TAG, v.getClass().toString());
+            if(mSearchView.getClass()==v.getClass()){
+                mSearchView.post(()->{
+                    ViewGroup.LayoutParams params = mSearchView.getLayoutParams();
+                    params.height = 200;
+                    mSearchView.setLayoutParams(params);
+
+                    if(mMapContainer.getVisibility()==View.VISIBLE){
+                        mMapContainer.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }
+        return true;
+    }
 }

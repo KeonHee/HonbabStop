@@ -127,10 +127,11 @@ public class ChatListFragment extends Fragment implements ChatListPresenter.View
     }
 
     @Override
-    public void moveToChatDetailActivity(String roomId) {
+    public void moveToChatDetailActivity(String roomId, String title) {
         final Activity activity = getActivity();
         final Intent intent = new Intent(activity, ChatDetailActivity.class);
         intent.putExtra("roomId",roomId);
+        intent.putExtra("title", title);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }

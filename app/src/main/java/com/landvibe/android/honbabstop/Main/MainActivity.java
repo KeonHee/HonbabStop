@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         viewPager.setOffscreenPageLimit(3);
 
 
-        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
+        //BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);  /* bottom nav item 4개 이상*/
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()){
                 case R.id.action_chat_list:
@@ -99,11 +99,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 case R.id.action_my_chat:
                     viewPager.setCurrentItem(1,false);
                     break;
-                case R.id.action_friends:
-                    viewPager.setCurrentItem(2,false);
-                    break;
                 case R.id.action_profile:
-                    viewPager.setCurrentItem(3,false);
+                    viewPager.setCurrentItem(2,false);
                     break;
             }
             return true;

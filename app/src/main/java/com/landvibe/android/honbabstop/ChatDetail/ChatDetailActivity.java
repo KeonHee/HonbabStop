@@ -2,17 +2,19 @@ package com.landvibe.android.honbabstop.ChatDetail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.landvibe.android.honbabstop.ChatDetail.adapter.ChatMessageAdapter;
 import com.landvibe.android.honbabstop.ChatDetail.presenter.ChatDetailPresenter;
@@ -21,6 +23,7 @@ import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
+import com.landvibe.android.honbabstop.nmaps.NMapFragment;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.Calendar;
@@ -30,7 +33,6 @@ import butterknife.ButterKnife;
 
 public class ChatDetailActivity extends AppCompatActivity implements ChatDetailPresenter.View,
         View.OnLayoutChangeListener {
-
 
     private final static String TAG = "ChatDetailActivity";
 
@@ -42,6 +44,11 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
 
     @BindView(R.id.iv_send_message)
     ImageView mSendMessageBtn;
+
+    @BindView(R.id.maps_fragment_space)
+    LinearLayout mMapsSpace;
+
+    private NMapFragment mMapFragment;
 
     private ChatDetailPresenterImpl mChatDetailPresenter;
 
@@ -63,7 +70,8 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
     }
 
     private void init(){
-        setActionBar();
+        Intent intent = getIntent();
+        setActionBar(intent.getStringExtra("title"));
 
         mUser= UserStore.getInstance().getUser();
 
@@ -81,8 +89,6 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
         mChatDetailPresenter.setChatMessageAdapterModel(mChatMessageAdapter);
         mChatDetailPresenter.setChatMessageAdapterViw(mChatMessageAdapter);
 
-
-        Intent intent = getIntent();
         roomId = intent.getStringExtra("roomId");
         mChatDetailPresenter.loadChatMessageList(roomId);
 
@@ -103,10 +109,11 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
         });
     }
 
-    private void setActionBar(){
+    private void setActionBar(String title){
         ActionBar actionBar=getSupportActionBar();
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(title);
         }
     }
 
@@ -133,6 +140,10 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
             case R.id.action_room_out:
                 mChatDetailPresenter.outOfChatRoom(mUser, roomId);
                 return true;
+            case R.id.action_maps:
+                /* show maps */
+                mChatDetailPresenter.actionMapView();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -154,6 +165,33 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
             return;
         }
         mChatMessageView.smoothScrollToPosition(mChatMessageAdapter.getItemCount()-1);
+    }
+
+    @Override
+    public void showMaps() {
+        mMapsSpace.setVisibility(View.VISIBLE);
+
+        // TODO 초기화 시점 생각해보기
+        mMapFragment = new NMapFragment();
+        mMapFragment.setArguments(new Bundle());
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.maps_fragment_space, mMapFragment);
+        fragmentTransaction.commit();
+
+    }
+
+    @Override
+    public void hideMaps() {
+        mMapsSpace.setVisibility(View.GONE);
+
+        if(mMapFragment==null){
+            return;
+        }
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.hide(mMapFragment);
     }
 
     @Override

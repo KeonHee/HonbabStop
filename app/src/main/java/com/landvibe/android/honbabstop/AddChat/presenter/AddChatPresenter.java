@@ -3,6 +3,7 @@ package com.landvibe.android.honbabstop.AddChat.presenter;
 import android.app.Activity;
 
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.domain.FoodRestaurant;
 
 /**
  * Created by user on 2017-02-15.
@@ -16,6 +17,10 @@ public interface AddChatPresenter {
 
         void moveToChatDetailActivity(String roomId);
 
+        void showSuggestions(String[] suggestions);
+
+        void showMapMarker(FoodRestaurant foodRestaurant);
+
     }
 
     interface Presenter{
@@ -24,6 +29,10 @@ public interface AddChatPresenter {
         void detachView();
 
         void addChat(ChatRoom chatRoom);
+
+        void searchLocation(String query);
+
+        void loadPOImark(int position);
 
     }
 }

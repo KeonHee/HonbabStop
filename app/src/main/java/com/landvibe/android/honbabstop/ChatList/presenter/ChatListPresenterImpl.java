@@ -110,13 +110,15 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
 
         StringBuffer dsec = new StringBuffer();
         dsec.append(String.format(Locale.KOREAN,
-                "만난 시간 : %d시 %d분\n",
+                "만남 시간 : %d시 %d분\n",
                 contactTimeInstance.get(Calendar.HOUR_OF_DAY),
                 contactTimeInstance.get(Calendar.MINUTE)));
         dsec.append(String.format(Locale.KOREAN,
-                "만남 장소 : %s\n",chatRoom.getLocationStr()));
+                "만남 장소 : %s\n",chatRoom.getAddress()));
         dsec.append(String.format(Locale.KOREAN,
-                "먹는 음식 : %s\n",chatRoom.getFoodName()));
+                "음식점 : %s\n",chatRoom.getFoodTitle()));
+        dsec.append(String.format(Locale.KOREAN,
+                "메뉴 이름 : %s\n",chatRoom.getFoodName()));
         dsec.append(String.format(Locale.KOREAN,
                 "현재 인원 : %d/%d\n",
                 chatRoom.getCurrentPeople(),chatRoom.getMaxPeople()));
@@ -163,7 +165,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
      */
     @Override
     public void onComplete(ChatRoom chatRoom) {
-        view.moveToChatDetailActivity(chatRoom.getId());
+        view.moveToChatDetailActivity(chatRoom.getId(),chatRoom.getTitle());
 
         GlobalApp.getGlobalApplicationContext().changeModel(chatRoom);
     }

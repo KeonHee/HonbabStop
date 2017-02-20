@@ -25,8 +25,9 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
     private ChatAdapterContract.Model mAdapterModel;
     private ChatAdapterContract.View mAdapterView;
 
-
     private ChatDetailModel mChatDetailModel;
+
+    private boolean isClicked=false;
 
     @Override
     public void attachView(ChatDetailPresenter.View view, Activity activity) {
@@ -82,6 +83,21 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
     }
 
     @Override
+    public void actionMapView() {
+        if(isClicked){
+            view.hideMaps();
+            isClicked=false;
+        }else {
+            view.showMaps();
+            isClicked=true;
+        }
+    }
+
+
+    /**
+     *  메세지 수신 콜백
+     */
+    @Override
     public void update(ChatMessage message) {
         mAdapterModel.addListData(message);
         mAdapterView.notifyLastOne();
@@ -101,6 +117,7 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
 
     @Override
     public void onFailure(DatabaseError databaseError) {
+
 
     }
 }
