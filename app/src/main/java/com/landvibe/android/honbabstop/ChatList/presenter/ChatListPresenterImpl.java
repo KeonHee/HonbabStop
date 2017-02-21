@@ -27,6 +27,8 @@ import java.util.Locale;
 public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
         ChatListModel.ChangeChatListData, ChatListModel.CompleteChangeUserData, OnItemClickListener, CustomObserver{
 
+
+    private final static String TAG = "ChatListPresenterImpl";
     private ChatListPresenter.View view;
 
     private Activity mActivity;
@@ -35,8 +37,6 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
     private ChatListAdapterContract.View mAdapterView;
 
     private ChatListModel mChatListModel;
-
-    private MaterialStyledDialog mChatRoomInfoDialog;
 
     @Override
     public void attachView(ChatListPresenter.View view, Activity activity) {
@@ -123,7 +123,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
                 "현재 인원 : %d/%d\n",
                 chatRoom.getCurrentPeople(),chatRoom.getMaxPeople()));
 
-        mChatRoomInfoDialog = new MaterialStyledDialog.Builder(mActivity)
+        new MaterialStyledDialog.Builder(mActivity)
                 .setTitle(title)
                 .setHeaderColor(R.color.fbutton_color_orange)
                 .setStyle(Style.HEADER_WITH_TITLE)
@@ -161,7 +161,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
 
 
     /**
-     *  채팅방의 User 정보 수정 완료 콜백
+     *  채팅방 입장 여부 콜백
      */
     @Override
     public void onComplete(ChatRoom chatRoom) {
@@ -171,7 +171,20 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
     }
 
     @Override
-    public void onFailure(DatabaseError databaseError) {
+    public void onFailure(String errorMessage) {
+        Log.d(TAG, errorMessage);
 
+        String title = String.format(mActivity.getResources().getString(R.string.enter_fail_title));
+        String desc = String.format(mActivity.getResources().getString(R.string.enter_fail_desc),errorMessage);
+
+        mActivity.runOnUiThread(()->
+                new MaterialStyledDialog.Builder(mActivity)
+                .setTitle(title)
+                .setHeaderColor(R.color.fbutton_color_orange)
+                .setStyle(Style.HEADER_WITH_TITLE)
+                .setDescription(desc)
+                .setScrollable(true)
+                .setPositiveText(R.string.chat_room_dialog_enter)
+                .show());
     }
 }

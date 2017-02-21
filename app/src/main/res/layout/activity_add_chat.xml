@@ -63,7 +63,7 @@
             android:layout_marginLeft="8dp"
             app:np_orientation="horizontal"
             app:np_dividerColor="@color/fbutton_color_pumpkin"
-            app:np_formatter="@string/number_picker_formatter"
+            app:np_formatter="@string/number_picker_people_formatter"
             app:np_max="5"
             app:np_min="2"
             app:np_textColor="@color/fbutton_color_pumpkin"
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/np_max_people"
-            android:text="시간 선택"
+            android:text="시간"
             android:textSize="16sp"
             android:textColor="@color/fbutton_color_clouds"
             fbutton:buttonColor="@color/fbutton_color_orange"
@@ -115,7 +115,7 @@
             android:id="@+id/btn_food_image_upload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="사진 업로드"
+            android:text="대표사진"
             android:textSize="16sp"
             android:textColor="@color/fbutton_color_clouds"
             fbutton:buttonColor="@color/fbutton_color_orange"
@@ -131,9 +131,11 @@
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="0"
         android:layout_marginTop="8dp"
+        android:hint="음식점 검색"
         />
+
 
     <LinearLayout
         android:id="@+id/maps_fragment_space"
@@ -142,10 +144,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:visibility="gone"
         >
     </LinearLayout>
-
-
-
 </LinearLayout>

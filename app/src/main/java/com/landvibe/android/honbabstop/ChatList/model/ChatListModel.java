@@ -1,5 +1,7 @@
 package com.landvibe.android.honbabstop.ChatList.model;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,9 +35,6 @@ public class ChatListModel {
     private void loadDB(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
-
-
-
 
 
     /**
@@ -82,8 +81,6 @@ public class ChatListModel {
     }
 
 
-
-
     /**
      *  채팅방의 User 정보 수정 완료 콜백
      */
@@ -91,7 +88,7 @@ public class ChatListModel {
 
     public interface CompleteChangeUserData{
         void onComplete(ChatRoom chatRoom);
-        void onFailure(DatabaseError databaseError);
+        void onFailure(String errorMessage);
     }
 
     public void setCompleteListener(CompleteChangeUserData listener){
@@ -108,41 +105,88 @@ public class ChatListModel {
 
         //@TODO MyChat에 데이터 추가
 
-        mDatabase.child("ChatList").child(roomId).runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
+        DatabaseReference roomRef = mDatabase.child("ChatList").child(roomId);
+        if(roomRef==null){
+            mCompleteChangeUserData.onFailure("없는 채팅방");
+            return;
+        }
 
-                ChatRoom chatRoom = mutableData.getValue(ChatRoom.class);
+
+        roomRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
 
                 if(chatRoom==null){
-                    return Transaction.success(mutableData);
+                    mCompleteChangeUserData.onFailure("없는 채팅방");
+                    return;
                 }
 
-                if(!members.contains(uid)){
-                    members.add(uid);
-                    chatRoom.setMembers(members);
-                    chatRoom.setCurrentPeople(chatRoom.getCurrentPeople()+1);
+                if(chatRoom.getCurrentPeople()>=chatRoom.getMaxPeople()){
+                    mCompleteChangeUserData.onFailure("인원 초과");
+                    return;
                 }
 
-                mutableData.setValue(chatRoom);
-                return Transaction.success(mutableData);
+
+                roomRef.runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+
+                        ChatRoom chatRoom = mutableData.getValue(ChatRoom.class);
+
+                        if(chatRoom==null){
+                            // DB 동시 접근 시, 모두 입장 불가
+                            mCompleteChangeUserData.onFailure("채팅방에 접속자가 몰렸습니다 다시 시도해 주세요");
+                            Log.d(TAG, "채팅방에 접속자가 몰렸습니다 다시 시도해 주세요");
+                            return Transaction.abort();
+                        }
+
+                        if(chatRoom.getCurrentPeople()>=chatRoom.getMaxPeople()){
+                            // 한명은 입장 가능
+                            mCompleteChangeUserData.onFailure("인원 초과");
+                            Log.d(TAG, "인원 초과");
+                            return Transaction.abort();
+                        }
+
+                        if(!members.contains(uid)){
+                            members.add(uid);
+                            chatRoom.setMembers(members);
+                            chatRoom.setCurrentPeople(chatRoom.getCurrentPeople()+1);
+                        }
+
+                        mutableData.setValue(chatRoom);
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                        if(!committed){
+                            if(databaseError!=null){
+                                Log.d(TAG, databaseError.getMessage());
+                            }
+                            return;
+                        }
+
+                        if(databaseError!=null){
+                            Log.d(TAG, databaseError.getMessage());
+                            return;
+                        }
+
+                        ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
+                        if(chatRoom!=null) {
+                            mCompleteChangeUserData.onComplete(chatRoom);
+                        }
+                    }
+                });
+
             }
 
             @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-                ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
-                if(chatRoom!=null){
-                    mCompleteChangeUserData.onComplete(chatRoom);
-                }else {
-                    mCompleteChangeUserData.onFailure(databaseError);
-                }
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled : " +databaseError.getMessage());
             }
         });
 
 
     }
-
-
-
 }

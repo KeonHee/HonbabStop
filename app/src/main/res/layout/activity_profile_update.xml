@@ -76,7 +76,7 @@
             android:layout_marginLeft="8dp"
             app:np_orientation="horizontal"
             app:np_dividerColor="@color/fbutton_color_pumpkin"
-            app:np_formatter="@string/number_picker_formatter"
+            app:np_formatter="@string/number_picker_age_formatter"
             app:np_max="100"
             app:np_min="1"
             app:np_textColor="@color/fbutton_color_pumpkin"

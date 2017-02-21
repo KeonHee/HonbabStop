@@ -1,6 +1,7 @@
 package com.landvibe.android.honbabstop.AddChat.presenter;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.util.Log;
 
 import com.landvibe.android.honbabstop.AddChat.model.AddChatModel;
@@ -15,7 +16,8 @@ import java.util.List;
  * Created by user on 2017-02-15.
  */
 
-public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchModel.ModelDataChange {
+public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchModel.ModelDataChange,
+        AddChatModel.ImageUploadCallback{
 
     private static final String TAG ="AddChatPresenterImpl";
     private AddChatPresenter.View view;
@@ -29,6 +31,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         this.view=view;
 
         mAddChatModel = new AddChatModel();
+        mAddChatModel.setOnImageUploadCallback(this);
 
         mSearchModel = new SearchModel();
         mSearchModel.setOnChangeListener(this);
@@ -39,6 +42,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
     public void detachView() {
         this.view=null;
 
+        mAddChatModel.setOnImageUploadCallback(null);
         mAddChatModel=null;
 
         mSearchModel.setOnChangeListener(null);
@@ -47,8 +51,11 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
     }
 
     @Override
-    public void addChat(ChatRoom chatRoom) {
+    public void addChat(ChatRoom chatRoom, Uri imageUrl) {
         mAddChatModel.createChat(chatRoom);
+        if(imageUrl!=null){
+            mAddChatModel.saveImageToStorage(chatRoom.getId(),imageUrl);
+        }
         view.moveToChatDetailActivity(chatRoom.getId());
 
         GlobalApp.getGlobalApplicationContext().changeModel(chatRoom);
@@ -72,7 +79,6 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         }
     }
 
-
     /**
      * SearchModel.ModelDataChange
      */
@@ -94,8 +100,27 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         view.showSuggestions(suggestions);
     }
 
+
+    /**
+     * AddChatModel.ImageUploadCallback
+     */
+    @Override
+    public void onComplete(Uri saveUri, String roomId) {
+        mAddChatModel.saveChatImageUrl(saveUri, roomId);
+    }
+
     @Override
     public void onFailure() {
+
+    }
+
+    @Override
+    public void onProgress(double progress) {
+
+    }
+
+    @Override
+    public void onPause() {
 
     }
 }

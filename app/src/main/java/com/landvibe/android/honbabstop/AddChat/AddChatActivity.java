@@ -2,6 +2,7 @@ package com.landvibe.android.honbabstop.AddChat;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
+import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.landvibe.android.honbabstop.AddChat.adapter.SearchAdapter;
 import com.landvibe.android.honbabstop.AddChat.presenter.AddChatPresenter;
 import com.landvibe.android.honbabstop.AddChat.presenter.AddChatPresenterImpl;
@@ -45,22 +47,26 @@ import info.hoang8f.widget.FButton;
 
 public class AddChatActivity extends AppCompatActivity
         implements AddChatPresenter.View, TimePickerDialog.OnTimeSetListener,
-        MaterialSearchView.OnQueryTextListener, AdapterView.OnItemClickListener,
-        View.OnTouchListener{
+        MaterialSearchView.OnQueryTextListener, AdapterView.OnItemClickListener{
 
     private final static String TAG = "AddChatActivity";
 
+    private final int REQ_CODE_SELECT_IMAGE = 1001;
+
     @BindView(R.id.et_title)
     MaterialEditText mTitleEditText;
-
-    @BindView(R.id.et_food_name)
-    MaterialEditText mFoodNameEditText;
 
     @BindView(R.id.np_max_people)
     NumberPicker mMaxPeoplePicker;
 
     @BindView(R.id.btn_contact_time_label)
     FButton mSelectTimeBtn;
+
+    @BindView(R.id.et_food_name)
+    MaterialEditText mFoodNameEditText;
+
+    @BindView(R.id.btn_food_image_upload)
+    FButton mImageUploadButton;
 
     @BindView(R.id.search_view)
     MaterialSearchView mSearchView;
@@ -84,6 +90,8 @@ public class AddChatActivity extends AppCompatActivity
 
     private OnShowMarkerListener mMarkerListener;
 
+    private Uri tmpUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,12 +111,13 @@ public class AddChatActivity extends AppCompatActivity
 
         mSelectTimeBtn.setOnClickListener(v-> showTimePicker());
 
-        mSearchView.post(()->mSearchView.showSearch());
+        mImageUploadButton.setOnClickListener(v->showGalleryDialog());
 
+        mSearchView.post(()->mSearchView.showSearch());
         mSearchView.setVoiceSearch(false);
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnItemClickListener(this);
-        mSearchView.getRootView().setOnTouchListener(this);
+
     }
 
     private void setActionBar(){
@@ -140,12 +149,43 @@ public class AddChatActivity extends AppCompatActivity
         tpd.show(getFragmentManager(), "Timepickerdialog");
     }
 
+    private void showGalleryDialog(){
+        new BottomDialog.Builder(this)
+                .setTitle(this.getString(R.string.dialog_title))
+                .setContent(this.getString(R.string.dialog_content))
+                .setPositiveText("OK")
+                .setPositiveBackgroundColorResource(R.color.fbutton_color_pomegranate)
+                .setPositiveTextColorResource(android.R.color.white)
+                .onPositive(dialog -> getPhotoFromGallery())
+                .show();
+    }
+
+    public void getPhotoFromGallery() {
+        startActivityForResult(
+                Intent.createChooser(
+                        new Intent(Intent.ACTION_GET_CONTENT)
+                                .setType("image/*"), "사진 가져오기"),
+                REQ_CODE_SELECT_IMAGE);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mAddChatPresenter.detachView();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "resultCode : " + resultCode);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQ_CODE_SELECT_IMAGE) {
+                tmpUri = data.getData();
+                Log.d(TAG, "selectedImageUri : " + tmpUri);
+
+                //TODO 사진 보여주기
+            }
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -194,8 +234,6 @@ public class AddChatActivity extends AppCompatActivity
         chatRoom.setMaxPeople(mMaxPeoplePicker.getValue());
 
         /* 음식 정보 */
-        //TODO 사진 업로드
-        chatRoom.setFoodImageUrl("");
         chatRoom.setFoodName(mFoodNameEditText.getText().toString());
 
         chatRoom.setFoodTitle(mSelectedRestaurant.getTitle().replace("<b>","").replace("</b>",""));
@@ -217,7 +255,7 @@ public class AddChatActivity extends AppCompatActivity
 
         chatRoom.setStatus(ChatRoom.STATUS_REMAIN);
 
-        mAddChatPresenter.addChat(chatRoom);
+        mAddChatPresenter.addChat(chatRoom, tmpUri);
     }
 
     @Override
@@ -311,23 +349,4 @@ public class AddChatActivity extends AppCompatActivity
         mAddChatPresenter.loadPOImark(position);
     }
 
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if(event.getAction()==MotionEvent.ACTION_DOWN){
-            Log.d(TAG, v.getClass().toString());
-            if(mSearchView.getClass()==v.getClass()){
-                mSearchView.post(()->{
-                    ViewGroup.LayoutParams params = mSearchView.getLayoutParams();
-                    params.height = 200;
-                    mSearchView.setLayoutParams(params);
-
-                    if(mMapContainer.getVisibility()==View.VISIBLE){
-                        mMapContainer.setVisibility(View.GONE);
-                    }
-                });
-            }
-        }
-        return true;
-    }
 }

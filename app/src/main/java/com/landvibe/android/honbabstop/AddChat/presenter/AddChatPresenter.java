@@ -1,6 +1,7 @@
 package com.landvibe.android.honbabstop.AddChat.presenter;
 
 import android.app.Activity;
+import android.net.Uri;
 
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.FoodRestaurant;
@@ -28,7 +29,7 @@ public interface AddChatPresenter {
 
         void detachView();
 
-        void addChat(ChatRoom chatRoom);
+        void addChat(ChatRoom chatRoom, Uri imageUrl);
 
         void searchLocation(String query);
 

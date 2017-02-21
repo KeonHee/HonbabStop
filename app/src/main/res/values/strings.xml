@@ -29,7 +29,8 @@
     <string name="add_chat_contact_time_label">만남시간</string>
     <string name="add_chat_food_name_label">메뉴이름</string>
 
-    <string name="number_picker_formatter">%d명</string>
+    <string name="number_picker_people_formatter">%d명</string>
+    <string name="number_picker_age_formatter">%02d</string>
 
 
     <!-- ChatListFragment -->
@@ -37,6 +38,12 @@
 
     <string name="chat_room_dialog_enter">입장</string>
     <string name="chat_room_dialog_return">취소</string>
+
+    <string name="enter_fail_title">채팅방 입장 불가</string>
+    <string name="enter_fail_desc">불가 사유 : %s</string>
+    <string name="enter_fail_positive">확인</string>
+
+
 
     <!--  ProfileFragment -->
     <string name="empty_name">이름을 입력해주세요!</string>
