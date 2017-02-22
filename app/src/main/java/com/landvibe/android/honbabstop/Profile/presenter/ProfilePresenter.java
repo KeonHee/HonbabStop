@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Profile.presenter;
+package com.landvibe.android.honbabstop.profile.presenter;
 
 import android.app.Activity;
 import android.net.Uri;

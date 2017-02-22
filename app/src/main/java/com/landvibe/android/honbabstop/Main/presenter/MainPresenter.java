@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Main.presenter;
+package com.landvibe.android.honbabstop.main.presenter;
 
 /**
  * Created by user on 2017-02-09.

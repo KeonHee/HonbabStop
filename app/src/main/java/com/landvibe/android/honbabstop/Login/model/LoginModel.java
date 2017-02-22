@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Login.model;
+package com.landvibe.android.honbabstop.login.model;
 
 import android.app.Activity;
 import android.net.Uri;

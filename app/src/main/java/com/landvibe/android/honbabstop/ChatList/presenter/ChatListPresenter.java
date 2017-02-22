@@ -1,8 +1,8 @@
-package com.landvibe.android.honbabstop.ChatList.presenter;
+package com.landvibe.android.honbabstop.chatlist.presenter;
 
 import android.app.Activity;
 
-import com.landvibe.android.honbabstop.ChatList.adapter.contract.ChatListAdapterContract;
+import com.landvibe.android.honbabstop.chatlist.adapter.contract.ChatListAdapterContract;
 
 /**
  * Created by user on 2017-02-15.

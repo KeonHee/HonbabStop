@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Profile.model;
+package com.landvibe.android.honbabstop.profile.model;
 
 import android.util.Log;
 

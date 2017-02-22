@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatList.adapter.contract;
+package com.landvibe.android.honbabstop.chatlist.adapter.contract;
 
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;

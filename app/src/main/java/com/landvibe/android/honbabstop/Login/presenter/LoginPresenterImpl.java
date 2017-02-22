@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Login.presenter;
+package com.landvibe.android.honbabstop.login.presenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,7 +26,7 @@ import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
-import com.landvibe.android.honbabstop.Login.model.LoginModel;
+import com.landvibe.android.honbabstop.login.model.LoginModel;
 import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
 
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Profile;
+package com.landvibe.android.honbabstop.profile;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,10 +16,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
-import com.landvibe.android.honbabstop.Profile.presenter.ProfilePresenter;
-import com.landvibe.android.honbabstop.Profile.presenter.ProfilePresenterImpl;
+import com.landvibe.android.honbabstop.profile.presenter.ProfilePresenter;
+import com.landvibe.android.honbabstop.profile.presenter.ProfilePresenterImpl;
 import com.landvibe.android.honbabstop.R;
-import com.landvibe.android.honbabstop.UpdateProfile.UpdateProfileActivity;
+import com.landvibe.android.honbabstop.updateprofile.UpdateProfileActivity;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
 

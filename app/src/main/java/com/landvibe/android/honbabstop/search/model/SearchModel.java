@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.AddChat.model;
+package com.landvibe.android.honbabstop.search.model;
 
 import android.util.Log;
 
@@ -26,7 +26,7 @@ public class SearchModel {
 
     private final static String TAG="SearchModel";
 
-    private final static int QUERY_DISPLAY=10;
+    private final static int QUERY_DISPLAY=20;
     private final static int QUERY_START=1;
     private final static String QUERY_SORT_RANDOM="random";
     private final static String QUERY_SORT_COMMENT="comment";

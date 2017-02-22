@@ -1,14 +1,14 @@
-package com.landvibe.android.honbabstop.ChatDetail.adapter;
+package com.landvibe.android.honbabstop.chatdetail.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.landvibe.android.honbabstop.ChatDetail.adapter.contract.ChatAdapterContract;
-import com.landvibe.android.honbabstop.ChatDetail.adapter.holder.ChatEnterMessageViewHolder;
-import com.landvibe.android.honbabstop.ChatDetail.adapter.holder.ChatMyMessageViewHolder;
-import com.landvibe.android.honbabstop.ChatDetail.adapter.holder.ChatOtherMessageViewHolder;
+import com.landvibe.android.honbabstop.chatdetail.adapter.contract.ChatAdapterContract;
+import com.landvibe.android.honbabstop.chatdetail.adapter.holder.ChatEnterMessageViewHolder;
+import com.landvibe.android.honbabstop.chatdetail.adapter.holder.ChatMyMessageViewHolder;
+import com.landvibe.android.honbabstop.chatdetail.adapter.holder.ChatOtherMessageViewHolder;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
 import com.landvibe.android.honbabstop.base.domain.User;

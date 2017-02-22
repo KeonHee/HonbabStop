@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatList.adapter.holder;
+package com.landvibe.android.honbabstop.chatlist.adapter.holder;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -62,7 +62,7 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
             if(chatRoom.getFoodImageUrl()==null){
                 Glide.with(mContext)
                         .load(R.drawable.default_profile)
-                        .override(150,150)
+                        .override(140,140)
                         .centerCrop()
                         .dontAnimate()
                         .bitmapTransform(new CropCircleTransformation(mContext))
@@ -70,7 +70,7 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
             }else {
                 Glide.with(mContext)
                         .load(chatRoom.getFoodImageUrl())
-                        .override(150,150)
+                        .override(140,140)
                         .centerCrop()
                         .dontAnimate()
                         .bitmapTransform(new CropCircleTransformation(mContext))

@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Main;
+package com.landvibe.android.honbabstop.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,11 +17,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
-import com.landvibe.android.honbabstop.Login.LoginActivity;
-import com.landvibe.android.honbabstop.Main.page.BottomNavigationViewHelper;
-import com.landvibe.android.honbabstop.Main.page.MainPageAdapter;
-import com.landvibe.android.honbabstop.Main.presenter.MainPresenter;
-import com.landvibe.android.honbabstop.Main.presenter.MainPresenterImpl;
+import com.landvibe.android.honbabstop.login.LoginActivity;
+import com.landvibe.android.honbabstop.main.page.MainPageAdapter;
+import com.landvibe.android.honbabstop.main.presenter.MainPresenter;
+import com.landvibe.android.honbabstop.main.presenter.MainPresenterImpl;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
 import com.landvibe.android.honbabstop.base.domain.User;

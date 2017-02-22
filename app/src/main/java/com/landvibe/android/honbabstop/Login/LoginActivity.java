@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Login;
+package com.landvibe.android.honbabstop.login;
 
 import android.content.Intent;
 import android.os.Build;
@@ -13,9 +13,9 @@ import android.widget.ProgressBar;
 import com.bumptech.glide.Glide;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
-import com.landvibe.android.honbabstop.Login.presenter.LoginPresenter;
-import com.landvibe.android.honbabstop.Login.presenter.LoginPresenterImpl;
-import com.landvibe.android.honbabstop.Main.MainActivity;
+import com.landvibe.android.honbabstop.login.presenter.LoginPresenter;
+import com.landvibe.android.honbabstop.login.presenter.LoginPresenterImpl;
+import com.landvibe.android.honbabstop.main.MainActivity;
 import com.landvibe.android.honbabstop.R;
 
 import butterknife.BindView;

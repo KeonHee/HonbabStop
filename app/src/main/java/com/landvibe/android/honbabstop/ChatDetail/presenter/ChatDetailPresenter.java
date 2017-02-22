@@ -1,8 +1,8 @@
-package com.landvibe.android.honbabstop.ChatDetail.presenter;
+package com.landvibe.android.honbabstop.chatdetail.presenter;
 
 import android.app.Activity;
 
-import com.landvibe.android.honbabstop.ChatDetail.adapter.contract.ChatAdapterContract;
+import com.landvibe.android.honbabstop.chatdetail.adapter.contract.ChatAdapterContract;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.User;

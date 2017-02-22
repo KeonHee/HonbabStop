@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- Naver Maps -->
     <!-- 반드시 추가 -->
@@ -29,7 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/CustomAppTheme">
         <activity
-            android:name=".Login.LoginActivity"
+            android:name=".login.LoginActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -80,32 +80,39 @@
             android:value="GlideModule" />
 
         <activity
-            android:name=".Main.MainActivity"
-            android:launchMode="singleTask">
+            android:name=".main.MainActivity"
+            android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".updateprofile.UpdateProfileActivity"
+            android:parentActivityName=".main.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainActivity" />
+        </activity>
+        <activity
+            android:name=".chatdetail.ChatDetailActivity"
+            android:parentActivityName=".main.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainActivity" />
+        </activity>
+        <activity
+            android:name=".addchat.AddChatActivity"
+            android:parentActivityName=".main.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.MainActivity" />
+        </activity>
+        <activity
+            android:name=".search.SearchActivity"
+            android:theme="@style/CustomNoActionBar"
+            android:parentActivityName=".addchat.AddChatActivity"
+            >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".addchat.AddChatActivity" />
 
         </activity>
-        <activity
-            android:name=".UpdateProfile.UpdateProfileActivity"
-            android:parentActivityName=".Main.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Main.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ChatDetail.ChatDetailActivity"
-            android:parentActivityName=".Main.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Main.MainActivity" />
-        </activity>
-        <activity
-            android:name=".AddChat.AddChatActivity"
-            android:parentActivityName=".Main.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Main.MainActivity" />
-        </activity>
-
     </application>
 
 </manifest>

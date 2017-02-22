@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatDetail;
+package com.landvibe.android.honbabstop.chatdetail;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,7 +25,6 @@ import com.nhn.android.maps.NMapView;
 import com.nhn.android.maps.maplib.NGeoPoint;
 import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.overlay.NMapPOIdata;
-import com.nhn.android.maps.overlay.NMapPOIitem;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 

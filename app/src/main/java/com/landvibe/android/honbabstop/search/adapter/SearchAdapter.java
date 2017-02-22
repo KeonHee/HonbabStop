@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.AddChat.adapter;
+package com.landvibe.android.honbabstop.search.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.landvibe.android.honbabstop.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

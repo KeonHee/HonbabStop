@@ -1,19 +1,21 @@
-package com.landvibe.android.honbabstop.ChatList.presenter;
+package com.landvibe.android.honbabstop.chatlist.presenter;
 
 import android.app.Activity;
 import android.util.Log;
 
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
-import com.landvibe.android.honbabstop.ChatList.adapter.contract.ChatListAdapterContract;
-import com.landvibe.android.honbabstop.ChatList.model.ChatListModel;
+import com.landvibe.android.honbabstop.chatlist.adapter.contract.ChatListAdapterContract;
+import com.landvibe.android.honbabstop.chatlist.model.ChatListModel;
 import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.domain.MyChat;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 import com.landvibe.android.honbabstop.base.observer.CustomObserver;
+import com.landvibe.android.honbabstop.base.utils.DomainConvertUtils;
 
 import java.util.Calendar;
 import java.util.List;
@@ -167,6 +169,9 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
         view.moveToChatDetailActivity(chatRoom.getId(),chatRoom.getTitle());
 
         GlobalApp.getGlobalApplicationContext().changeModel(chatRoom);
+
+        MyChat myChat = DomainConvertUtils.convertChatRoomToMyChat(chatRoom);
+        GlobalApp.getGlobalApplicationContext().changeModel(myChat);
     }
 
     @Override

@@ -8,7 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.landvibe.android.honbabstop.AddChat.AddChatActivity">
+    tools:context="com.landvibe.android.honbabstop.addchat.AddChatActivity">
 
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -127,13 +127,18 @@
     </LinearLayout>
 
 
-    <com.miguelcatalan.materialsearchview.MaterialSearchView
-        android:id="@+id/search_view"
-        android:layout_width="match_parent"
+    <info.hoang8f.widget.FButton
+        android:id="@+id/btn_search_restaurant"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:layout_marginTop="8dp"
-        android:hint="음식점 검색"
+        android:text="음식점 검색"
+        android:textSize="16sp"
+        android:textColor="@color/fbutton_color_clouds"
+        fbutton:buttonColor="@color/fbutton_color_orange"
+        fbutton:shadowColor="@color/fbutton_color_sun_flower"
+        fbutton:shadowEnabled="true"
+        fbutton:shadowHeight="2dp"
+        fbutton:cornerRadius="5dp"
         />
 
 

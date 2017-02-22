@@ -1,7 +1,5 @@
-package com.landvibe.android.honbabstop.Main.presenter;
+package com.landvibe.android.honbabstop.main.presenter;
 
-
-import com.landvibe.android.honbabstop.Main.model.MainModel;
 
 /**
  * Created by user on 2017-02-09.

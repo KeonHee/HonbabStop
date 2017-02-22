@@ -1,11 +1,10 @@
-package com.landvibe.android.honbabstop.MyChatList.presenter;
+package com.landvibe.android.honbabstop.mychatlist.presenter;
 
 import android.app.Activity;
 
-import com.landvibe.android.honbabstop.ChatList.model.ChatListModel;
 import com.landvibe.android.honbabstop.GlobalApp;
-import com.landvibe.android.honbabstop.MyChatList.adapter.contract.MyChatListAdapterContract;
-import com.landvibe.android.honbabstop.MyChatList.model.MyChatListModel;
+import com.landvibe.android.honbabstop.mychatlist.adapter.contract.MyChatListAdapterContract;
+import com.landvibe.android.honbabstop.mychatlist.model.MyChatListModel;
 import com.landvibe.android.honbabstop.base.domain.MyChat;
 import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 import com.landvibe.android.honbabstop.base.observer.CustomObserver;

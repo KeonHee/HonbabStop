@@ -1,11 +1,11 @@
-package com.landvibe.android.honbabstop.MyChatList.adapter;
+package com.landvibe.android.honbabstop.mychatlist.adapter;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.landvibe.android.honbabstop.MyChatList.adapter.contract.MyChatListAdapterContract;
-import com.landvibe.android.honbabstop.MyChatList.adapter.holder.MyChatViewHolder;
+import com.landvibe.android.honbabstop.mychatlist.adapter.contract.MyChatListAdapterContract;
+import com.landvibe.android.honbabstop.mychatlist.adapter.holder.MyChatViewHolder;
 import com.landvibe.android.honbabstop.base.domain.MyChat;
 import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 

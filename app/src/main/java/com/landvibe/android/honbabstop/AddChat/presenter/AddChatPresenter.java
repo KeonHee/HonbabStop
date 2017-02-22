@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.AddChat.presenter;
+package com.landvibe.android.honbabstop.addchat.presenter;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -18,7 +18,7 @@ public interface AddChatPresenter {
 
         void moveToChatDetailActivity(String roomId);
 
-        void showSuggestions(String[] suggestions);
+        void moveToSearchActivity();
 
         void showMapMarker(FoodRestaurant foodRestaurant);
 
@@ -30,10 +30,6 @@ public interface AddChatPresenter {
         void detachView();
 
         void addChat(ChatRoom chatRoom, Uri imageUrl);
-
-        void searchLocation(String query);
-
-        void loadPOImark(int position);
 
     }
 }

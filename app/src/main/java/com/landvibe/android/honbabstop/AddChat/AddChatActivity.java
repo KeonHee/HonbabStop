@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.AddChat;
+package com.landvibe.android.honbabstop.addchat;
 
 
 import android.content.Intent;
@@ -13,23 +13,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
 import com.github.javiersantos.bottomdialogs.BottomDialog;
-import com.landvibe.android.honbabstop.AddChat.adapter.SearchAdapter;
-import com.landvibe.android.honbabstop.AddChat.presenter.AddChatPresenter;
-import com.landvibe.android.honbabstop.AddChat.presenter.AddChatPresenterImpl;
-import com.landvibe.android.honbabstop.ChatDetail.ChatDetailActivity;
 import com.landvibe.android.honbabstop.R;
+import com.landvibe.android.honbabstop.addchat.presenter.AddChatPresenter;
+import com.landvibe.android.honbabstop.addchat.presenter.AddChatPresenterImpl;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.FoodRestaurant;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.landvibe.android.honbabstop.base.listener.OnShowMarkerListener;
 import com.landvibe.android.honbabstop.base.utils.TimeFormatUtils;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.landvibe.android.honbabstop.chatdetail.ChatDetailActivity;
+import com.landvibe.android.honbabstop.search.SearchActivity;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -43,8 +40,7 @@ import butterknife.ButterKnife;
 import info.hoang8f.widget.FButton;
 
 public class AddChatActivity extends AppCompatActivity
-        implements AddChatPresenter.View, TimePickerDialog.OnTimeSetListener,
-        MaterialSearchView.OnQueryTextListener, AdapterView.OnItemClickListener{
+        implements AddChatPresenter.View, TimePickerDialog.OnTimeSetListener{
 
     private final static String TAG = "AddChatActivity";
 
@@ -65,8 +61,8 @@ public class AddChatActivity extends AppCompatActivity
     @BindView(R.id.btn_food_image_upload)
     FButton mImageUploadButton;
 
-    @BindView(R.id.search_view)
-    MaterialSearchView mSearchView;
+    @BindView(R.id.btn_search_restaurant)
+    FButton mSearchButton;
 
     @BindView(R.id.activity_add_chat)
     LinearLayout mActivityContainer;
@@ -77,8 +73,6 @@ public class AddChatActivity extends AppCompatActivity
     private AddChatPresenter.Presenter mAddChatPresenter;
 
     private NMapFragment mMapFragment;
-
-    private SearchAdapter mSearchAdapter;
 
     private int selectedHour=1;
     private int selectedMinute=0;
@@ -93,8 +87,8 @@ public class AddChatActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_chat);
+        Log.d(TAG, "onCreate");
         ButterKnife.bind(this);
-
 
         init();
     }
@@ -110,11 +104,7 @@ public class AddChatActivity extends AppCompatActivity
 
         mImageUploadButton.setOnClickListener(v->showGalleryDialog());
 
-        mSearchView.post(()->mSearchView.showSearch());
-        mSearchView.setVoiceSearch(false);
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setOnItemClickListener(this);
-
+        mSearchButton.setOnClickListener(v->moveToSearchActivity());
     }
 
     private void setActionBar(){
@@ -166,8 +156,15 @@ public class AddChatActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
         mAddChatPresenter.detachView();
     }
 
@@ -264,29 +261,24 @@ public class AddChatActivity extends AppCompatActivity
         intent.putExtra("roomId",roomId);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+        finish();
     }
 
     @Override
-    public void showSuggestions(String[] suggestions) {
-        for(String s : suggestions){
-            Log.d(TAG, "suggestions : " + s);
-        }
-        mSearchView.post(()->{
-            mSearchAdapter = new SearchAdapter(this, suggestions);
-            mSearchView.setAdapter(mSearchAdapter);
-        });
+    public void moveToSearchActivity() {
+        final Intent intent = new Intent(this, SearchActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(intent);
     }
 
     @Override
     public void showMapMarker(FoodRestaurant foodRestaurant) {
-        if(foodRestaurant!=null){
-            mSelectedRestaurant=foodRestaurant;
-            Log.d(TAG, foodRestaurant.getTitle());
-            Log.d(TAG, foodRestaurant.getMapx() + " : " + foodRestaurant.getMapy());
+        mSelectedRestaurant=foodRestaurant;
+        Log.d(TAG, foodRestaurant.getTitle());
+        Log.d(TAG, foodRestaurant.getMapx() + " : " + foodRestaurant.getMapy());
 
-            if(mMarkerListener!=null){
-                mMarkerListener.onMarkPin(foodRestaurant);
-            }
+        if(mMarkerListener!=null){
+            mMarkerListener.onMarkPin(foodRestaurant);
         }
     }
 
@@ -304,44 +296,5 @@ public class AddChatActivity extends AppCompatActivity
         selectedMinute = minute;
       }
 
-
-    /* MaterialSearchView.OnQueryTextListener */
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        Log.d(TAG, "query : "+query);
-        mAddChatPresenter.searchLocation(query);
-        //TODO 키보드 숨기기
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        //Log.d(TAG, "newText : " + newText);
-        return false;
-    }
-
-    /* AdapterView.OnItemClickListener */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mSearchView.dismissSuggestions();
-
-        runOnUiThread(() -> {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.weight = 0;
-            mSearchView.setLayoutParams(params);
-
-            if(mMapContainer.getVisibility()==View.GONE){
-                mMapContainer.setVisibility(View.VISIBLE);
-            }
-        });
-
-        String selectedName = (String) mSearchAdapter.getItem(position);
-        Log.d(TAG,"position : "+position);
-        Log.d(TAG,"selectedName : "+selectedName);
-        mAddChatPresenter.loadPOImark(position);
-    }
 
 }

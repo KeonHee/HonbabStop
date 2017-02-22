@@ -1,11 +1,11 @@
-package com.landvibe.android.honbabstop.Profile.presenter;
+package com.landvibe.android.honbabstop.profile.presenter;
 
 import android.app.Activity;
 import android.net.Uri;
 
 import com.landvibe.android.honbabstop.GlobalApp;
-import com.landvibe.android.honbabstop.Profile.model.ProfileImageModel;
-import com.landvibe.android.honbabstop.Profile.model.ProfileModel;
+import com.landvibe.android.honbabstop.profile.model.ProfileImageModel;
+import com.landvibe.android.honbabstop.profile.model.ProfileModel;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.observer.CustomObserver;

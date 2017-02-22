@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.MyChatList;
+package com.landvibe.android.honbabstop.mychatlist;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,13 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.landvibe.android.honbabstop.ChatDetail.ChatDetailActivity;
-import com.landvibe.android.honbabstop.MyChatList.adapter.MyChatListAdapter;
-import com.landvibe.android.honbabstop.MyChatList.presenter.MyChatListPresenter;
-import com.landvibe.android.honbabstop.MyChatList.presenter.MyChatListPresenterImpl;
+import com.landvibe.android.honbabstop.chatdetail.ChatDetailActivity;
+import com.landvibe.android.honbabstop.mychatlist.adapter.MyChatListAdapter;
+import com.landvibe.android.honbabstop.mychatlist.presenter.MyChatListPresenter;
+import com.landvibe.android.honbabstop.mychatlist.presenter.MyChatListPresenterImpl;
 import com.landvibe.android.honbabstop.R;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by user on 2017-02-13.
@@ -59,6 +60,9 @@ public class MyChatListFragment extends Fragment implements MyChatListPresenter.
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_chat, container,false);
         Log.d(TAG, "onCreateView()");
+
+        ButterKnife.bind(this,view);
+
         return view;
     }
 
@@ -86,8 +90,7 @@ public class MyChatListFragment extends Fragment implements MyChatListPresenter.
         mMyChatListPresenter.setChatListAdapterModel(mMyChatListAdapter);
         mMyChatListPresenter.setChatListAdapterView(mMyChatListAdapter);
 
-
-
+        mMyChatListPresenter.loadMyChatList();
     }
 
     @Override

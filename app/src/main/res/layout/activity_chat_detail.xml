@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.landvibe.android.honbabstop.ChatDetail.ChatDetailActivity">
+    tools:context="com.landvibe.android.honbabstop.chatdetail.ChatDetailActivity">
 
     <LinearLayout
         android:id="@+id/maps_fragment_space"

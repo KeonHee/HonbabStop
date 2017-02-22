@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Main.page;
+package com.landvibe.android.honbabstop.main.page;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;

@@ -1,12 +1,12 @@
-package com.landvibe.android.honbabstop.Main.page;
+package com.landvibe.android.honbabstop.main.page;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.landvibe.android.honbabstop.ChatList.ChatListFragment;
-import com.landvibe.android.honbabstop.MyChatList.MyChatListFragment;
-import com.landvibe.android.honbabstop.Profile.ProfileFragment;
+import com.landvibe.android.honbabstop.chatlist.ChatListFragment;
+import com.landvibe.android.honbabstop.mychatlist.MyChatListFragment;
+import com.landvibe.android.honbabstop.profile.ProfileFragment;
 
 /**
  * Created by user on 2017-02-13.

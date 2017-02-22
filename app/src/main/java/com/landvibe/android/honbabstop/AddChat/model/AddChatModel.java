@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.AddChat.model;
+package com.landvibe.android.honbabstop.addchat.model;
 
 import android.net.Uri;
 import android.util.Log;
@@ -10,9 +10,10 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.landvibe.android.honbabstop.base.domain.MyChat;
+import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.domain.UserStore;
+import com.landvibe.android.honbabstop.base.utils.DomainConvertUtils;
 
 /**
  * Created by user on 2017-02-15.
@@ -60,12 +61,19 @@ public class AddChatModel {
      * Chat 추가
      */
     public void createChat(ChatRoom chatRoom){
+
+        User user = UserStore.getInstance().getUser();
+
         String key = mDatabase.child("ChatList").push().getKey();
         chatRoom.setId(key);
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(key, chatRoom);
-        mDatabase.child("ChatList").updateChildren(childUpdates);
+        mDatabase.child("ChatList")
+                .child(key).setValue(chatRoom);
+
+        MyChat myChat = DomainConvertUtils.convertChatRoomToMyChat(chatRoom);
+        mDatabase.child("MyChatList")
+                .child(user.getUid())
+                .child(key).setValue(myChat);
     }
 
     /**
@@ -121,5 +129,14 @@ public class AddChatModel {
                 .child(roomId)
                 .child("foodImageUrl")
                 .setValue(imageUrl.toString());
+
+
+        User user = UserStore.getInstance().getUser();
+        mDatabase.child("MyChatList")
+                .child(user.getUid())
+                .child(roomId)
+                .child("foodImageUrl")
+                .setValue(imageUrl.toString());
+
     }
 }

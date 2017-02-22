@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.AddChat;
+package com.landvibe.android.honbabstop.addchat;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -58,12 +58,15 @@ public class NMapFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
         return inflater.inflate(R.layout.fragment_naver_map, container, false);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
+
         mMapContext = new NMapContext(super.getActivity());
         mMapContext.onCreate();
 
@@ -73,6 +76,8 @@ public class NMapFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "onActivityCreated");
+
         mMapView = (NMapView)getView().findViewById(R.id.mapView);
         mMapView.setClientId(CLIENT_ID);
         mMapContext.setupMapView(mMapView);
@@ -102,12 +107,14 @@ public class NMapFragment extends Fragment
     public void onStart(){
         super.onStart();
         mMapContext.onStart();
+        Log.d(TAG, "onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
         mMapContext.onResume();
+        Log.d(TAG, "onResume");
     }
 
     @Override

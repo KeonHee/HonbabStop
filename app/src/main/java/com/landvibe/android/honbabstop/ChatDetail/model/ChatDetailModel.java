@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatDetail.model;
+package com.landvibe.android.honbabstop.chatdetail.model;
 
 import android.util.Log;
 
@@ -150,8 +150,6 @@ public class ChatDetailModel implements ChildEventListener{
             return;
         }
 
-        //@TODO MyChat 데이터에서 삭제
-
         mDatabase.child("ChatList").child(roomId).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -181,6 +179,13 @@ public class ChatDetailModel implements ChildEventListener{
                 ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
                 if(chatRoom!=null){
                     mCompleteChangeUserData.onRemove(chatRoom);
+
+                    /*  MyChat 데이터 삭제 */
+                    mDatabase.child("MyChatList")
+                            .child(user.getUid())
+                            .child(roomId)
+                            .setValue(null);
+
                 }else {
                     mCompleteChangeUserData.onFailure(databaseError);
                 }

@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatDetail.adapter.contract;
+package com.landvibe.android.honbabstop.chatdetail.adapter.contract;
 
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
 

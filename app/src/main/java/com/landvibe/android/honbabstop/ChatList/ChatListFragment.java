@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatList;
+package com.landvibe.android.honbabstop.chatlist;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,11 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.landvibe.android.honbabstop.AddChat.AddChatActivity;
-import com.landvibe.android.honbabstop.ChatDetail.ChatDetailActivity;
-import com.landvibe.android.honbabstop.ChatList.adapter.ChatListAdapter;
-import com.landvibe.android.honbabstop.ChatList.presenter.ChatListPresenter;
-import com.landvibe.android.honbabstop.ChatList.presenter.ChatListPresenterImpl;
+import com.landvibe.android.honbabstop.addchat.AddChatActivity;
+import com.landvibe.android.honbabstop.chatdetail.ChatDetailActivity;
+import com.landvibe.android.honbabstop.chatlist.adapter.ChatListAdapter;
+import com.landvibe.android.honbabstop.chatlist.presenter.ChatListPresenter;
+import com.landvibe.android.honbabstop.chatlist.presenter.ChatListPresenterImpl;
 import com.landvibe.android.honbabstop.R;
 
 import butterknife.BindView;

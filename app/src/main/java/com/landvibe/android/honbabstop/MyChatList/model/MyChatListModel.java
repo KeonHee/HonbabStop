@@ -1,15 +1,14 @@
-package com.landvibe.android.honbabstop.MyChatList.model;
+package com.landvibe.android.honbabstop.mychatlist.model;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.MyChat;
-import com.landvibe.android.honbabstop.base.domain.User;
-import com.landvibe.android.honbabstop.base.domain.UserStore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ public class MyChatListModel {
 
     private DatabaseReference mDatabase;
 
-    private List<MyChat> mMyChatList;
+    private List<MyChat> mMyChatList = new ArrayList<>();
 
     public MyChatListModel(){
         loadDB();
@@ -55,15 +54,15 @@ public class MyChatListModel {
      * 나의 채팅 리스트 DB 쿼리
      */
     public void loadMyChatList(int queryNum){
-        if(mDatabase==null || mChangeChatListData==null){
+        if(mDatabase==null){
             return;
         }
 
-        User user = UserStore.getInstance().getUser();
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         mMyChatList.clear();
 
-        mDatabase.child("MyChatList").child(user.getUid())
+        mDatabase.child("MyChatList").child(uid)
                 .limitToLast(queryNum)
                 .orderByKey()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -73,7 +72,9 @@ public class MyChatListModel {
                             MyChat myChat = child.getValue(MyChat.class);
                             mMyChatList.add(myChat);
                         }
-                        mChangeChatListData.update(mMyChatList);
+                        if(mChangeChatListData!=null){
+                            mChangeChatListData.update(mMyChatList);
+                        }
                     }
 
                     @Override

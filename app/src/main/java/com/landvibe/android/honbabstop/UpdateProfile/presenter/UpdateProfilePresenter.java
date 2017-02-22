@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.UpdateProfile.presenter;
+package com.landvibe.android.honbabstop.updateprofile.presenter;
 
 import android.app.Activity;
 

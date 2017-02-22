@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatDetail;
+package com.landvibe.android.honbabstop.chatdetail;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,9 +17,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.landvibe.android.honbabstop.ChatDetail.adapter.ChatMessageAdapter;
-import com.landvibe.android.honbabstop.ChatDetail.presenter.ChatDetailPresenter;
-import com.landvibe.android.honbabstop.ChatDetail.presenter.ChatDetailPresenterImpl;
+import com.landvibe.android.honbabstop.chatdetail.adapter.ChatMessageAdapter;
+import com.landvibe.android.honbabstop.chatdetail.presenter.ChatDetailPresenter;
+import com.landvibe.android.honbabstop.chatdetail.presenter.ChatDetailPresenterImpl;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;

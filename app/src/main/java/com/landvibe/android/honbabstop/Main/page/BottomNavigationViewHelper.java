@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Main.page;
+package com.landvibe.android.honbabstop.main.page;
 
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;

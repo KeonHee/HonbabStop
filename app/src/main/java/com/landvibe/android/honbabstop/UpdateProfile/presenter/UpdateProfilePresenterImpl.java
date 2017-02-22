@@ -1,9 +1,9 @@
-package com.landvibe.android.honbabstop.UpdateProfile.presenter;
+package com.landvibe.android.honbabstop.updateprofile.presenter;
 
 import android.app.Activity;
 
 import com.landvibe.android.honbabstop.GlobalApp;
-import com.landvibe.android.honbabstop.Profile.model.ProfileModel;
+import com.landvibe.android.honbabstop.profile.model.ProfileModel;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
 

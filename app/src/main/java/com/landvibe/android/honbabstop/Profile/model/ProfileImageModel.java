@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.Profile.model;
+package com.landvibe.android.honbabstop.profile.model;
 
 import android.net.Uri;
 import android.util.Log;
@@ -11,7 +11,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;

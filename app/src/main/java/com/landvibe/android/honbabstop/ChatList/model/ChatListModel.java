@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatList.model;
+package com.landvibe.android.honbabstop.chatlist.model;
 
 import android.util.Log;
 
@@ -10,7 +10,9 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.domain.MyChat;
 import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.utils.DomainConvertUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -164,6 +166,7 @@ public class ChatListModel {
                             members.add(user);
                             chatRoom.setMembers(members);
                             chatRoom.setCurrentPeople(chatRoom.getCurrentPeople()+1);
+
                         }
 
                         mutableData.setValue(chatRoom);
@@ -186,6 +189,11 @@ public class ChatListModel {
 
                         ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
                         if(chatRoom!=null) {
+
+                            /* My Chat 저장 */
+                            MyChat myChat = DomainConvertUtils.convertChatRoomToMyChat(chatRoom);
+                            saveMyChat(myChat,user);
+
                             mCompleteChangeUserData.onComplete(chatRoom);
                         }
                     }
@@ -198,7 +206,15 @@ public class ChatListModel {
                 Log.d(TAG, "onCancelled : " +databaseError.getMessage());
             }
         });
+    }
 
-
+    /**
+     * my Chat 저장
+     */
+    public void saveMyChat(MyChat myChat, User user){
+        mDatabase.child("MyChatList")
+                .child(user.getUid())
+                .child(myChat.getId())
+                .setValue(myChat);
     }
 }

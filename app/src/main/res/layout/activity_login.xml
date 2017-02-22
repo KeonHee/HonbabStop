@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.landvibe.android.honbabstop.Login.LoginActivity"
+    tools:context="com.landvibe.android.honbabstop.login.LoginActivity"
     >
 
     <ProgressBar

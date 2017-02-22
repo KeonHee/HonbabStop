@@ -1,7 +1,6 @@
-package com.landvibe.android.honbabstop.ChatDetail.adapter.holder;
+package com.landvibe.android.honbabstop.chatdetail.adapter.holder;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;

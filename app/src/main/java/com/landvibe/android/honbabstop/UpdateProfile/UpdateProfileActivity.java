@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.UpdateProfile;
+package com.landvibe.android.honbabstop.updateprofile;
 
 
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.landvibe.android.honbabstop.R;
-import com.landvibe.android.honbabstop.UpdateProfile.presenter.UpdateProfilePresenter;
-import com.landvibe.android.honbabstop.UpdateProfile.presenter.UpdateProfilePresenterImpl;
+import com.landvibe.android.honbabstop.updateprofile.presenter.UpdateProfilePresenter;
+import com.landvibe.android.honbabstop.updateprofile.presenter.UpdateProfilePresenterImpl;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.rengwuxian.materialedittext.MaterialEditText;

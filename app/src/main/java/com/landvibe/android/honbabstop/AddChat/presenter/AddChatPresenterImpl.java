@@ -1,33 +1,26 @@
-package com.landvibe.android.honbabstop.AddChat.presenter;
+package com.landvibe.android.honbabstop.addchat.presenter;
 
 import android.app.Activity;
 import android.net.Uri;
 import android.util.Log;
 
-import com.landvibe.android.honbabstop.AddChat.model.AddChatModel;
-import com.landvibe.android.honbabstop.AddChat.model.SearchModel;
 import com.landvibe.android.honbabstop.GlobalApp;
+import com.landvibe.android.honbabstop.addchat.model.AddChatModel;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.FoodRestaurant;
-import com.landvibe.android.honbabstop.base.domain.TranscoordDTO;
-
-import java.util.List;
+import com.landvibe.android.honbabstop.base.observer.CustomObserver;
 
 /**
  * Created by user on 2017-02-15.
  */
 
-public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchModel.ModelDataChange,
-        AddChatModel.ImageUploadCallback, SearchModel.TransCoordCallback{
+public class AddChatPresenterImpl implements AddChatPresenter.Presenter,
+        AddChatModel.ImageUploadCallback, CustomObserver{
 
     private static final String TAG ="AddChatPresenterImpl";
     private AddChatPresenter.View view;
 
     private AddChatModel mAddChatModel;
-
-    private SearchModel mSearchModel;
-
-    private FoodRestaurant foodRestaurant;
 
     @Override
     public void attachView(AddChatPresenter.View view, Activity activity) {
@@ -36,9 +29,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         mAddChatModel = new AddChatModel();
         mAddChatModel.setOnImageUploadCallback(this);
 
-        mSearchModel = new SearchModel();
-        mSearchModel.setOnChangeListener(this);
-        mSearchModel.setOnTransListener(this);
+        GlobalApp.getGlobalApplicationContext().addObserver(this);
     }
 
     @Override
@@ -48,10 +39,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         mAddChatModel.setOnImageUploadCallback(null);
         mAddChatModel=null;
 
-        mSearchModel.setOnTransListener(null);
-        mSearchModel.setOnChangeListener(null);
-        mSearchModel=null;
-
+        GlobalApp.getGlobalApplicationContext().removeObserver(null);
     }
 
     @Override
@@ -65,49 +53,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         GlobalApp.getGlobalApplicationContext().changeModel(chatRoom);
     }
 
-    @Override
-    public void searchLocation(String query) {
-        if(mSearchModel!=null){
-            mSearchModel.searchRestaurant(query);
-        }
-    }
-
-    @Override
-    public void loadPOImark(int position) {
-        if(mSearchModel!=null){
-            List<FoodRestaurant> foodRestaurantList = mSearchModel.getFoodRestaurantList();
-            if(foodRestaurantList!=null && foodRestaurantList.size()>=0){
-                foodRestaurant = foodRestaurantList.get(position);
-
-
-                // 좌표계 변환
-                mSearchModel.transCoord(foodRestaurant.getMapx(),foodRestaurant.getMapy());
-            }
-        }
-    }
-
     /**
-     * SearchModel.ModelDataChange
-     */
-    @Override
-    public void onSuccess(List<FoodRestaurant> list) {
-
-        Log.d(TAG,"list size : " + list.size());
-        String[] suggestions = new String[list.size()];
-        for(int i = 0; i <list.size();i++){
-            StringBuffer restaurant = new StringBuffer();
-            restaurant.append(list.get(i).getTitle().replace("<b>","").replace("</b>",""));
-            restaurant.append("-");
-            restaurant.append(list.get(i).getAddress());
-
-            Log.d(TAG,"restaurant name : " +restaurant.toString());
-
-            suggestions[i]=restaurant.toString();
-        }
-        view.showSuggestions(suggestions);
-    }
-
-        /**
      * AddChatModel.ImageUploadCallback
      */
     @Override
@@ -130,22 +76,17 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
 
     }
 
+
     /**
-     * SearchModel.TransCoordCallback
+     * CustomObserver
      */
     @Override
-    public void onTrans(TranscoordDTO transcoordDTO) {
-        if(foodRestaurant==null){
-            return;
+    public void update(Object object) {
+        if(object instanceof FoodRestaurant){
+            FoodRestaurant foodRestaurant = (FoodRestaurant) object;
+            Log.d(TAG, "foodRestaurant : " + foodRestaurant);
+            Log.d(TAG, "view : " + view);
+            view.showMapMarker(foodRestaurant);
         }
-
-        foodRestaurant.setLat(transcoordDTO.getLat());
-        foodRestaurant.setLon(transcoordDTO.getLon());
-        view.showMapMarker(foodRestaurant);
-    }
-
-    @Override
-    public void onTransFailure() {
-
     }
 }

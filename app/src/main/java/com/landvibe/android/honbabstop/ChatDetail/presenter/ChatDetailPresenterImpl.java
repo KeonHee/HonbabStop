@@ -1,14 +1,16 @@
-package com.landvibe.android.honbabstop.ChatDetail.presenter;
+package com.landvibe.android.honbabstop.chatdetail.presenter;
 
 import android.app.Activity;
 
 import com.google.firebase.database.DatabaseError;
-import com.landvibe.android.honbabstop.ChatDetail.adapter.contract.ChatAdapterContract;
-import com.landvibe.android.honbabstop.ChatDetail.model.ChatDetailModel;
+import com.landvibe.android.honbabstop.chatdetail.adapter.contract.ChatAdapterContract;
+import com.landvibe.android.honbabstop.chatdetail.model.ChatDetailModel;
 import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.domain.MyChat;
 import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.utils.DomainConvertUtils;
 
 /**
  * Created by user on 2017-02-16.
@@ -121,6 +123,9 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
         view.moveToMainActivity();
 
         GlobalApp.getGlobalApplicationContext().changeModel(chatRoom);
+
+        MyChat myChat = DomainConvertUtils.convertChatRoomToMyChat(chatRoom);
+        GlobalApp.getGlobalApplicationContext().changeModel(myChat);
     }
 
     @Override
