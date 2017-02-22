@@ -45,7 +45,6 @@ public class ChatListFragment extends Fragment implements ChatListPresenter.View
 
     private ChatListPresenterImpl mChatListPresenter;
 
-
     public static Fragment getInstance(int page){
         ChatListFragment chatListFragment = new ChatListFragment();
         Bundle args = new Bundle();

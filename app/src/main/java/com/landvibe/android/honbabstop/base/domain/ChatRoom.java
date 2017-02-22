@@ -1,16 +1,15 @@
 package com.landvibe.android.honbabstop.base.domain;
 
-import com.google.firebase.database.Exclude;
-
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by user on 2017-02-15.
  */
 
-public class ChatRoom {
+public class ChatRoom implements Serializable {
+
+    public final static String KEY="chatroom";
 
     /**
      * 채팅방 정보
@@ -32,7 +31,6 @@ public class ChatRoom {
     private int currentPeople;
     private int maxPeople;
 
-
     /* 음식 정보 & 만남 장소*/
     private String foodImageUrl; /* Title Image */
     private String foodName;
@@ -43,8 +41,8 @@ public class ChatRoom {
     private String foodTelephone;
     private String address;
     private String roadAddress;
-    private long locationX;
-    private long locationY;
+    private double lat;
+    private double lon;
     /**
      * <title>조선옥</title>
      <link />
@@ -60,13 +58,8 @@ public class ChatRoom {
     private User header;
 
     /* 참여자 Uid (방장포함) */
-    private List<String> members;
+    private List<User> members;
 
-    /* 채팅방 상태 */
-    private int status;
-
-    public final static int STATUS_REMAIN=0;
-    public final static int STATUS_FULL=1;
 
     public ChatRoom(){}
 
@@ -150,22 +143,6 @@ public class ChatRoom {
         this.contactTime = contactTime;
     }
 
-    public List<String> getMembers() {
-        return members;
-    }
-
-    public void setMembers(List<String> members) {
-        this.members = members;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getFoodTitle() {
         return foodTitle;
     }
@@ -206,20 +183,20 @@ public class ChatRoom {
         this.roadAddress = roadAddress;
     }
 
-    public long getLocationX() {
-        return locationX;
+    public double getLat() {
+        return lat;
     }
 
-    public void setLocationX(long locationX) {
-        this.locationX = locationX;
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 
-    public long getLocationY() {
-        return locationY;
+    public double getLon() {
+        return lon;
     }
 
-    public void setLocationY(long locationY) {
-        this.locationY = locationY;
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 
     public String getFoodName() {
@@ -229,4 +206,13 @@ public class ChatRoom {
     public void setFoodName(String foodName) {
         this.foodName = foodName;
     }
+
+    public List<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members;
+    }
+
 }

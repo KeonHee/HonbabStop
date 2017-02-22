@@ -35,6 +35,9 @@ public class User {
     /* 친구 리스트 */
     private List<String> friendsUid;
 
+    /* Chat room 에서만 사용*/
+    private long enteredTime;
+
     public User() {
     }
 
@@ -142,5 +145,13 @@ public class User {
 
     public void setFriendsUid(List<String> friendsUid) {
         this.friendsUid = friendsUid;
+    }
+
+    public long getEnteredTime() {
+        return enteredTime;
+    }
+
+    public void setEnteredTime(long enteredTime) {
+        this.enteredTime = enteredTime;
     }
 }

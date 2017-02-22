@@ -15,7 +15,8 @@ import com.landvibe.android.honbabstop.base.domain.User;
  */
 
 public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
-        ChatDetailModel.ObserverChatMessageCallback, ChatDetailModel.CompleteChangeUserData {
+        ChatDetailModel.ObserverChatMessageCallback, ChatDetailModel.CompleteChangeUserData ,
+        ChatDetailModel.LoadChatRoomInfoCallback {
 
 
     private ChatDetailPresenter.View view;
@@ -37,6 +38,7 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
         mChatDetailModel = new ChatDetailModel();
         mChatDetailModel.setObserverChatMessageListener(this);
         mChatDetailModel.setCompleteListener(this);
+        mChatDetailModel.setLoadChatRoomInfoListener(this);
     }
 
     @Override
@@ -44,6 +46,7 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
         this.view=null;
         mActivity=null;
 
+        mChatDetailModel.setLoadChatRoomInfoListener(null);
         mChatDetailModel.setCompleteListener(null);
         mChatDetailModel.setObserverChatMessageListener(null);
         mChatDetailModel.removeChildEventListener();
@@ -83,6 +86,11 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
     }
 
     @Override
+    public void loadChatRoomInfo(String chatRoomId) {
+        mChatDetailModel.loadChatRoomInfo(chatRoomId);
+    }
+
+    @Override
     public void actionMapView() {
         if(isClicked){
             view.hideMaps();
@@ -118,6 +126,20 @@ public class ChatDetailPresenterImpl implements ChatDetailPresenter.Presenter,
     @Override
     public void onFailure(DatabaseError databaseError) {
 
+
+    }
+
+
+    /**
+     * Chat Room 데이터 로드 콜백
+     */
+    @Override
+    public void onSuccess(ChatRoom chatRoom) {
+        view.initMapFragment(chatRoom);
+    }
+
+    @Override
+    public void onFailure() {
 
     }
 }

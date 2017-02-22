@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,9 +22,9 @@ import com.landvibe.android.honbabstop.ChatDetail.presenter.ChatDetailPresenter;
 import com.landvibe.android.honbabstop.ChatDetail.presenter.ChatDetailPresenterImpl;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
+import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
-import com.landvibe.android.honbabstop.nmaps.NMapFragment;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.Calendar;
@@ -60,6 +61,8 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
 
     private String roomId;
 
+    private MenuItem mMapMenuItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +94,7 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
 
         roomId = intent.getStringExtra("roomId");
         mChatDetailPresenter.loadChatMessageList(roomId);
+        mChatDetailPresenter.loadChatRoomInfo(roomId);
 
         mSendMessageBtn.setOnClickListener(v->{
             if(mMessageEditText.getText().toString().length()==0){
@@ -128,6 +132,15 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.chat_detail,menu);
+        Log.d(TAG, "onCreateOptionsMenu() 호출");
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mMapMenuItem = menu.findItem(R.id.action_maps);
+        Log.d(TAG, "onPrepareOptionsMenu() 호출");
+        //mMapMenuItem.setEnabled(false);
         return true;
     }
 
@@ -167,13 +180,23 @@ public class ChatDetailActivity extends AppCompatActivity implements ChatDetailP
         mChatMessageView.smoothScrollToPosition(mChatMessageAdapter.getItemCount()-1);
     }
 
+
+    @Override
+    public void initMapFragment(ChatRoom chatRoom){
+        //mMapMenuItem.setEnabled(true);
+
+        mMapFragment = new NMapFragment();
+        Bundle arg = new Bundle();
+        arg.putSerializable(ChatRoom.KEY, chatRoom);
+        mMapFragment.setArguments(arg);
+    }
+
     @Override
     public void showMaps() {
+        if(mMapFragment==null){
+            return;
+        }
         mMapsSpace.setVisibility(View.VISIBLE);
-
-        // TODO 초기화 시점 생각해보기
-        mMapFragment = new NMapFragment();
-        mMapFragment.setArguments(new Bundle());
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
         fragmentTransaction.replace(R.id.maps_fragment_space, mMapFragment);

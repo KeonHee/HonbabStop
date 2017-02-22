@@ -1,10 +1,10 @@
-package com.landvibe.android.honbabstop.nmaps;
+package com.landvibe.android.honbabstop.ChatDetail;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,8 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.landvibe.android.honbabstop.R;
+import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.FoodRestaurant;
 import com.landvibe.android.honbabstop.base.listener.OnShowMarkerListener;
+import com.landvibe.android.honbabstop.nmaps.NMapPOIflagType;
+import com.landvibe.android.honbabstop.nmaps.NMapViewerResourceProvider;
 import com.nhn.android.maps.NMapContext;
 import com.nhn.android.maps.NMapController;
 import com.nhn.android.maps.NMapLocationManager;
@@ -22,6 +25,7 @@ import com.nhn.android.maps.NMapView;
 import com.nhn.android.maps.maplib.NGeoPoint;
 import com.nhn.android.maps.nmapmodel.NMapError;
 import com.nhn.android.maps.overlay.NMapPOIdata;
+import com.nhn.android.maps.overlay.NMapPOIitem;
 import com.nhn.android.mapviewer.overlay.NMapOverlayManager;
 import com.nhn.android.mapviewer.overlay.NMapPOIdataOverlay;
 
@@ -51,6 +55,8 @@ public class NMapFragment extends Fragment
 
     private NMapLocationManager mMapLocationManager;
 
+    private ChatRoom mChatRoom;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_naver_map, container, false);
@@ -63,6 +69,8 @@ public class NMapFragment extends Fragment
         mMapContext.onCreate();
 
         mActivity = getActivity();
+
+        mChatRoom =(ChatRoom) getArguments().get(ChatRoom.KEY);
     }
 
     @Override
@@ -128,15 +136,31 @@ public class NMapFragment extends Fragment
         super.onDestroy();
     }
 
-
-
     /**
      * NMapView.OnMapStateChangeListener
      */
     @Override
     public void onMapInitHandler(NMapView nMapView, NMapError nMapError) {
         if (nMapError == null){
-            startMyLocation();
+
+            if(mChatRoom==null){
+                return;
+            }
+
+            StringBuffer desc = new StringBuffer();
+            desc.append(String.format("%s - %s",mChatRoom.getFoodTitle(), mChatRoom.getAddress()));
+
+            int markId = NMapPOIflagType.PIN;
+            NMapPOIdata mMapPOIdata = new NMapPOIdata(1,mMapViewerResourceProvider);
+            mMapPOIdata.beginPOIdata(1 /* POI 개수 */);
+            mMapPOIdata.addPOIitem(
+                    new NGeoPoint(mChatRoom.getLon(),mChatRoom.getLat()),
+                    desc.toString(),markId,0/*id*/);
+            mMapPOIdata.endPOIdata();
+            NMapPOIdataOverlay poiDataOverlay = mMapOverlayManager.createPOIdataOverlay(mMapPOIdata, null);
+
+            poiDataOverlay.showAllPOIdata(11 /* zoom level*/);
+            //startMyLocation();
         }
         else{
             android.util.Log.e("NMAP", "onMapInitHandler: error=" + nMapError.toString());
@@ -168,9 +192,7 @@ public class NMapFragment extends Fragment
         if(!mMapLocationManager.isMyLocationEnabled()){
             boolean isMyLocationEnabled = mMapLocationManager.enableMyLocation(true);
             if (!isMyLocationEnabled) {
-                Toast.makeText(mActivity, "시스템 설정에서 위치 탐색 사용을 체크해주세요!",
-                        Toast.LENGTH_LONG).show();
-
+                Toast.makeText(mActivity,"시스템 설정에서 위치 탐색 사용을 체크해주세요!", Toast.LENGTH_LONG).show();
                 Intent goToSettings = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(goToSettings);
                 return;
@@ -188,31 +210,23 @@ public class NMapFragment extends Fragment
      */
     @Override
     public boolean onLocationChanged(NMapLocationManager nMapLocationManager, NGeoPoint myLocation) {
-
-        int markId = NMapPOIflagType.PIN;
-        NMapPOIdata mMapPOIdata = new NMapPOIdata(0,mMapViewerResourceProvider);
-        mMapPOIdata.beginPOIdata(1 /* ?? */);
-        mMapPOIdata.addPOIitem(myLocation,"내 위치",markId,0/*id*/);
-        mMapPOIdata.endPOIdata();
-        NMapPOIdataOverlay poiDataOverlay = mMapOverlayManager.createPOIdataOverlay(mMapPOIdata, null);
-
-        poiDataOverlay.showAllPOIdata(11 /* zoom level*/); //0
-
         return false; // 한번만 탐색
     }
 
     @Override
     public void onLocationUpdateTimeout(NMapLocationManager nMapLocationManager) {
-        Toast.makeText(mActivity, "위치를 탐색하고 있습니다 잠시만 기다려주세요", Toast.LENGTH_LONG).show();
+        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(),
+                "위치를 탐색하고 있습니다 잠시만 기다려주세요", Snackbar.LENGTH_LONG)
+                .setAction("OK", v -> {}).show();
     }
 
     @Override
     public void onLocationUnavailableArea(NMapLocationManager nMapLocationManager, NGeoPoint nGeoPoint) {
-        Toast.makeText(mActivity, "잘못된 위치입니다. 위치탐색을 중단하겠습니다.", Toast.LENGTH_LONG).show();
-
-        stopMyLocation();
+        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(),
+                "잘못된 위치입니다. 위치탐색을 중단합니다.", Snackbar.LENGTH_LONG)
+                .setAction("OK", v -> {}).show();
+        //stopMyLocation();
     }
-
 
 
     /* OnShowMarkerListener */
@@ -221,4 +235,5 @@ public class NMapFragment extends Fragment
         Log.d(TAG, foodRestaurant.getTitle());
 
     }
+
 }

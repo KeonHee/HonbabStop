@@ -9,6 +9,7 @@ import com.landvibe.android.honbabstop.AddChat.model.SearchModel;
 import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.FoodRestaurant;
+import com.landvibe.android.honbabstop.base.domain.TranscoordDTO;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 
 public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchModel.ModelDataChange,
-        AddChatModel.ImageUploadCallback{
+        AddChatModel.ImageUploadCallback, SearchModel.TransCoordCallback{
 
     private static final String TAG ="AddChatPresenterImpl";
     private AddChatPresenter.View view;
@@ -25,6 +26,8 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
     private AddChatModel mAddChatModel;
 
     private SearchModel mSearchModel;
+
+    private FoodRestaurant foodRestaurant;
 
     @Override
     public void attachView(AddChatPresenter.View view, Activity activity) {
@@ -35,7 +38,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
 
         mSearchModel = new SearchModel();
         mSearchModel.setOnChangeListener(this);
-
+        mSearchModel.setOnTransListener(this);
     }
 
     @Override
@@ -45,6 +48,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         mAddChatModel.setOnImageUploadCallback(null);
         mAddChatModel=null;
 
+        mSearchModel.setOnTransListener(null);
         mSearchModel.setOnChangeListener(null);
         mSearchModel=null;
 
@@ -73,8 +77,11 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         if(mSearchModel!=null){
             List<FoodRestaurant> foodRestaurantList = mSearchModel.getFoodRestaurantList();
             if(foodRestaurantList!=null && foodRestaurantList.size()>=0){
-                FoodRestaurant foodRestaurant = foodRestaurantList.get(position);
-                view.showMapMarker(foodRestaurant);
+                foodRestaurant = foodRestaurantList.get(position);
+
+
+                // 좌표계 변환
+                mSearchModel.transCoord(foodRestaurant.getMapx(),foodRestaurant.getMapy());
             }
         }
     }
@@ -100,8 +107,7 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
         view.showSuggestions(suggestions);
     }
 
-
-    /**
+        /**
      * AddChatModel.ImageUploadCallback
      */
     @Override
@@ -121,6 +127,25 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,SearchMo
 
     @Override
     public void onPause() {
+
+    }
+
+    /**
+     * SearchModel.TransCoordCallback
+     */
+    @Override
+    public void onTrans(TranscoordDTO transcoordDTO) {
+        if(foodRestaurant==null){
+            return;
+        }
+
+        foodRestaurant.setLat(transcoordDTO.getLat());
+        foodRestaurant.setLon(transcoordDTO.getLon());
+        view.showMapMarker(foodRestaurant);
+    }
+
+    @Override
+    public void onTransFailure() {
 
     }
 }

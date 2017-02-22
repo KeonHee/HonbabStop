@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.github.javiersantos.materialstyleddialogs.enums.Style;
-import com.google.firebase.database.DatabaseError;
 import com.landvibe.android.honbabstop.ChatList.adapter.contract.ChatListAdapterContract;
 import com.landvibe.android.honbabstop.ChatList.model.ChatListModel;
 import com.landvibe.android.honbabstop.GlobalApp;
@@ -92,8 +91,8 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
     }
 
     @Override
-    public void onItemClick(ChatRoom chatRoom) {
-        showChatRoomInfo(chatRoom);
+    public void onItemClick(Object object) {
+        showChatRoomInfo((ChatRoom)object);
     }
 
     private void showChatRoomInfo(ChatRoom chatRoom){
@@ -132,7 +131,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
                 .setPositiveText(R.string.chat_room_dialog_enter)
                 .onPositive(((dialog, which) ->
                     mChatListModel.addUserInfoInChatRoom(
-                            user.getUid(), chatRoom.getId(), chatRoom.getMembers())))
+                            user, chatRoom.getId(), chatRoom.getMembers())))
                 .setNegativeText(R.string.chat_room_dialog_return)
                 .onNegative(((dialog, which) -> Log.d("MaterialStyledDialogs", "return main activity")))
                 .show();

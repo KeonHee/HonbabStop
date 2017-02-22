@@ -6,15 +6,18 @@ package com.landvibe.android.honbabstop.base.domain;
 
 public class FoodRestaurant {
 
-    String title;
-    String link;
-    String category;
-    String description;
-    String telephone;
-    String address;
-    String roadAddress;
-    long mapx;
-    long mapy;
+    private String title;
+    private String link;
+    private String category;
+    private String description;
+    private String telephone;
+    private String address;
+    private String roadAddress;
+    private long mapx;
+    private long mapy;
+
+    private double lat;
+    private double lon;
 
 
     public FoodRestaurant() {
@@ -90,5 +93,21 @@ public class FoodRestaurant {
 
     public void setMapy(long mapy) {
         this.mapy = mapy;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 }

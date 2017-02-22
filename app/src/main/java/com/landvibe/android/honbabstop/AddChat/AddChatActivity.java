@@ -13,9 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
@@ -31,7 +29,6 @@ import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.landvibe.android.honbabstop.base.listener.OnShowMarkerListener;
 import com.landvibe.android.honbabstop.base.utils.TimeFormatUtils;
-import com.landvibe.android.honbabstop.nmaps.NMapFragment;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.shawnlin.numberpicker.NumberPicker;
@@ -242,18 +239,16 @@ public class AddChatActivity extends AppCompatActivity
         chatRoom.setFoodTelephone(mSelectedRestaurant.getTelephone());
         chatRoom.setAddress(mSelectedRestaurant.getAddress());
         chatRoom.setRoadAddress(mSelectedRestaurant.getRoadAddress());
-        chatRoom.setLocationX(mSelectedRestaurant.getMapx());
-        chatRoom.setLocationY(mSelectedRestaurant.getMapy());
+        chatRoom.setLat(mSelectedRestaurant.getLat());
+        chatRoom.setLon(mSelectedRestaurant.getLon());
 
         /* 방장 정보 */
         User user = UserStore.getInstance().getUser();
         chatRoom.setHeader(user);
 
         /* 참여자 정보 (UID)*/
-        List<String> members = Arrays.asList(user.getUid());
+        List<User> members = Arrays.asList(user);
         chatRoom.setMembers(members);
-
-        chatRoom.setStatus(ChatRoom.STATUS_REMAIN);
 
         mAddChatPresenter.addChat(chatRoom, tmpUri);
     }

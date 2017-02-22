@@ -14,7 +14,7 @@ public class SearchDTO{
     @SerializedName("items")
     List<FoodRestaurant> foodRestaurantList;
 
-    public SearchDTO(){};
+    public SearchDTO(){}
 
     public List<FoodRestaurant> getFoodRestaurantList() {
         return foodRestaurantList;

@@ -1,4 +1,4 @@
-package com.landvibe.android.honbabstop.ChatList.adapter.holder;
+package com.landvibe.android.honbabstop.MyChatList.adapter.holder;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.landvibe.android.honbabstop.R;
-import com.landvibe.android.honbabstop.base.domain.ChatRoom;
+import com.landvibe.android.honbabstop.base.domain.MyChat;
+import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
 import com.landvibe.android.honbabstop.base.utils.TimeFormatUtils;
 
@@ -19,11 +21,10 @@ import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
- * Created by user on 2017-02-15.
+ * Created by user on 2017-02-22.
  */
 
-
-public class ChatListViewHolder extends RecyclerView.ViewHolder {
+public class MyChatViewHolder extends RecyclerView.ViewHolder{
 
     @BindView(R.id.iv_title_image)
     ImageView mTitleImageView;
@@ -38,28 +39,30 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
     TextView mCreateTimeTextView;
 
     @BindView(R.id.iv_my_room)
-    ImageView mIsOpenedImageView;
+    ImageView mIsHeaderImageView;
 
     private Context mContext;
 
-
     private OnItemClickListener mOnItemClickListener;
 
-    public ChatListViewHolder(Context context, ViewGroup parent, OnItemClickListener listener) {
-        super(LayoutInflater.from(context).inflate(R.layout.viewholder_chat_lst,parent,false));
+    public MyChatViewHolder(Context context, ViewGroup parent, OnItemClickListener listener) {
+        super(LayoutInflater.from(context).inflate(R.layout.viewholder_my_chat,parent,false));
 
         mContext=context;
 
         mOnItemClickListener=listener;
 
-        ButterKnife.bind(this, itemView);
+        ButterKnife.bind(this,itemView);
+
     }
 
-    public void onBind(ChatRoom chatRoom){
+    public void onBind(MyChat myChat){
 
         try{
 
-            if(chatRoom.getFoodImageUrl()==null){
+            User user = UserStore.getInstance().getUser();
+
+            if(myChat.getFoodImageUrl()==null){
                 Glide.with(mContext)
                         .load(R.drawable.default_profile)
                         .override(150,150)
@@ -69,7 +72,7 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
                         .into(mTitleImageView);
             }else {
                 Glide.with(mContext)
-                        .load(chatRoom.getFoodImageUrl())
+                        .load(myChat.getFoodImageUrl())
                         .override(150,150)
                         .centerCrop()
                         .dontAnimate()
@@ -77,20 +80,21 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
                         .into(mTitleImageView);
             }
 
-            mTitleTextView.setText(chatRoom.getTitle());
-            mMaxCountTextView.setText(chatRoom.getCurrentPeople()+"/"+chatRoom.getMaxPeople());
+            mTitleTextView.setText(myChat.getTitle());
+            mMaxCountTextView.setText(myChat.getCurrentPeople()+"/"+myChat.getMaxPeople());
 
 
             int drawableId;
-            if(chatRoom.getCurrentPeople()>=chatRoom.getMaxPeople()){
-                drawableId=R.drawable.closed;
+            if(myChat.getHeader().getUid().equals(user.getUid())){
+                drawableId = R.drawable.crown;
             }else {
-                drawableId=R.drawable.open;
+                drawableId = R.drawable.target;
             }
-            mIsOpenedImageView.setImageDrawable(
+            mIsHeaderImageView.setImageDrawable(
                     ContextCompat.getDrawable(mContext,drawableId));
 
-            mCreateTimeTextView.setText(TimeFormatUtils.getPassByTimeStr(chatRoom.getStartTimeStamp()));
+
+            mCreateTimeTextView.setText(TimeFormatUtils.getPassByTimeStr(myChat.getStartTimeStamp()));
 
 
         }catch (Exception e){
@@ -98,15 +102,9 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
         }
 
         itemView.setOnClickListener(v->{
-            if(chatRoom.getCurrentPeople()>=chatRoom.getMaxPeople()){{
-                // TODO 입장 불가 다이얼로그
-                return;
-            }}
-
             if(mOnItemClickListener!=null){
-                mOnItemClickListener.onItemClick(chatRoom);
+                mOnItemClickListener.onItemClick(myChat);
             }
-
         });
     }
 

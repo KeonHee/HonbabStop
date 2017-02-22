@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.User;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class ChatDetailModel implements ChildEventListener{
 
+    private final static String TAG = "ChatDetailModel";
 
     private DatabaseReference mDatabase;
 
@@ -29,13 +31,21 @@ public class ChatDetailModel implements ChildEventListener{
 
     private ObserverChatMessageCallback mObserverChatMessageCallback;
 
-
     public interface ObserverChatMessageCallback{
         void update(ChatMessage message);
     }
 
     public void setObserverChatMessageListener(ObserverChatMessageCallback callback){
         mObserverChatMessageCallback=callback;
+    }
+
+    private LoadChatRoomInfoCallback mLoadChatRoomInfoCallback;
+    public interface LoadChatRoomInfoCallback{
+        void onSuccess(ChatRoom chatRoom);
+        void onFailure();
+    }
+    public void setLoadChatRoomInfoListener(LoadChatRoomInfoCallback callback){
+        mLoadChatRoomInfoCallback=callback;
     }
 
     public ChatDetailModel(){
@@ -151,8 +161,13 @@ public class ChatDetailModel implements ChildEventListener{
                     return Transaction.success(mutableData);
                 }
 
-                List<String> members = chatRoom.getMembers();
-                members.remove(user.getUid());
+                List<User> members = chatRoom.getMembers();
+                for (User member : members){
+                    if(member.getUid().equals(user.getUid())){
+                        members.remove(member);
+                        break;
+                    }
+                }
 
                 chatRoom.setCurrentPeople(chatRoom.getCurrentPeople()-1);
 
@@ -171,6 +186,32 @@ public class ChatDetailModel implements ChildEventListener{
                 }
             }
         });
+    }
+
+
+    public void loadChatRoomInfo(String roomId){
+        if(mDatabase==null){
+            return;
+        }
+
+        mDatabase.child("ChatList").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
+                if (chatRoom==null){
+                    Log.d(TAG, "chatRoom object is null");
+                    return;
+                }
+                mLoadChatRoomInfoCallback.onSuccess(chatRoom);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                mLoadChatRoomInfoCallback.onFailure();
+            }
+        });
+
 
     }
+
 }

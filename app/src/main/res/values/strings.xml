@@ -3,6 +3,8 @@
     <string name="title_activity_settings">Settings</string>
 
 
+    <!-- daum map api key-->
+    <string name="daum_map_api_key">8e38d2dae6c026ddf346fb8fa0391aab</string>
     <!-- naver maps client id-->
     <string name="naver_maps_client_id">o8uc6MRnWiJu0aHOOYmf</string>
     <!-- kakao login key -->

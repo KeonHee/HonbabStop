@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.landvibe.android.honbabstop.ChatDetail.adapter.contract.ChatAdapterContract;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
+import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.User;
 
 
@@ -21,9 +22,12 @@ public interface ChatDetailPresenter {
 
         void scrollToBottom();
 
+        void initMapFragment(ChatRoom chatRoom);
+
         void showMaps();
 
         void hideMaps();
+
 
     }
 
@@ -43,6 +47,8 @@ public interface ChatDetailPresenter {
         void backToTheMain();
 
         void loadChatMessageList(String chatRoomId);
+
+        void loadChatRoomInfo(String chatRoomId);
 
         void actionMapView();
     }

@@ -43,7 +43,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder>
     @Override
     public void onBindViewHolder(ChatListViewHolder holder, int position) {
         int realPosition = list.size()-holder.getAdapterPosition()-1; //reverse
-        holder.onBind(list.get(realPosition), realPosition);
+        holder.onBind(list.get(realPosition));
     }
 
     @Override
@@ -55,6 +55,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder>
     }
 
 
+    /**
+     * ChatListAdapterContract.View
+     */
     @Override
     public void notifyAdapter() {
         notifyDataSetChanged();
@@ -75,9 +78,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder>
         mOnItemClickListener=listener;
     }
 
+
+    /**
+     * ChatListAdapterContract.Model
+     */
     @Override
     public void setListData(List<ChatRoom> listItem) {
-        list=listItem;
+        list.clear();
+        list.addAll(listItem);
     }
 
     @Override
@@ -104,7 +112,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListViewHolder>
                 return i;
             }
         }
-
         return -1;
     }
 

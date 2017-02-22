@@ -13,6 +13,7 @@ import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.User;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -25,7 +26,9 @@ public class ChatListModel {
 
     private DatabaseReference mDatabase;
 
-        public ChatListModel(){
+    private List<ChatRoom> mChatList = new ArrayList<>();
+
+    public ChatListModel(){
         loadDB();
     }
 
@@ -58,7 +61,7 @@ public class ChatListModel {
             return;
         }
 
-        List<ChatRoom> chatList = new ArrayList<>();
+        mChatList.clear();
         mDatabase.child("ChatList")
                 //.orderByChild("startTimeStamp") /*key값이 timestamp 기반으로 생성됨*/
                 .limitToLast(queryNum) /* 쿼리 */
@@ -68,9 +71,9 @@ public class ChatListModel {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child : dataSnapshot.getChildren()){
                     ChatRoom chatRoom = child.getValue(ChatRoom.class);
-                    chatList.add(chatRoom);
+                    mChatList.add(chatRoom);
                 }
-                mChangeChatListData.update(chatList);
+                mChangeChatListData.update(mChatList);
             }
 
             @Override
@@ -98,7 +101,7 @@ public class ChatListModel {
     /**
      *  채팅방의 User 정보 수정
      */
-    public void addUserInfoInChatRoom(String uid, String roomId, List<String> members){
+    public void addUserInfoInChatRoom(User user, String roomId, List<User> members){
         if(mDatabase==null){
             return;
         }
@@ -148,8 +151,17 @@ public class ChatListModel {
                             return Transaction.abort();
                         }
 
-                        if(!members.contains(uid)){
-                            members.add(uid);
+                        boolean isContains=false;
+                        for (User member : members){
+                            if(member.getUid().equals(user.getUid())){
+                                isContains=true;
+                                break;
+                            }
+                        }
+
+                        if(!isContains){
+                            user.setEnteredTime(Calendar.getInstance().getTimeInMillis()); // 입장 시간
+                            members.add(user);
                             chatRoom.setMembers(members);
                             chatRoom.setCurrentPeople(chatRoom.getCurrentPeople()+1);
                         }
