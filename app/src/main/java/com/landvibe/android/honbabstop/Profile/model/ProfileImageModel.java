@@ -1,6 +1,9 @@
 package com.landvibe.android.honbabstop.profile.model;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,6 +19,9 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.landvibe.android.honbabstop.base.domain.User;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * Created by user on 2017-02-14.
@@ -92,7 +98,14 @@ public class ProfileImageModel {
         mStorage = FirebaseStorage.getInstance().getReferenceFromUrl(BASE_URL).child(PROFILE_PATH).child(uid);
     }
 
-    public void saveImageToStorage(Uri imageUrl){
+    public void saveImageToStorage(Activity activity, Uri imageUrl){
+
+        Bitmap resizedImage = getResizedImage(activity,imageUrl, 150);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        resizedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+
         StorageMetadata metadata = new StorageMetadata.Builder()
                 .setContentType("image/jpeg")
                 .build();
@@ -100,7 +113,8 @@ public class ProfileImageModel {
         //gs://honbabstop.appspot.com/profile/{uid}/imagename.jpg
         UploadTask uploadTask = mStorage
                 .child(imageUrl.getLastPathSegment()+".jpeg")
-                .putFile(imageUrl,metadata);
+                .putBytes(data,metadata);
+
         uploadTask.addOnProgressListener(taskSnapshot -> {
             double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
             Log.d(TAG, "Upload is " + progress + " done");
@@ -126,6 +140,24 @@ public class ProfileImageModel {
                 mImageUploadCallback.onComplete(downloadUrl);
             }
         });
+    }
+
+    private Bitmap getResizedImage(Activity activity, Uri input, int resizedp){
+        Bitmap bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int height = bitmap.getHeight();
+        int width = bitmap.getWidth();
+        Bitmap resized = null;
+        while (height > resizedp) {
+            resized = Bitmap.createScaledBitmap(bitmap, (width * resizedp) / height, resizedp, true);
+            height = resized.getHeight();
+            width = resized.getWidth();
+        }
+        return resized;
     }
 
     public void changeProfileUrl(Uri profileUrl){

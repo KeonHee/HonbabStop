@@ -213,17 +213,22 @@ public class NMapFragment extends Fragment
 
     @Override
     public void onLocationUpdateTimeout(NMapLocationManager nMapLocationManager) {
-        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(),
-                "위치를 탐색하고 있습니다 잠시만 기다려주세요", Snackbar.LENGTH_LONG)
-                .setAction("OK", v -> {}).show();
+        if(getActivity()!=null){
+            Snackbar.make(getActivity().getWindow().getDecorView().getRootView(),
+                    "위치를 탐색하고 있습니다 잠시만 기다려주세요", Snackbar.LENGTH_LONG)
+                    .setAction("OK", v -> {}).show();
+        }
+
     }
 
     @Override
     public void onLocationUnavailableArea(NMapLocationManager nMapLocationManager, NGeoPoint nGeoPoint) {
-        Snackbar.make(getActivity().getWindow().getDecorView().getRootView(),
-                "잘못된 위치입니다. 위치탐색을 중단합니다.", Snackbar.LENGTH_LONG)
-                .setAction("OK", v -> {}).show();
-        stopMyLocation();
+        if(getActivity()!=null){
+            Snackbar.make(getActivity().getWindow().getDecorView().getRootView(),
+                    "잘못된 위치입니다. 위치탐색을 중단합니다.", Snackbar.LENGTH_LONG)
+                    .setAction("OK", v -> {}).show();
+            stopMyLocation();
+        }
     }
 
 
@@ -232,6 +237,8 @@ public class NMapFragment extends Fragment
     @Override
     public void onMarkPin(FoodRestaurant foodRestaurant) {
         Log.d(TAG, foodRestaurant.getTitle());
+
+        startMyLocation();
 
         mMapOverlayManager.clearOverlays();
 

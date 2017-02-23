@@ -20,6 +20,7 @@ public class DomainConvertUtils {
         myChat.setMaxPeople(chatRoom.getMaxPeople());
         myChat.setHeader(chatRoom.getHeader());
         myChat.setMembers(chatRoom.getMembers());
+        myChat.setFoodImageUrl(chatRoom.getFoodImageUrl());
         return myChat;
     }
 }

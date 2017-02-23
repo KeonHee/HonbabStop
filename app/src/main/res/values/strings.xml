@@ -25,11 +25,13 @@
     <string name="login_desc3">혼밥러들을 찾아 떠나세요!</string>
 
     <!-- AddChatActivity -->
+    <string name="add_chat_actionbar_title">채팅방 만들기</string>
+
     <string name="add_chat_title_label">방제목</string>
     <string name="add_chat_max_people_label">최대인원</string>
     <string name="add_chat_location_label">만남장소</string>
     <string name="add_chat_contact_time_label">만남시간</string>
-    <string name="add_chat_food_name_label">메뉴이름</string>
+    <string name="add_chat_food_name_label">메뉴</string>
 
     <string name="number_picker_people_formatter">%d명</string>
     <string name="number_picker_age_formatter">%02d</string>
@@ -58,6 +60,8 @@
     <string name="dialog_content">갤러리에서 가져올까요?</string>
 
     <!--  UpdateProfileActivitiy -->
+    <string name="profile_update_actionbar_title">프로필 수정</string>
+
     <string name="profile_update_name_hint">이름</string>
     <string name="profile_update_email_hint">이메일</string>
     <string name="profile_update_status_hint">상태메세지</string>
@@ -70,6 +74,7 @@
 
 
     <!-- Action Bar MainActivity -->
+    <string name="action_refresh">새로고침</string>
     <string name="action_sign_out">SignOut</string>
     <!-- Action Bar UpdateProfileActivity -->
     <string name="action_save">저장</string>

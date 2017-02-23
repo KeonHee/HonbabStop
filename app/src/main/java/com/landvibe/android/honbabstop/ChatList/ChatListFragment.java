@@ -1,6 +1,7 @@
 package com.landvibe.android.honbabstop.chatlist;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,15 +12,20 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.landvibe.android.honbabstop.addchat.AddChatActivity;
+import com.landvibe.android.honbabstop.base.listener.OnRefreshListener;
 import com.landvibe.android.honbabstop.chatdetail.ChatDetailActivity;
 import com.landvibe.android.honbabstop.chatlist.adapter.ChatListAdapter;
 import com.landvibe.android.honbabstop.chatlist.presenter.ChatListPresenter;
 import com.landvibe.android.honbabstop.chatlist.presenter.ChatListPresenterImpl;
 import com.landvibe.android.honbabstop.R;
+import com.landvibe.android.honbabstop.main.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +34,7 @@ import butterknife.ButterKnife;
  * Created by user on 2017-02-13.
  */
 
-public class ChatListFragment extends Fragment implements ChatListPresenter.View {
+public class ChatListFragment extends Fragment implements ChatListPresenter.View{
 
     private final static String TAG ="ChatListFragment";
 
@@ -58,6 +64,7 @@ public class ChatListFragment extends Fragment implements ChatListPresenter.View
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate()");
         mPage=getArguments().getInt("page");
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -125,6 +132,18 @@ public class ChatListFragment extends Fragment implements ChatListPresenter.View
         mChatListAdapter=null;
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                mChatListPresenter.loadChatList();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Override
     public void moveToChatDetailActivity(String roomId, String title) {
         final Activity activity = getActivity();
@@ -143,4 +162,15 @@ public class ChatListFragment extends Fragment implements ChatListPresenter.View
         startActivity(intent);
     }
 
+    @Override
+    public void showLoading() {
+        Context context = getActivity();
+        ((MainActivity) context).showLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        Context context = getActivity();
+        ((MainActivity) context).hideLoading();
+    }
 }

@@ -1,9 +1,12 @@
 package com.landvibe.android.honbabstop.addchat;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
@@ -13,8 +16,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.addchat.presenter.AddChatPresenter;
@@ -31,6 +36,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.shawnlin.numberpicker.NumberPicker;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -46,8 +52,12 @@ public class AddChatActivity extends AppCompatActivity
 
     private final int REQ_CODE_SELECT_IMAGE = 1001;
 
-    @BindView(R.id.et_title)
-    MaterialEditText mTitleEditText;
+
+    @BindView(R.id.iv_food_image_upload)
+    ImageView mTitleImageView;
+
+    @BindView(R.id.et_food_name)
+    MaterialEditText mFoodNameEditText;
 
     @BindView(R.id.np_max_people)
     NumberPicker mMaxPeoplePicker;
@@ -55,11 +65,8 @@ public class AddChatActivity extends AppCompatActivity
     @BindView(R.id.btn_contact_time_label)
     FButton mSelectTimeBtn;
 
-    @BindView(R.id.et_food_name)
-    MaterialEditText mFoodNameEditText;
-
-    @BindView(R.id.btn_food_image_upload)
-    FButton mImageUploadButton;
+    @BindView(R.id.et_title)
+    MaterialEditText mTitleEditText;
 
     @BindView(R.id.btn_search_restaurant)
     FButton mSearchButton;
@@ -83,6 +90,9 @@ public class AddChatActivity extends AppCompatActivity
 
     private Uri tmpUri;
 
+    private ProgressDialog mAsyncLoading;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,15 +112,23 @@ public class AddChatActivity extends AppCompatActivity
 
         mSelectTimeBtn.setOnClickListener(v-> showTimePicker());
 
-        mImageUploadButton.setOnClickListener(v->showGalleryDialog());
+        mTitleImageView.setOnClickListener(v->showGalleryDialog());
 
         mSearchButton.setOnClickListener(v->moveToSearchActivity());
+
+
+        mAsyncLoading = new ProgressDialog(this);
+        //mAsyncLoading.setProgressDrawable(new FoldingCube());
+        mAsyncLoading.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mAsyncLoading.setTitle("업로드 중 입니다.");
+
     }
 
     private void setActionBar(){
         ActionBar actionBar=getSupportActionBar();
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.add_chat_actionbar_title));
         }
     }
 
@@ -176,7 +194,7 @@ public class AddChatActivity extends AppCompatActivity
                 tmpUri = data.getData();
                 Log.d(TAG, "selectedImageUri : " + tmpUri);
 
-                //TODO 사진 보여주기
+                updateTitleImage(tmpUri);
             }
         }
     }
@@ -280,6 +298,36 @@ public class AddChatActivity extends AppCompatActivity
         if(mMarkerListener!=null){
             mMarkerListener.onMarkPin(foodRestaurant);
         }
+    }
+
+    @Override
+    public void updateTitleImage(Uri imageUrl) {
+        runOnUiThread(()->{
+            if(mTitleImageView==null){
+                return;
+            }
+
+            Glide.with(this)
+                    .load(imageUrl)
+                    .override(200,200)
+                    .crossFade()
+                    .into(mTitleImageView);
+        });
+    }
+
+    @Override
+    public void showLoading() {
+        mAsyncLoading.show();
+    }
+
+    @Override
+    public void updateLoading(int progress) {
+        runOnUiThread(()->mAsyncLoading.setProgress(progress));
+    }
+
+    @Override
+    public void hideLoading() {
+        mAsyncLoading.dismiss();
     }
 
     @Override

@@ -9,7 +9,9 @@ public interface MainPresenter {
 
         //void moveToMainActivity();
 
-        //void showLoading();
+        void showLoading();
+
+        void hideLoading();
 
         //void saveUserInfo(User user);
 

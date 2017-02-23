@@ -8,15 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.facebook.login.widget.LoginButton;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.github.ybq.android.spinkit.style.Wave;
 import com.google.android.gms.common.SignInButton;
+import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.login.presenter.LoginPresenter;
 import com.landvibe.android.honbabstop.login.presenter.LoginPresenterImpl;
 import com.landvibe.android.honbabstop.main.MainActivity;
-import com.landvibe.android.honbabstop.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +35,7 @@ public class LoginActivity extends AppCompatActivity
     private LoginPresenterImpl loginPresenter;
 
     @BindView(R.id.pb_loading_indicator)
-    ProgressBar mLoadingIndicator;
+    SpinKitView mLoadingIndicator;
 
     @BindView(R.id.btn_facebook_login)
     LoginButton mFacebookLoginBtn;
@@ -125,8 +126,12 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     public void showLoading(){
-        //TODO 프로그레스바 좀더 세련되게 바꾸기
-        mLoadingIndicator.setVisibility(View.VISIBLE);
+        runOnUiThread(()->mLoadingIndicator.setVisibility(View.VISIBLE));
+    }
+
+    @Override
+    public void hideLoading() {
+        runOnUiThread(()->mLoadingIndicator.setVisibility(View.GONE));
     }
 
 }

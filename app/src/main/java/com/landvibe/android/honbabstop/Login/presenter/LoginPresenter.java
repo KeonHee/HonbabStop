@@ -19,6 +19,7 @@ public interface LoginPresenter {
 
         void showLoading();
 
+        void hideLoading();
     }
 
     interface Presenter {

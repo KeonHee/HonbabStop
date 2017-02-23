@@ -9,13 +9,6 @@
     tools:context="com.landvibe.android.honbabstop.login.LoginActivity"
     >
 
-    <ProgressBar
-        android:id="@+id/pb_loading_indicator"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        />
 
     <LinearLayout
         android:id="@+id/activity_login"
@@ -120,5 +113,13 @@
 
     </LinearLayout>
 
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/pb_loading_indicator"
+        style="@style/SpinKitView.Large.Wave"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/fbutton_color_pomegranate" />
 
 </FrameLayout>

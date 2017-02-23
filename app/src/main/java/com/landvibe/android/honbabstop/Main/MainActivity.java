@@ -9,23 +9,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.facebook.login.LoginManager;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.LogoutResponseCallback;
-import com.landvibe.android.honbabstop.login.LoginActivity;
-import com.landvibe.android.honbabstop.main.page.MainPageAdapter;
-import com.landvibe.android.honbabstop.main.presenter.MainPresenter;
-import com.landvibe.android.honbabstop.main.presenter.MainPresenterImpl;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.auth.google.GoogleApiClientStore;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.domain.UserStore;
+import com.landvibe.android.honbabstop.base.listener.OnRefreshListener;
 import com.landvibe.android.honbabstop.base.utils.SharedPreferenceUtils;
+import com.landvibe.android.honbabstop.login.LoginActivity;
+import com.landvibe.android.honbabstop.main.page.MainPageAdapter;
+import com.landvibe.android.honbabstop.main.presenter.MainPresenter;
+import com.landvibe.android.honbabstop.main.presenter.MainPresenterImpl;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +36,10 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements MainPresenter.View, ViewPager.OnPageChangeListener{
 
     private final static String TAG = "MainActivity";
+
+
+    @BindView(R.id.pb_loading_indicator)
+    SpinKitView mLoadingIndicator;
 
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
@@ -48,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     private MainPresenter.Presenter mainPresenter;
 
+    private MainPageAdapter mMainPageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +85,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             }
         };
 
-
         mainPresenter = new MainPresenterImpl();
         mainPresenter.attachView(this);
 
-        viewPager.setAdapter(new MainPageAdapter(getSupportFragmentManager()));
+        mMainPageAdapter = new MainPageAdapter(getSupportFragmentManager());
+
+        viewPager.setAdapter(mMainPageAdapter);
         viewPager.setCurrentItem(0,false);
         viewPager.addOnPageChangeListener(this);
         prevBottomNavigation=bottomNavigationView.getMenu().getItem(0);
@@ -143,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
             case R.id.action_sign_out:
                 signOut();
                 return true;
-            //TODO 리스트 새로고침 기능
+            case R.id.action_refresh:
+                //throw fragment
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -171,6 +182,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         }
 
+    }
+
+    private void refresh(){
+        //int page = viewPager.getCurrentItem();
+        //((OnRefreshListener)mMainPageAdapter.getItem(page)).update();
     }
 
     private void kakaoSignOut(){
@@ -221,5 +237,15 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void showLoading() {
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        mLoadingIndicator.setVisibility(View.GONE);
     }
 }

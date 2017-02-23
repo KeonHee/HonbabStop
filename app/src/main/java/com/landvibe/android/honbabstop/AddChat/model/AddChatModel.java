@@ -34,7 +34,7 @@ public class AddChatModel {
     private ImageUploadCallback mImageUploadCallback;
 
     public interface ImageUploadCallback{
-        void onComplete(Uri saveUri, String roomId);
+        void onComplete(ChatRoom chatRoom);
         void onFailure();
         void onProgress(double progress);
         void onPause();
@@ -87,16 +87,19 @@ public class AddChatModel {
     /**
      * 이미지 업로드
      */
-    public void saveImageToStorage(String roomId, Uri imageUrl){
+    public void saveImageToStorage(ChatRoom chatRoom, Uri imageUrl){
+
+
         StorageMetadata metadata = new StorageMetadata.Builder()
                 .setContentType("image/jpeg")
                 .build();
 
         //gs://honbabstop.appspot.com/chat/{roomId}/imagename.jpg
         UploadTask uploadTask = mStorage
-                .child(roomId)
+                .child(chatRoom.getId())
                 .child(imageUrl.getLastPathSegment()+".jpeg")
                 .putFile(imageUrl,metadata);
+
         uploadTask.addOnProgressListener(taskSnapshot -> {
             double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
             Log.d(TAG, "Upload is " + progress + " done");
@@ -119,24 +122,26 @@ public class AddChatModel {
             Log.d(TAG, "bucket :" + taskSnapshot.getMetadata().getBucket());
             Log.d(TAG, "getPath :" + taskSnapshot.getMetadata().getPath());
             if(mImageUploadCallback!=null){
-                mImageUploadCallback.onComplete(downloadUrl, roomId);
+                chatRoom.setFoodImageUrl(downloadUrl.toString());
+                mImageUploadCallback.onComplete(chatRoom);
             }
         });
     }
 
-    public void saveChatImageUrl(Uri imageUrl, String roomId){
+
+    public void saveChatImageUrl(ChatRoom chatRoom){
         mDatabase.child("ChatList")
-                .child(roomId)
+                .child(chatRoom.getId())
                 .child("foodImageUrl")
-                .setValue(imageUrl.toString());
+                .setValue(chatRoom.getFoodImageUrl());
 
 
         User user = UserStore.getInstance().getUser();
         mDatabase.child("MyChatList")
                 .child(user.getUid())
-                .child(roomId)
+                .child(chatRoom.getId())
                 .child("foodImageUrl")
-                .setValue(imageUrl.toString());
+                .setValue(chatRoom.getFoodImageUrl());
 
     }
 }

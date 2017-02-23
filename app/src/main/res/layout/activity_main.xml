@@ -9,6 +9,17 @@
     tools:context="com.landvibe.android.honbabstop.main.MainActivity">
 
 
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/pb_loading_indicator"
+        style="@style/SpinKitView.Large.Wave"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        app:SpinKit_Color="@color/fbutton_color_pomegranate" />
+
+
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager_container"
         android:layout_width="match_parent"

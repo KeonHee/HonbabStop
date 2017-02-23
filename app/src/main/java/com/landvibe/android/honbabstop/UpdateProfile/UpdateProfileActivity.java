@@ -65,6 +65,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         ActionBar actionBar=getSupportActionBar();
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.profile_update_actionbar_title));
         }
     }
 

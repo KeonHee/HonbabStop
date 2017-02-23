@@ -10,12 +10,70 @@
     android:orientation="vertical"
     tools:context="com.landvibe.android.honbabstop.addchat.AddChatActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:id="@+id/iv_food_image_upload"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:srcCompat="@drawable/image_512"
+            />
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/np_max_people"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                app:np_orientation="horizontal"
+                app:np_dividerColor="@color/fbutton_color_pumpkin"
+                app:np_formatter="@string/number_picker_people_formatter"
+                app:np_max="5"
+                app:np_min="2"
+                app:np_textColor="@color/fbutton_color_pumpkin"
+                app:np_textSize="24sp"
+                app:np_typeface="@string/roboto_light"
+                app:np_value="3" />
+
+            <info.hoang8f.widget.FButton
+                android:id="@+id/btn_contact_time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/np_max_people"
+                android:text="시간"
+                android:textSize="16sp"
+                android:textColor="@color/fbutton_color_clouds"
+                fbutton:buttonColor="@color/fbutton_color_orange"
+                fbutton:shadowColor="@color/fbutton_color_sun_flower"
+                fbutton:shadowEnabled="true"
+                fbutton:shadowHeight="2dp"
+                fbutton:cornerRadius="5dp"
+                />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/et_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:hint="@string/add_chat_title_label"
@@ -27,71 +85,9 @@
         />
 
 
-    <ImageView
-        android:id="@+id/iv_food_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:maxHeight="100dp"
-        android:visibility="gone"
-        />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        >
-
-        <TextView
-            android:id="@+id/tv_max_people_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:text="@string/add_chat_max_people_label"
-            android:textSize="16sp"
-            android:textColor="@color/fbutton_color_pumpkin"
-            />
-
-        <com.shawnlin.numberpicker.NumberPicker
-            android:id="@+id/np_max_people"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/tv_max_people_label"
-            android:layout_marginLeft="8dp"
-            app:np_orientation="horizontal"
-            app:np_dividerColor="@color/fbutton_color_pumpkin"
-            app:np_formatter="@string/number_picker_people_formatter"
-            app:np_max="5"
-            app:np_min="2"
-            app:np_textColor="@color/fbutton_color_pumpkin"
-            app:np_textSize="24sp"
-            app:np_typeface="@string/roboto_light"
-            app:np_value="3" />
-
-        <info.hoang8f.widget.FButton
-            android:id="@+id/btn_contact_time_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/np_max_people"
-            android:text="시간"
-            android:textSize="16sp"
-            android:textColor="@color/fbutton_color_clouds"
-            fbutton:buttonColor="@color/fbutton_color_orange"
-            fbutton:shadowColor="@color/fbutton_color_sun_flower"
-            fbutton:shadowEnabled="true"
-            fbutton:shadowHeight="2dp"
-            fbutton:cornerRadius="5dp"
-            />
-    </RelativeLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:orientation="horizontal"
@@ -102,7 +98,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="8dp"
             android:hint="@string/add_chat_food_name_label"
             app:met_baseColor="@color/dark_gray"
             app:met_primaryColor="@color/dark_orange"
@@ -112,10 +107,11 @@
             />
 
         <info.hoang8f.widget.FButton
-            android:id="@+id/btn_food_image_upload"
+            android:id="@+id/btn_search_restaurant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="대표사진"
+            android:layout_marginLeft="8dp"
+            android:text="음식점 검색"
             android:textSize="16sp"
             android:textColor="@color/fbutton_color_clouds"
             fbutton:buttonColor="@color/fbutton_color_orange"
@@ -124,23 +120,9 @@
             fbutton:shadowHeight="2dp"
             fbutton:cornerRadius="5dp"
             />
+
+
     </LinearLayout>
-
-
-    <info.hoang8f.widget.FButton
-        android:id="@+id/btn_search_restaurant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="음식점 검색"
-        android:textSize="16sp"
-        android:textColor="@color/fbutton_color_clouds"
-        fbutton:buttonColor="@color/fbutton_color_orange"
-        fbutton:shadowColor="@color/fbutton_color_sun_flower"
-        fbutton:shadowEnabled="true"
-        fbutton:shadowHeight="2dp"
-        fbutton:cornerRadius="5dp"
-        />
-
 
     <LinearLayout
         android:id="@+id/maps_fragment_space"
@@ -148,7 +130,7 @@
         android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0.6"
         >
     </LinearLayout>
 </LinearLayout>

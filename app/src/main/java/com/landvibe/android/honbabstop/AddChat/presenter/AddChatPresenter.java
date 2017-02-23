@@ -22,6 +22,14 @@ public interface AddChatPresenter {
 
         void showMapMarker(FoodRestaurant foodRestaurant);
 
+        void updateTitleImage(Uri imageUrl);
+
+        void showLoading();
+
+        void updateLoading(int progress);
+
+        void hideLoading();
+
     }
 
     interface Presenter{

@@ -9,9 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.landvibe.android.honbabstop.base.listener.OnRefreshListener;
 import com.landvibe.android.honbabstop.chatdetail.ChatDetailActivity;
 import com.landvibe.android.honbabstop.mychatlist.adapter.MyChatListAdapter;
 import com.landvibe.android.honbabstop.mychatlist.presenter.MyChatListPresenter;
@@ -25,7 +27,7 @@ import butterknife.ButterKnife;
  * Created by user on 2017-02-13.
  */
 
-public class MyChatListFragment extends Fragment implements MyChatListPresenter.View {
+public class MyChatListFragment extends Fragment implements MyChatListPresenter.View{
 
     private final static String TAG ="MyChatListFragment";
 
@@ -53,6 +55,7 @@ public class MyChatListFragment extends Fragment implements MyChatListPresenter.
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate()");
         mPage=getArguments().getInt("page");
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -100,6 +103,17 @@ public class MyChatListFragment extends Fragment implements MyChatListPresenter.
         mMyChatListPresenter=null;
 
         mMyChatListAdapter=null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                mMyChatListPresenter.loadMyChatList();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

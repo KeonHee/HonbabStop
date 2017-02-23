@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
+import com.landvibe.android.honbabstop.base.listener.OnRefreshListener;
 import com.landvibe.android.honbabstop.profile.presenter.ProfilePresenter;
 import com.landvibe.android.honbabstop.profile.presenter.ProfilePresenterImpl;
 import com.landvibe.android.honbabstop.R;
@@ -31,7 +33,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  * Created by user on 2017-02-13.
  */
 
-public class ProfileFragment extends Fragment implements ProfilePresenter.View {
+public class ProfileFragment extends Fragment implements ProfilePresenter.View, OnRefreshListener {
 
     private final static String TAG ="ProfileFragment";
 
@@ -72,6 +74,7 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate()");
         mPage=getArguments().getInt("page");
+        setHasOptionsMenu(true);
     }
 
 
@@ -164,6 +167,16 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                profilePresenter.loadUser();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     @Override
     public void updateUserProfile(String url) {
         getActivity().runOnUiThread(() -> {
@@ -275,5 +288,10 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View {
         final Intent intent = new Intent(activity, UpdateProfileActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+    }
+
+    @Override
+    public void update() {
+        profilePresenter.loadUser();
     }
 }

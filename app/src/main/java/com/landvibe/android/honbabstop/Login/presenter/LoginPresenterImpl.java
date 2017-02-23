@@ -273,7 +273,6 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-
             view.showLoading();
 
             GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(),
@@ -349,7 +348,6 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
      */
     @Override
     public void onGoogleActivityResult(Intent data) {
-
         view.showLoading();
 
         GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);

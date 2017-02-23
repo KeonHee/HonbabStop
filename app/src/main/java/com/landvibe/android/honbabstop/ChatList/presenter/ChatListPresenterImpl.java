@@ -79,6 +79,7 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
 
     @Override
     public void loadChatList() {
+        //view.showLoading();
         mChatListModel.loadChatList(15); //TODO 쿼리개수 핸들러 만들기 (무한로딩)
     }
 
@@ -90,6 +91,8 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
 
         mAdapterModel.setListData(list);
         mAdapterView.notifyAdapter();
+
+        view.hideLoading();
     }
 
     @Override

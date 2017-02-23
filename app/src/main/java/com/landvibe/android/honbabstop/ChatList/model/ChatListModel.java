@@ -108,9 +108,7 @@ public class ChatListModel {
             return;
         }
 
-        //@TODO MyChat에 데이터 추가
-
-        DatabaseReference roomRef = mDatabase.child("ChatList").child(roomId);
+        DatabaseReference roomRef = FirebaseDatabase.getInstance().getReference().child("ChatList").child(roomId);
         if(roomRef==null){
             mCompleteChangeUserData.onFailure("없는 채팅방");
             return;
@@ -132,73 +130,28 @@ public class ChatListModel {
                     return;
                 }
 
-
-                roomRef.runTransaction(new Transaction.Handler() {
-                    @Override
-                    public Transaction.Result doTransaction(MutableData mutableData) {
-
-                        ChatRoom chatRoom = mutableData.getValue(ChatRoom.class);
-
-                        if(chatRoom==null){
-                            // DB 동시 접근 시, 모두 입장 불가
-                            mCompleteChangeUserData.onFailure("채팅방에 접속자가 몰렸습니다 다시 시도해 주세요");
-                            Log.d(TAG, "채팅방에 접속자가 몰렸습니다 다시 시도해 주세요");
-                            return Transaction.abort();
-                        }
-
-                        if(chatRoom.getCurrentPeople()>=chatRoom.getMaxPeople()){
-                            // 한명은 입장 가능
-                            mCompleteChangeUserData.onFailure("인원 초과");
-                            Log.d(TAG, "인원 초과");
-                            return Transaction.abort();
-                        }
-
-                        boolean isContains=false;
-                        for (User member : members){
-                            if(member.getUid().equals(user.getUid())){
-                                isContains=true;
-                                break;
-                            }
-                        }
-
-                        if(!isContains){
-                            user.setEnteredTime(Calendar.getInstance().getTimeInMillis()); // 입장 시간
-                            members.add(user);
-                            chatRoom.setMembers(members);
-                            chatRoom.setCurrentPeople(chatRoom.getCurrentPeople()+1);
-
-                        }
-
-                        mutableData.setValue(chatRoom);
-                        return Transaction.success(mutableData);
+                boolean isContains=false;
+                for (User member : members){
+                    if(member.getUid().equals(user.getUid())){
+                        isContains=true;
+                        break;
                     }
+                }
 
-                    @Override
-                    public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                        if(!committed){
-                            if(databaseError!=null){
-                                Log.d(TAG, databaseError.getMessage());
-                            }
-                            return;
-                        }
+                if(!isContains){
+                    user.setEnteredTime(Calendar.getInstance().getTimeInMillis()); // 입장 시간
+                    members.add(user);
+                    chatRoom.setMembers(members);
+                    chatRoom.setCurrentPeople(chatRoom.getCurrentPeople()+1);
 
-                        if(databaseError!=null){
-                            Log.d(TAG, databaseError.getMessage());
-                            return;
-                        }
+                    saveChat(chatRoom);
 
-                        ChatRoom chatRoom = dataSnapshot.getValue(ChatRoom.class);
-                        if(chatRoom!=null) {
+                    /* My Chat 저장 */
+                    MyChat myChat = DomainConvertUtils.convertChatRoomToMyChat(chatRoom);
+                    saveMyChat(myChat,user);
+                }
 
-                            /* My Chat 저장 */
-                            MyChat myChat = DomainConvertUtils.convertChatRoomToMyChat(chatRoom);
-                            saveMyChat(myChat,user);
-
-                            mCompleteChangeUserData.onComplete(chatRoom);
-                        }
-                    }
-                });
-
+                mCompleteChangeUserData.onComplete(chatRoom);
             }
 
             @Override
@@ -206,6 +159,12 @@ public class ChatListModel {
                 Log.d(TAG, "onCancelled : " +databaseError.getMessage());
             }
         });
+    }
+
+    public void saveChat(ChatRoom chatRoom){
+        mDatabase.child("ChatList")
+                .child(chatRoom.getId())
+                .setValue(chatRoom);
     }
 
     /**

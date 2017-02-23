@@ -67,7 +67,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
 
     @Override
     public void uploadImageToStorage(Uri url) {
-        mProfileImageModel.saveImageToStorage(url);
+        mProfileImageModel.saveImageToStorage(mActivity, url);
     }
 
     private void updateUserView(User user){

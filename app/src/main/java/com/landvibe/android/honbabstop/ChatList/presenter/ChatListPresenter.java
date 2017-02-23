@@ -16,6 +16,10 @@ public interface ChatListPresenter {
 
         void moveToAddChatActivity();
 
+        void showLoading();
+
+        void hideLoading();
+
     }
 
     interface Presenter{

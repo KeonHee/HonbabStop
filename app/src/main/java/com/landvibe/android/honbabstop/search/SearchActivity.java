@@ -10,6 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.search.adapter.SearchAdapter;
@@ -31,6 +33,12 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
+    @BindView(R.id.iv_search_image)
+    ImageView mSearchImageView;
+
+    @BindView(R.id.tv_search_text)
+    TextView mSearchTextView;
+
     private SearchPresenter.Presenter mSearchPresenter;
 
     private SearchAdapter mSearchAdapter;
@@ -51,10 +59,15 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
         mSearchPresenter=new SearchPresenterImpl();
         mSearchPresenter.attachView(this, this);
 
-        mSearchView.post(()->mSearchView.showSearch());
+        mSearchView.post(()->{
+            mSearchView.showSearch();
+            mSearchView.showKeyboard(getWindow().getDecorView().getRootView());
+        });
         mSearchView.setVoiceSearch(false);
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setOnItemClickListener(this);
+
+        mSearchImageView.setOnClickListener(v->mSearchView.showSearch());
 
     }
 
@@ -123,6 +136,7 @@ public class SearchActivity extends AppCompatActivity implements SearchPresenter
     public boolean onQueryTextSubmit(String query) {
         Log.d(TAG, "query : "+query);
         mSearchPresenter.searchLocation(query);
+
         return true;
     }
 
