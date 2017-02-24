@@ -148,7 +148,7 @@ public class ChatListModel {
 
                     /* My Chat 저장 */
                     MyChat myChat = DomainConvertUtils.convertChatRoomToMyChat(chatRoom);
-                    saveMyChat(myChat,user);
+                    saveMyChat(myChat,chatRoom.getMembers());
                 }
 
                 mCompleteChangeUserData.onComplete(chatRoom);
@@ -170,10 +170,12 @@ public class ChatListModel {
     /**
      * my Chat 저장
      */
-    public void saveMyChat(MyChat myChat, User user){
-        mDatabase.child("MyChatList")
-                .child(user.getUid())
-                .child(myChat.getId())
-                .setValue(myChat);
+    public void saveMyChat(MyChat myChat, List<User> memebers){
+        for(User member : memebers){
+            mDatabase.child("MyChatList")
+                    .child(member.getUid())
+                    .child(myChat.getId())
+                    .setValue(myChat);
+        }
     }
 }

@@ -131,14 +131,12 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
         if(url==null){
             Glide.with(mContext)
                     .load(R.drawable.default_profile)
-                    .override(140,140)
                     .into(iv);
         }else {
             Glide.with(mContext)
                     .load(url)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.default_profile)
-                    .override(140,140)
                     .placeholder(R.drawable.default_profile)
                     .into(iv);
         }

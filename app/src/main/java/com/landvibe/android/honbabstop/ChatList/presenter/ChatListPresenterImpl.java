@@ -85,14 +85,14 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
 
     @Override
     public void update(List<ChatRoom> list) {
+        view.hideLoading();
+
         if(list==null || list.size()==0){
             return;
         }
 
         mAdapterModel.setListData(list);
         mAdapterView.notifyAdapter();
-
-        view.hideLoading();
     }
 
     @Override
