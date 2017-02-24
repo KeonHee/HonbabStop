@@ -99,15 +99,15 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="8dp"
-            android:textSize="14sp"/>
+            android:textSize="15sp"/>
 
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_google_login"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="55dp"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
             android:layout_marginTop="8dp"
             android:textSize="14sp"/>
 
@@ -120,6 +120,6 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:visibility="gone"
-        app:SpinKit_Color="@color/fbutton_color_pomegranate" />
+        app:SpinKit_Color="@color/fbutton_color_asbestos" />
 
 </FrameLayout>

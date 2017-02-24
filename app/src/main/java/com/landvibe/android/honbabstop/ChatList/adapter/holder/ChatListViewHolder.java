@@ -1,14 +1,19 @@
 package com.landvibe.android.honbabstop.chatlist.adapter.holder;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.listener.OnItemClickListener;
@@ -70,12 +75,16 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
             }else {
                 Glide.with(mContext)
                         .load(chatRoom.getFoodImageUrl())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .override(140,140)
+                        .placeholder(R.drawable.default_profile)
                         .centerCrop()
                         .dontAnimate()
                         .bitmapTransform(new CropCircleTransformation(mContext))
                         .into(mTitleImageView);
             }
+
+            mTitleImageView.setOnClickListener(v->showImageDialog(chatRoom.getFoodImageUrl()));
 
             mTitleTextView.setText(chatRoom.getTitle());
             mMaxCountTextView.setText(chatRoom.getCurrentPeople()+"/"+chatRoom.getMaxPeople());
@@ -108,6 +117,31 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
             }
 
         });
+    }
+
+    private void showImageDialog(String url){
+        Dialog dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setContentView(R.layout.image_dialog);
+
+        ImageView iv = (ImageView) dialog.findViewById(R.id.iv_title_image_dialog);
+
+        if(url==null){
+            Glide.with(mContext)
+                    .load(R.drawable.default_profile)
+                    .override(140,140)
+                    .into(iv);
+        }else {
+            Glide.with(mContext)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.default_profile)
+                    .override(140,140)
+                    .placeholder(R.drawable.default_profile)
+                    .into(iv);
+        }
+        dialog.show();
     }
 
 }

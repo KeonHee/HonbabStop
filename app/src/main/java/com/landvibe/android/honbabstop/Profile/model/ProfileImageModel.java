@@ -100,12 +100,6 @@ public class ProfileImageModel {
 
     public void saveImageToStorage(Activity activity, Uri imageUrl){
 
-        Bitmap resizedImage = getResizedImage(activity,imageUrl, 150);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        resizedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-
-
         StorageMetadata metadata = new StorageMetadata.Builder()
                 .setContentType("image/jpeg")
                 .build();
@@ -113,7 +107,7 @@ public class ProfileImageModel {
         //gs://honbabstop.appspot.com/profile/{uid}/imagename.jpg
         UploadTask uploadTask = mStorage
                 .child(imageUrl.getLastPathSegment()+".jpeg")
-                .putBytes(data,metadata);
+                .putFile(imageUrl,metadata);
 
         uploadTask.addOnProgressListener(taskSnapshot -> {
             double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
@@ -140,24 +134,6 @@ public class ProfileImageModel {
                 mImageUploadCallback.onComplete(downloadUrl);
             }
         });
-    }
-
-    private Bitmap getResizedImage(Activity activity, Uri input, int resizedp){
-        Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int height = bitmap.getHeight();
-        int width = bitmap.getWidth();
-        Bitmap resized = null;
-        while (height > resizedp) {
-            resized = Bitmap.createScaledBitmap(bitmap, (width * resizedp) / height, resizedp, true);
-            height = resized.getHeight();
-            width = resized.getWidth();
-        }
-        return resized;
     }
 
     public void changeProfileUrl(Uri profileUrl){
