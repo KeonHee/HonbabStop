@@ -67,6 +67,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
 
     @Override
     public void uploadImageToStorage(Uri url) {
+        view.showLoading();
         mProfileImageModel.saveImageToStorage(mActivity, url);
     }
 
@@ -148,6 +149,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
     @Override
     public void onComplete(Uri saveUri) {
         mProfileImageModel.changeProfileUrl(saveUri);
+        view.hideLoading();
     }
 
     @Override

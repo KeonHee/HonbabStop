@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -123,10 +124,10 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
         Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
         dialog.setContentView(R.layout.image_dialog);
 
         ImageView iv = (ImageView) dialog.findViewById(R.id.iv_title_image_dialog);
-
         if(url==null){
             Glide.with(mContext)
                     .load(R.drawable.default_profile)
@@ -141,7 +142,9 @@ public class ChatListViewHolder extends RecyclerView.ViewHolder {
                     .placeholder(R.drawable.default_profile)
                     .into(iv);
         }
+        iv.setOnClickListener(v->dialog.dismiss());
         dialog.show();
+
     }
 
 }

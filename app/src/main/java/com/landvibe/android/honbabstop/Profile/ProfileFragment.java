@@ -17,13 +17,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
+import com.github.ybq.android.spinkit.SpinKitView;
+import com.landvibe.android.honbabstop.R;
+import com.landvibe.android.honbabstop.base.domain.User;
+import com.landvibe.android.honbabstop.base.domain.UserStore;
 import com.landvibe.android.honbabstop.base.listener.OnRefreshListener;
 import com.landvibe.android.honbabstop.profile.presenter.ProfilePresenter;
 import com.landvibe.android.honbabstop.profile.presenter.ProfilePresenterImpl;
-import com.landvibe.android.honbabstop.R;
 import com.landvibe.android.honbabstop.updateprofile.UpdateProfileActivity;
-import com.landvibe.android.honbabstop.base.domain.User;
-import com.landvibe.android.honbabstop.base.domain.UserStore;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +59,8 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View, 
     @BindView(R.id.tv_address) TextView mAddressTextView;
 
     @BindView(R.id.btn_settings) Button mSettingsBtn;
+
+    @BindView(R.id.pb_loading_indicator) SpinKitView mLoadingIndicator;
 
     private ProfilePresenter.Presenter profilePresenter;
 
@@ -177,13 +180,23 @@ public class ProfileFragment extends Fragment implements ProfilePresenter.View, 
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void showLoading() {
+        getActivity().runOnUiThread(()->mLoadingIndicator.setVisibility(View.INVISIBLE));
+    }
+
+    @Override
+    public void hideLoading() {
+        getActivity().runOnUiThread(()->mLoadingIndicator.setVisibility(View.GONE));
+    }
+
     @Override
     public void updateUserProfile(String url) {
         getActivity().runOnUiThread(() -> {
             if(mAvatarImageView==null){
                 return;
             }
-            //TODO 프로그레스바
             Glide.with(this)
                     .load(url)
                     .override(200,200)

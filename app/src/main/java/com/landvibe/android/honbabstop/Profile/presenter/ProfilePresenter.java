@@ -11,6 +11,10 @@ public interface ProfilePresenter {
 
     interface View{
 
+        void showLoading();
+
+        void hideLoading();
+
         void updateUserProfile(String url);
 
         void updateUserName(String name);
