@@ -163,8 +163,7 @@ public class ChatListModel {
 
     public void saveChat(ChatRoom chatRoom){
         mDatabase.child("ChatList")
-                .child(chatRoom.getId())
-                .setValue(chatRoom);
+                .child(chatRoom.getId()).setValue(chatRoom);
     }
 
     /**
@@ -174,8 +173,7 @@ public class ChatListModel {
         for(User member : memebers){
             mDatabase.child("MyChatList")
                     .child(member.getUid())
-                    .child(myChat.getId())
-                    .setValue(myChat);
+                    .child(myChat.getId()).setValue(myChat);
         }
     }
 }

@@ -149,8 +149,12 @@ public class ChatListPresenterImpl implements ChatListPresenter.Presenter,
     @Override
     public void update(Object object) {
         if(object instanceof ChatRoom){
-            ChatRoom chatRoom = (ChatRoom) object;
+            if(mAdapterModel==null || mAdapterView==null){
+                return;
+            }
 
+
+            ChatRoom chatRoom = (ChatRoom) object;
             int index = mAdapterModel.indexOf(chatRoom);
             if(index<0){
                 /* Not Found */

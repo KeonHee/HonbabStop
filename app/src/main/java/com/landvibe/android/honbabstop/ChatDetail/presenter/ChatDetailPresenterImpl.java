@@ -3,14 +3,14 @@ package com.landvibe.android.honbabstop.chatdetail.presenter;
 import android.app.Activity;
 
 import com.google.firebase.database.DatabaseError;
-import com.landvibe.android.honbabstop.chatdetail.adapter.contract.ChatAdapterContract;
-import com.landvibe.android.honbabstop.chatdetail.model.ChatDetailModel;
 import com.landvibe.android.honbabstop.GlobalApp;
 import com.landvibe.android.honbabstop.base.domain.ChatMessage;
 import com.landvibe.android.honbabstop.base.domain.ChatRoom;
 import com.landvibe.android.honbabstop.base.domain.MyChat;
 import com.landvibe.android.honbabstop.base.domain.User;
 import com.landvibe.android.honbabstop.base.utils.DomainConvertUtils;
+import com.landvibe.android.honbabstop.chatdetail.adapter.contract.ChatAdapterContract;
+import com.landvibe.android.honbabstop.chatdetail.model.ChatDetailModel;
 
 /**
  * Created by user on 2017-02-16.

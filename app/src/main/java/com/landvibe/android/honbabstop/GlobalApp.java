@@ -92,7 +92,7 @@ public class GlobalApp extends MultiDexApplication implements Observer {
         }
     }
 
-    public  void changeModel(Object model) {
+    public void changeModel(Object model) {
         this.obj = model;
         notifyObservers();
     }

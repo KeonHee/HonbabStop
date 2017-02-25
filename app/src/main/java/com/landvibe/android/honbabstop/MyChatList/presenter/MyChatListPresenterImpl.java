@@ -85,9 +85,15 @@ public class MyChatListPresenterImpl implements MyChatListPresenter.Presenter,
 
     @Override
     public void update(Object object) {
-        if(object instanceof  MyChat){
+        if(object instanceof MyChat){
+            if(mAdapterModel==null || mAdapterView==null){
+                return;
+            }
+
             MyChat myChat = (MyChat) object;
 
+
+            //@TODO 옵저버 update에 CRUD 플래그 주기
             int index = mAdapterModel.indexOf(myChat);
             if(index<0){
                 mAdapterModel.addListData(myChat);

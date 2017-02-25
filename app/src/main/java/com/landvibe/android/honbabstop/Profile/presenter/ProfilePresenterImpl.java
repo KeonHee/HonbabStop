@@ -72,7 +72,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
     }
 
     private void updateUserView(User user){
-        if (user==null){
+        if (user==null || view==null){
             return;
         }
 
@@ -169,7 +169,7 @@ public class ProfilePresenterImpl implements ProfilePresenter.Presenter, Profile
 
 
     /**
-     *
+     *  CustomObserver
      */
     @Override
     public void update(Object object) {

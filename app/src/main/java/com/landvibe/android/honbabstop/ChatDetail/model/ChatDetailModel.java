@@ -183,8 +183,7 @@ public class ChatDetailModel implements ChildEventListener{
                     /*  MyChat 데이터 삭제 */
                     mDatabase.child("MyChatList")
                             .child(user.getUid())
-                            .child(roomId)
-                            .setValue(null);
+                            .child(roomId).setValue(null);
 
                 }else {
                     mCompleteChangeUserData.onFailure(databaseError);

@@ -115,7 +115,10 @@ public class AddChatPresenterImpl implements AddChatPresenter.Presenter,
             FoodRestaurant foodRestaurant = (FoodRestaurant) object;
             Log.d(TAG, "foodRestaurant : " + foodRestaurant);
             Log.d(TAG, "view : " + view);
-            view.showMapMarker(foodRestaurant);
+            if(view!=null){
+                view.showMapMarker(foodRestaurant);
+
+            }
         }
     }
 }

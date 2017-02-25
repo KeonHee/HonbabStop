@@ -153,6 +153,7 @@ public class LoginPresenterImpl implements LoginPresenter.Presenter {
         @Override
         public void onSessionOpenFailed(KakaoException exception) {
             Log.d(TAG, "onSessionOpenFailed()");
+            view.hideLoading();
             if(exception != null) {
                 Logger.e(exception);
             }

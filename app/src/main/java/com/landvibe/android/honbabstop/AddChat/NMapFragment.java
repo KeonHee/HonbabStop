@@ -215,7 +215,7 @@ public class NMapFragment extends Fragment
     public void onLocationUpdateTimeout(NMapLocationManager nMapLocationManager) {
         if(getActivity()!=null){
             Snackbar.make(getActivity().getWindow().getDecorView().getRootView(),
-                    "위치를 탐색하고 있습니다 잠시만 기다려주세요", Snackbar.LENGTH_LONG)
+                    "현재 위치를 탐색하고 있습니다 잠시만 기다려주세요", Snackbar.LENGTH_LONG)
                     .setAction("OK", v -> {}).show();
         }
 
@@ -238,7 +238,7 @@ public class NMapFragment extends Fragment
     public void onMarkPin(FoodRestaurant foodRestaurant) {
         Log.d(TAG, foodRestaurant.getTitle());
 
-        startMyLocation();
+        stopMyLocation();
 
         mMapOverlayManager.clearOverlays();
 
